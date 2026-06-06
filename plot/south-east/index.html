@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yoganad — Premium Property Visualization</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@200;300;400;500&family=Cinzel:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: oklch(82% 0.13 78);
+      --gold-dim: oklch(68% 0.10 78);
+      --gold-bright: oklch(90% 0.11 78);
+      --dark: #0a0a08;
+      --dark-glass: rgba(12, 11, 8, 0.82);
+      --dark-glass-light: rgba(16, 14, 10, 0.72);
+      --gold-border: rgba(200, 175, 120, 0.25);
+      --gold-border-hover: rgba(200, 175, 120, 0.45);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--dark);
+      font-family: 'Jost', sans-serif;
+      color: var(--gold);
+    }
+
+    .bg-div {
+      position: fixed;
+      inset: 0;
+      background-image: url('background.png');
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 16px; left: 16px;
+      z-index: 900;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--dark-glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--gold-border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--gold);
+      transition: background .25s, border-color .25s;
+    }
+    .back-btn:hover {
+      background: rgba(200, 175, 120, 0.18);
+      border-color: var(--gold-border-hover);
+    }
+
+    .brand {
+      position: fixed;
+      top: 18px; right: 20px;
+      z-index: 900;
+      font-family: 'Cinzel', serif;
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    .svg-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+    }
+
+    .plot-shape {
+      fill: transparent;
+      stroke: transparent;
+      stroke-width: 1.5;
+      cursor: pointer;
+      transition: fill 0.35s ease, stroke 0.35s ease, stroke-width 0.25s ease, filter 0.35s ease;
+      filter: drop-shadow(0 0 0px transparent);
+    }
+     .plot-shape:hover,
+    .plot-shape.active {
+      fill: rgba(255, 208, 113, 0.879);
+      stroke: oklch(82% 0.13 78);
+      stroke-width: 2.2;
+      filter: drop-shadow(0 0 12px rgba(200, 175, 120, 0.30));
+    }
+
+    .tooltip {
+      position: fixed;
+      z-index: 950;
+      pointer-events: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      background: var(--dark-glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--gold-border);
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--gold-bright);
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .side-panel {
+      position: fixed;
+      top: 0; right: 0;
+      width: 340px;
+      max-width: 85vw;
+      height: 100%;
+      z-index: 800;
+      background: var(--dark-glass);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-left: 1px solid var(--gold-border);
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .side-panel.open { transform: translateX(0); }
+
+    /* ── Left-side panel variant (plot is on right half of screen) ── */
+    .side-panel.panel-left {
+      right: auto;
+      left: 0;
+      border-left: none;
+      border-right: 1px solid var(--gold-border);
+      transform: translateX(-100%);
+    }
+    .side-panel.panel-left.open { transform: translateX(0); }
+
+    .panel-header {
+      padding: 32px 28px 20px;
+      border-bottom: 1px solid rgba(200, 175, 120, 0.12);
+      position: relative;
+    }
+    .panel-eyebrow {
+      font-family: 'Jost', sans-serif;
+      font-size: 10px; font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 6px;
+    }
+    .panel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 500;
+      color: var(--gold-bright);
+      letter-spacing: 0.02em;
+    }
+
+    .panel-body { padding: 24px 28px; flex: 1; }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(200, 175, 120, 0.08);
+    }
+    .info-row:last-child { border-bottom: none; }
+
+    .info-label {
+      font-size: 12px; font-weight: 300;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .info-label svg {
+      width: 16px; height: 16px;
+      stroke: var(--gold-dim);
+      fill: none; stroke-width: 1.5;
+      flex-shrink: 0;
+    }
+
+    .info-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 500;
+      color: var(--gold-bright);
+      letter-spacing: 0.02em;
+      text-align: right;
+    }
+
+    .panel-divider {
+      width: 40px; height: 1px;
+      background: linear-gradient(90deg, var(--gold-border), transparent);
+      margin: 8px 0 16px;
+    }
+
+    .panel-note {
+      font-size: 12px; font-weight: 300;
+      line-height: 1.7;
+      color: rgba(200, 175, 120, 0.45);
+      letter-spacing: 0.02em;
+      margin-top: 12px;
+    }
+
+    /* ── Close button inside panel ─────────────────────────── */
+    .panel-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid var(--gold-border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--gold-dim);
+      transition: background .2s, border-color .2s;
+    }
+    .panel-close:hover { background: rgba(200,175,120,.12); border-color: var(--gold-border-hover); }
+
+    /* ── Zoom / pan wrapper for SVG ─────────────────────────── */
+    .map-wrapper {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      overflow: hidden;
+      touch-action: none;
+    }
+    .map-wrapper .svg-overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+
+    /* ── Mobile bottom-sheet panel ──────────────────────────── */
+    @media (max-width: 640px) {
+      .brand { font-size: 11px; letter-spacing: 0.12em; right: 12px; top: 14px; }
+
+      .side-panel {
+        top: auto;
+        bottom: 0; right: 0; left: 0;
+        width: 100%; max-width: 100%;
+        height: auto;
+        max-height: 65vh;
+        border-left: none;
+        border-top: 1px solid var(--gold-border);
+        border-radius: 18px 18px 0 0;
+        transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .side-panel.open { transform: translateY(0); }
+      /* On mobile the panel is always bottom-sheet — ignore left/right positioning */
+      .side-panel.panel-left {
+        right: 0; left: 0;
+        border-right: none;
+        border-top: 1px solid var(--gold-border);
+        transform: translateY(100%);
+      }
+      .side-panel.panel-left.open { transform: translateY(0); }
+
+      .panel-header { padding: 22px 20px 16px; }
+      .panel-body { padding: 16px 20px 28px; }
+
+      /* Drag handle */
+      .panel-header::before {
+        content: '';
+        display: block;
+        width: 36px; height: 4px;
+        border-radius: 2px;
+        background: var(--gold-border-hover);
+        margin: 0 auto 14px;
+      }
+
+      .panel-close { display: flex; }
+
+      .mobile-hint {
+        position: fixed;
+        bottom: 20px; left: 50%;
+        transform: translateX(-50%);
+        z-index: 200;
+        font-family: 'Jost', sans-serif;
+        font-size: 12px; font-weight: 300;
+        letter-spacing: 0.10em;
+        color: rgba(200, 175, 120, 0.55);
+        background: var(--dark-glass);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--gold-border);
+        padding: 6px 16px;
+        border-radius: 20px;
+        white-space: nowrap;
+        pointer-events: none;
+        transition: opacity 0.6s ease;
+      }
+      .mobile-hint.hidden { opacity: 0; }
+    }
+
+    @media (min-width: 641px) {
+      .side-panel { width: 340px; max-width: 85vw; }
+      .panel-close { display: none; }
+      .mobile-hint { display: none; }
+    }
+
+    /* ── Landscape mobile: compact floating box, no scroll ───────── */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .side-panel {
+        /* Reset bottom-sheet / full-height styles */
+        top: 50%;
+        bottom: auto;
+        right: 16px;
+        left: auto;
+        width: auto;
+        min-width: 260px;
+        max-width: 42vw;
+        height: auto;
+        max-height: calc(100vh - 32px);
+        border-radius: 14px;
+        border: 1px solid var(--gold-border);
+        border-left: 1px solid var(--gold-border);
+        border-top: 1px solid var(--gold-border);
+        transform: translateY(-50%) translateX(calc(100% + 20px));
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+        opacity: 0;
+        overflow: hidden;
+      }
+      .side-panel.open {
+        transform: translateY(-50%) translateX(0);
+        opacity: 1;
+      }
+      /* Left variant in landscape */
+      .side-panel.panel-left {
+        right: auto;
+        left: 16px;
+        border-right: 1px solid var(--gold-border);
+        transform: translateY(-50%) translateX(calc(-100% - 20px));
+      }
+      .side-panel.panel-left.open {
+        transform: translateY(-50%) translateX(0);
+        opacity: 1;
+      }
+
+      .panel-header {
+        padding: 14px 16px 10px;
+        position: relative;
+      }
+      .panel-eyebrow { font-size: 9px; margin-bottom: 2px; }
+      .panel-title { font-size: 18px; }
+      .panel-close { display: flex; top: 10px; right: 10px; width: 26px; height: 26px; }
+
+      .panel-body {
+        padding: 8px 16px 14px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 12px;
+        overflow: hidden;
+      }
+
+      .info-row {
+        padding: 7px 0;
+        border-bottom: 1px solid rgba(200, 175, 120, 0.08);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+      }
+      .info-row:last-child { border-bottom: none; }
+      .info-label { font-size: 9px; }
+      .info-label svg { width: 12px; height: 12px; }
+      .info-value { font-size: 14px; text-align: left; }
+
+      .panel-divider { display: none; }
+      .panel-note { display: none; }
+      .mobile-hint { display: none; }
+    }
+
+    .plot-shape.tapped {
+      fill: rgba(255, 208, 113, 0.879);
+      stroke: oklch(82% 0.13 78);
+      stroke-width: 2.2;
+      filter: drop-shadow(0 0 12px rgba(200, 175, 120, 0.30));
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-div"></div>
+
+  <div class="back-btn" id="backBtn" title="Go Back">
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"
+      stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="12 16 6 10 12 4" />
+    </svg>
+  </div>
+
+
+  <div class="map-wrapper" id="mapWrapper">
+  <svg class="svg-overlay" id="svgMap" viewBox="0 0 3840 2160" preserveAspectRatio="xMidYMid slice">
+
+    <path class="plot-shape" data-plot="plot-3101" d="M2086.71 420.83 L1929.15 567.24 L1775.24 496.89 L1933.9 353.22 L2086.71 420.83 Z"/>
+    <path class="plot-shape" data-plot="plot-3102" d="M2188.3 465.77 L2032.64 614.54 L1929.15 567.24 L2086.71 420.83 L2188.3 465.77 Z"/>
+    <path class="plot-shape" data-plot="plot-3103" d="M2291.49 511.42 L2137.5 662.47 L2032.64 614.54 L2188.3 465.77 L2188.31 465.77 L2291.49 511.42 Z"/>
+    <path class="plot-shape" data-plot="plot-3104" d="M2396.75 557.99 L2244.8 711.52 L2137.5 662.47 L2291.49 511.42 L2396.75 557.99 Z"/>
+    <path class="plot-shape" data-plot="plot-3105" d="M2504.12 605.49 L2354.43 761.63 L2244.8 711.52 L2396.75 557.99 L2504.12 605.49 Z"/>
+    <path class="plot-shape" data-plot="plot-3106" d="M2613.87 654.05 L2465.63 812.45 L2354.43 761.63 L2504.12 605.49 L2613.87 654.05 Z"/>
+    <path class="plot-shape" data-plot="plot-3107" d="M2724.73 703.1 L2578.9 864.22 L2465.63 812.45 L2613.87 654.05 L2724.73 703.1 Z"/>
+    <path class="plot-shape" data-plot="plot-3108" d="M2837.87 753.15 L2693.47 916.59 L2578.9 864.22 L2724.73 703.1 L2837.87 753.15 Z"/>
+    <path class="plot-shape" data-plot="plot-3109" d="M2952.79 803.99 L2811.72 970.64 L2693.47 916.59 L2837.87 753.15 L2952.79 803.99 Z"/>
+    <path class="plot-shape" data-plot="plot-3110" d="M3070.69 856.15 L2931.39 1025.33 L2931.38 1025.33 L2811.72 970.64 L2952.79 803.99 L3070.69 856.15 Z"/>
+    <path class="plot-shape" data-plot="plot-3111" d="M3181.1 905 L3077.31 1063.06 L3074.39 1080 L3070.06 1088.72 L2931.39 1025.33 L3070.69 856.15 L3181.1 905 Z"/>
+    <path class="plot-shape" data-plot="plot-3112" d="M3581.17,1355.06c-22.69,16.29-45.11,32.56-67.24,48.8l-326.51-162.51,62.19-74.74c110.39,55.81,220.92,119.15,331.56,188.45Z"/>
+    <path class="plot-shape" data-plot="plot-3113" d="M3513.93,1403.86c-29.16,21.39-57.82,42.73-85.95,64.02l-302.48-152.11,61.92-74.42,326.51,162.51Z"/>
+    <path class="plot-shape" data-plot="plot-3114" d="M3427.98,1467.88c-29.72,22.49-58.85,44.93-87.34,67.3l-277.96-143.91,62.82-75.5,302.48,152.11Z"/>
+    <path class="plot-shape" data-plot="plot-3115" d="M3340.64,1535.18c-29.22,22.94-57.77,45.81-85.6,68.61l-256.71-135.18,64.35-77.34,277.96,143.91Z"/>
+    <path class="plot-shape" data-plot="plot-3116" d="M3255.04,1603.79c-29.63,24.28-58.46,48.48-86.41,72.58l-236.63-128.04,66.33-79.72,256.71,135.18Z"/>
+    <path class="plot-shape" data-plot="plot-3117" d="M3168.63,1676.37c-29.24,25.22-57.53,50.34-84.8,75.36l-220.59-120.76,68.76-82.64,236.63,128.04Z"/>
+    <path class="plot-shape" data-plot="plot-3118" d="M3083.83,1751.73c-27.74,25.43-54.42,50.77-80,75.99l-210-113.33,69.41-83.42,220.59,120.76Z"/>
+    <path class="plot-shape" data-plot="plot-3119" d="M2811.17,1469.17l-151.56,175.33c-40.71-20.67-82.91-43.01-126.34-66.76l155.68-175.59,122.22,67.02Z"/>
+    <path class="plot-shape" data-plot="plot-3120" d="M2688.95,1402.15l-155.68,175.59c-40-21.87-81.05-44.94-122.97-68.98l158.56-172.46,120.09,65.85Z"/>
+    <path class="plot-shape" data-plot="plot-3121" d="M2568.86,1336.3l-158.56,172.46c-37.67-21.61-76.04-44.01-114.97-67.04l158.5-168.5,115.03,63.08Z"/>
+    <path class="plot-shape" data-plot="plot-3122" d="M2453.83 1273.22 L2455 1256.56 L2355.06 1204.05 L2521.56 1016.97 L2521.57 1016.97 L2631.39 1068.5 L2453.83 1273.22 Z"/>
+    <path class="plot-shape" data-plot="plot-3123" d="M2521.56 1016.97 L2355.06 1204.05 L2240.08 1143.63 L2405.43 962.47 L2521.56 1016.97 Z"/>
+    <path class="plot-shape" data-plot="plot-3124" d="M2405.43 962.47 L2240.08 1143.63 L2126.22 1083.8 L2292.2 909.34 L2405.43 962.47 Z"/>
+    <path class="plot-shape" data-plot="plot-3125" d="M2292.2 909.34 L2126.22 1083.8 L2126.21 1083.8 L2015.15 1025.45 L2180.08 856.73 L2292.2 909.34 Z"/>
+    <path class="plot-shape" data-plot="plot-3126" d="M2180.08 856.73 L2015.15 1025.45 L2002.67 1018.89 L1993.45 1028.16 L1894.45 979.42 L2070.36 805.25 L2180.08 856.73 Z"/>
+    <path class="plot-shape" data-plot="plot-3127" d="M2070.36 805.25 L1894.45 979.42 L1785.35 925.71 L1962.54 754.65 L2070.36 805.25 Z"/>
+    <path class="plot-shape" data-plot="plot-3128" d="M1962.54 754.65 L1785.35 925.71 L1678.54 873.13 L1857.56 705.39 L1857.57 705.39 L1962.54 754.65 Z"/>
+    <path class="plot-shape" data-plot="plot-3129" d="M1857.56 705.39 L1678.54 873.13 L1572.88 821.11 L1753.84 656.72 L1857.56 705.39 Z"/>
+    <path class="plot-shape" data-plot="plot-3130" d="M1753.84 656.72 L1572.88 821.11 L1469.88 770.41 L1651.58 608.74 L1753.84 656.72 Z"/>
+    <path class="plot-shape" data-plot="plot-3131" d="M1651.58 608.74 L1469.88 770.41 L1368.86 720.68 L1551.61 561.83 L1651.58 608.74 Z"/>
+    <path class="plot-shape" data-plot="plot-3132" d="M1469.88 770.41 L1304.78 917.3 L1202.94 864.89 L1368.86 720.68 L1469.88 770.41 Z"/>
+    <path class="plot-shape" data-plot="plot-3133" d="M1572.88 821.11 L1408.35 970.59 L1408.34 970.59 L1304.78 917.3 L1469.88 770.41 L1572.88 821.11 Z"/>
+    <path class="plot-shape" data-plot="plot-3134" d="M1678.54 873.13 L1515.61 1025.78 L1408.35 970.59 L1572.88 821.11 L1678.54 873.13 Z"/>
+    <path class="plot-shape" data-plot="plot-3135" d="M1785.35 925.71 L1623.94 1081.53 L1515.61 1025.78 L1678.54 873.13 L1785.35 925.71 Z"/>
+    <path class="plot-shape" data-plot="plot-3136" d="M1894.45 979.42 L1734.07 1138.2 L1623.94 1081.53 L1785.35 925.71 L1894.45 979.42 Z"/>
+    <path class="plot-shape" data-plot="plot-3137" d="M1993.45 1028.16 L1842.83 1179.56 L1837.67 1177.56 L1829.67 1187.39 L1734.07 1138.2 L1894.45 979.42 L1993.45 1028.16 Z"/>
+    <path class="plot-shape" data-plot="plot-3138" d="M1755,1273.22c-23.52,27.3-47.52,54.71-71.97,82.22l-182.84-96.21,80.14-78.45,174.67,92.44Z"/>
+    <path class="plot-shape" data-plot="plot-3139" d="M1683.03,1355.44c-24.26,27.29-48.97,54.68-74.14,82.17l-187.33-101.4,78.63-76.98,182.84,96.21Z"/>
+    <path class="plot-shape" data-plot="plot-3140" d="M1608.89,1437.61c-25.29,27.64-51.03,55.38-77.22,83.23l-190.63-105.81,80.52-78.82,187.33,101.4Z"/>
+    <path class="plot-shape" data-plot="plot-3141" d="M1531.67,1520.84c-26.32,28-53.1,56.1-80.31,84.3l-193.08-109.09,82.76-81.02,190.63,105.81Z"/>
+    <path class="plot-shape" data-plot="plot-3142" d="M1451.36,1605.14c-27.7,28.71-55.86,57.53-84.47,86.45l-193.65-112.29,85.04-83.25,193.08,109.09Z"/>
+    <path class="plot-shape" data-plot="plot-3143" d="M1366.89,1691.59c-28.62,28.94-57.7,58-87.21,87.14l-192.98-114.71,86.54-84.72,193.65,112.29Z"/>
+    <path class="plot-shape" data-plot="plot-3144" d="M1279.68,1778.73c-26.4,26.09-53.15,52.25-80.24,78.49l-25.77-13.78-3.56-6.22s9.78-4.89,11.11-4.89,2.22-14.66,2.22-14.66l-13.77-8-11.11-7.56,8.88-12-8-10.22-7.55-11.56-8-12.89h-18.22l-16.45-11.11v-3.55h-10.66v-7.56l-4.45-8.44-8.89-8.45h-8l-7.55-13.33h-13.34c-1.77,0,4.45,9.33,4.45,9.33l-8.89,4h-7.56l-13.22,2.11,55.59-54.42,192.98,114.71Z"/>
+    <path class="plot-shape" data-plot="plot-3145" d="M1057.95 1516.64 L974.11 1596.33 L777.64 1480.26 L862.92 1403.04 L1057.95 1516.64 Z"/>
+    <path class="plot-shape" data-plot="plot-3146" d="M1144.87 1434.03 L1057.95 1516.64 L862.92 1403.04 L950.54 1323.7 L1144.87 1434.03 Z"/>
+    <path class="plot-shape" data-plot="plot-3147" d="M1229.68 1353.42 L1144.87 1434.03 L950.54 1323.7 L1036.29 1246.05 L1229.68 1353.42 Z"/>
+    <path class="plot-shape" data-plot="plot-3148" d="M1312 1275.18 L1229.68 1353.42 L1036.29 1246.05 L1119.48 1170.72 L1312 1275.18 Z"/>
+    <path class="plot-shape" data-plot="plot-3149" d="M1391.17 1199.93 L1312 1275.18 L1119.48 1170.72 L1200.27 1097.56 L1391.17 1199.93 Z"/>
+    <path class="plot-shape" data-plot="plot-3150" d="M1467.44 1127.44 L1391.17 1199.93 L1200.27 1097.56 L1276.87 1028.2 L1467.44 1127.44 Z"/>
+    <path class="plot-shape" data-plot="plot-3151" d="M1276.87 1028.2 L1200.27 1097.56 L1015.83 998.65 L1092.78 932.33 L1276.87 1028.2 Z"/>
+    <path class="plot-shape" data-plot="plot-3152" d="M1200.27 1097.56 L1119.48 1170.72 L933.37 1069.73 L1015.83 998.65 L1200.27 1097.56 Z"/>
+    <path class="plot-shape" data-plot="plot-3153" d="M1119.48 1170.72 L1036.29 1246.05 L849.27 1142.21 L933.37 1069.73 L1119.48 1170.72 Z"/>
+    <path class="plot-shape" data-plot="plot-3154" d="M1036.29 1246.05 L950.54 1323.7 L762.54 1216.97 L849.27 1142.21 L1036.29 1246.05 Z"/>
+    <path class="plot-shape" data-plot="plot-3155" d="M950.54 1323.7 L862.92 1403.04 L674.19 1293.12 L762.54 1216.97 L950.54 1323.7 Z"/>
+    <path class="plot-shape" data-plot="plot-3156" d="M862.92 1403.04 L777.64 1480.26 L587.44 1367.89 L674.19 1293.12 L862.92 1403.04 Z"/>
+
+  </svg>
+  </div><!-- /map-wrapper -->
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <div class="side-panel" id="sidePanel">
+    <div class="panel-header">
+      <div class="panel-eyebrow">Property Details</div>
+      <div class="panel-title" id="panelTitle">—</div>
+      <button class="panel-close" id="panelClose" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+      </button>
+    </div>
+    <div class="panel-body">
+      <div class="info-row">
+        <span class="info-label">
+          <svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" rx="2"/></svg>
+          Plot Size
+        </span>
+        <span class="info-value" id="infoPlotSize">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          <svg viewBox="0 0 20 20"><path d="M3 17V7l7-4 7 4v10H3z"/><path d="M8 17v-5h4v5"/></svg>
+          Park Side
+        </span>
+        <span class="info-value" id="infoParkSide">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          <svg viewBox="0 0 20 20"><path d="M10 3v14M3 10h14"/><circle cx="10" cy="10" r="7"/></svg>
+          Front
+        </span>
+        <span class="info-value" id="infoFront">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          <svg viewBox="0 0 20 20"><line x1="4" y1="10" x2="16" y2="10"/><polyline points="4 7 4 13"/><polyline points="16 7 16 13"/></svg>
+          Length
+        </span>
+        <span class="info-value" id="infoLength">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><line x1="10" y1="3" x2="10" y2="6"/><line x1="10" y1="14" x2="10" y2="17"/><line x1="3" y1="10" x2="6" y2="10"/><line x1="14" y1="10" x2="17" y2="10"/><polygon points="10,5 11,8 9,8" fill="currentColor" stroke="none"/></svg>
+          Direction
+        </span>
+        <span class="info-value" id="infoDirection">—</span>
+      </div>
+      <div class="panel-divider"></div>
+      <div class="panel-note">
+        Hover over plot shapes on the map to view details. All measurements are approximate and subject to final survey.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PLOT_DATA = {
+      'plot-3101': { name: 'Plot 3101',  plotSize: '150 yds', parkSide: 'No', front: '30\'0" ft', length: '45 ft', direction: 'South'  },
+      'plot-3102': { name: 'Plot 3102',  plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'South' },
+      'plot-3103': { name: 'Plot 3103', plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'South' },
+      'plot-3104': { name: 'Plot 3104',  plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'South'},
+      'plot-3105': { name: 'Plot 3105',  plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'South' },
+      'plot-3106': { name: 'Plot 3106',  plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'South' },
+      'plot-3107': { name: 'Plot 3107',  plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'South' },
+      'plot-3108': { name: 'Plot 3108',  plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'South' },
+      'plot-3109': { name: 'Plot 3109', plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'South' },
+      'plot-3110': { name: 'Plot 3110',  plotSize: '525 yds', parkSide: 'Yes', front: '45\'0" ft', length: '105 ft', direction: 'South' },
+      'plot-3111': { name: 'Plot 3111',  plotSize: '563 yds', parkSide: 'Yes', front: '51\'6" ft', length: '105 ft', direction: 'South'},
+      'plot-3112': { name: 'Plot 3112',  plotSize: '568 yds', parkSide: 'Yes', front: '45\'1" ft', length: '118.2 ft', direction: 'West'},
+      'plot-3113': { name: 'Plot 3113',  plotSize: '504.3 yds', parkSide: 'Yes', front: '40\'0" ft', length: '108.9 ft', direction: 'West' },
+      'plot-3114': { name: 'Plot 3114',  plotSize: '462.2 yds', parkSide: 'Yes', front: '40\'0" ft', length: '99.4 ft', direction: 'West'},
+      'plot-3115': { name: 'Plot 3115',  plotSize: '425 yds', parkSide: 'Yes', front: '40\'0" ft', length: '91.10 ft', direction: 'West' },
+      'plot-3116': { name: 'Plot 3116',  plotSize: '525 yds', parkSide: 'Yes', front: '45\'0" ft', length: '105 ft', direction: 'South' },
+      'plot-3117': { name: 'Plot 3117',  plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'South' },
+      'plot-3118': { name: 'Plot 3118',  plotSize: '372.8 yds', parkSide: 'No', front: '45\'0" ft', length: '72.10 ft', direction: 'West' },
+      'plot-3119': { name: 'Plot 3119',  plotSize: '460.7 yds', parkSide: 'Yes', front: '44\'6" ft', length: '91.11 ft', direction: 'North' },
+      'plot-3120': { name: 'Plot 3120',  plotSize: '466.4 yds', parkSide: 'Yes', front: '44\'6" ft', length: '93.11 ft', direction: 'North' },
+      'plot-3121': { name: 'Plot 3121',  plotSize: '465 yds', parkSide: 'Yes', front: '44\'6" ft', length: '93.11 ft', direction: 'North' },
+      'plot-3122': { name: 'Plot 3122',  plotSize: '527.3 yds', parkSide: 'No', front: '44\'0" ft', length: '111.4 ft', direction: 'North' },
+      'plot-3123': { name: 'Plot 3123',  plotSize: '519.4 yds', parkSide: 'No', front: '44\'0" ft', length: '106.7 ft', direction: 'North' },
+      'plot-3124': { name: 'Plot 3124', plotSize: '519.4 yds', parkSide: 'No', front: '44\'0" ft', length: '106.7 ft', direction: 'North' },
+      'plot-3125': { name: 'Plot 3125', plotSize: '528.6 yds', parkSide: 'No', front: '45\'0" ft', length: '105.5 ft', direction: 'North' },
+      'plot-3126': { name: 'Plot 3126', plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'North' },
+      'plot-3127': { name: 'Plot 3127', plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'North'},
+      'plot-3128': { name: 'Plot 3128', plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'North' },
+      'plot-3129': { name: 'Plot 3129', plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'North' },
+      'plot-3130': { name: 'Plot 3130', plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'North'  },
+      'plot-3131': { name: 'Plot 3131', plotSize: '525 yds', parkSide: 'No', front: '45\'0" ft', length: '105 ft', direction: 'North'  },
+      'plot-3132': { name: 'Plot 3132',  plotSize: '450 yds', parkSide: 'No', front: '45\'0" ft', length: '90 ft', direction: 'South' },
+      'plot-3133': { name: 'Plot 3133',  plotSize: '450 yds', parkSide: 'No', front: '45\'0" ft', length: '90 ft', direction: 'South' },
+      'plot-3134': { name: 'Plot 3134',  plotSize: '450 yds', parkSide: 'No', front: '45\'0" ft', length: '90 ft', direction: 'South' },
+      'plot-3135': { name: 'Plot 3135',  plotSize: '450 yds', parkSide: 'No', front: '45\'0" ft', length: '90 ft', direction: 'South' },
+      'plot-3136': { name: 'Plot 3136',  plotSize: '450 yds', parkSide: 'No', front: '45\'0" ft', length: '90 ft', direction: 'South' },
+      'plot-3137': { name: 'Plot 3137',  plotSize: '453 yds', parkSide: 'No', front: '45\'6" ft', length: '90 ft', direction: 'South' },
+      'plot-3138': { name: 'Plot 3138',  plotSize: '336.6 yds', parkSide: 'No', front: '40\'0" ft', length: '74.8 ft', direction: 'West' },
+      'plot-3139': { name: 'Plot 3139',  plotSize: '346.1 yds', parkSide: 'No', front: '40\'0" ft', length: '78.11 ft', direction: 'West' },
+      'plot-3140': { name: 'Plot 3140', plotSize: '354.2 yds', parkSide: 'No', front: '40\'0" ft', length: '79.11 ft', direction: 'West'},
+      'plot-3141': { name: 'Plot 3141',  plotSize: '355.2 yds', parkSide: 'No', front: '40\'0" ft', length: '79.11 ft', direction: 'West' },
+      'plot-3142': { name: 'Plot 3142',  plotSize: '355.5 yds', parkSide: 'No', front: '40\'0" ft', length: '79.11 ft', direction: 'West' },
+      'plot-3143': { name: 'Plot 3143',  plotSize: '354.9 yds', parkSide: 'No', front: '40\'0" ft', length: '79.8 ft', direction: 'West' },
+      'plot-3144': { name: 'Plot 3144',  plotSize: '352.7 yds', parkSide: 'No', front: '40\'0" ft', length: '79 ft', direction: 'West' },
+      'plot-3145': { name: 'Plot 3145',  plotSize: '377.7 yds', parkSide: 'No', front: '40\'0" ft', length: '85 ft', direction: 'East' },
+      'plot-3146': { name: 'Plot 3146',  plotSize: '377.7 yds', parkSide: 'No', front: '40\'0" ft', length: '85 ft', direction: 'East' },
+      'plot-3147': { name: 'Plot 3147',  plotSize: '377.7 yds', parkSide: 'No', front: '40\'0" ft', length: '85 ft', direction: 'East' },
+      'plot-3148': { name: 'Plot 3148', plotSize: '377.7 yds', parkSide: 'No', front: '40\'0" ft', length: '85 ft', direction: 'East' },
+      'plot-3149': { name: 'Plot 3149', plotSize: '377.7 yds', parkSide: 'No', front: '40\'0" ft', length: '85 ft', direction: 'East' },
+      'plot-3150': { name: 'Plot 3150', plotSize: '377.7 yds', parkSide: 'No', front: '40\'0" ft', length: '85 ft', direction: 'East'},
+      'plot-3151': { name: 'Plot 3151', plotSize: '450 yds', parkSide: 'No', front: '45\'0" ft', length: '90 ft', direction: 'West' },
+      'plot-3152': { name: 'Plot 3152', plotSize: '450 yds', parkSide: 'No', front: '45\'0" ft', length: '90 ft', direction: 'West'},
+      'plot-3153': { name: 'Plot 3153',  plotSize: '450 yds', parkSide: 'No', front: '45\'0" ft', length: '90 ft', direction: 'West'},
+      'plot-3154': { name: 'Plot 3154', plotSize: '450 yds', parkSide: 'No', front: '45\'0" ft', length: '90 ft', direction: 'West'},
+      'plot-3155': { name: 'Plot 3155', plotSize: '450 yds', parkSide: 'No', front: '45\'0" ft', length: '90 ft', direction: 'West'},
+      'plot-3156': { name: 'Plot 3156', plotSize: '450 yds', parkSide: 'No', front: '45\'0" ft', length: '90 ft', direction: 'West' },
+    };
+
+    /* ── DOM refs ── */
+    const tooltip    = document.getElementById('tooltip');
+    const sidePanel  = document.getElementById('sidePanel');
+    const panelTitle    = document.getElementById('panelTitle');
+    const infoPlotSize  = document.getElementById('infoPlotSize');
+    const infoParkSide  = document.getElementById('infoParkSide');
+    const infoFront     = document.getElementById('infoFront');
+    const infoLength    = document.getElementById('infoLength');
+    const infoDirection = document.getElementById('infoDirection');
+    const panelClose = document.getElementById('panelClose');
+    const mapWrapper = document.getElementById('mapWrapper');
+    const svgMap     = document.getElementById('svgMap');
+    const mobileHint = document.getElementById('mobileHint');
+    const backBtn    = document.getElementById('backBtn');
+
+    /* ── Panel open/close ── */
+    function openPanel(plotId, clientX) {
+      const d = PLOT_DATA[plotId] || {};
+      panelTitle.textContent    = d.name      || plotId;
+      infoPlotSize.textContent  = d.plotSize  || '—';
+      infoParkSide.textContent  = d.parkSide  || '—';
+      infoFront.textContent     = d.front     || '—';
+      infoLength.textContent    = d.length    || '—';
+      infoDirection.textContent = d.direction || '—';
+      /* Slide from left if plot is on right half of screen */
+      const onRight = clientX != null ? clientX > window.innerWidth / 2 : false;
+      sidePanel.classList.toggle('panel-left', onRight);
+      sidePanel.classList.add('open');
+    }
+    function closePanel() {
+      sidePanel.classList.remove('open');
+      if (lastTappedPlot) {
+        lastTappedPlot.classList.remove('tapped');
+        lastTappedPlot = null;
+      }
+    }
+
+    /* ── Hint dismiss ── */
+    function dismissHint() {
+      if (mobileHint) mobileHint.classList.add('hidden');
+    }
+
+    /* ── Close button ── */
+    if (panelClose) panelClose.addEventListener('click', closePanel);
+
+    /* ── Tap on map background closes panel ── */
+    mapWrapper.addEventListener('click', e => {
+      if (e.target === mapWrapper || e.target === svgMap) closePanel();
+    });
+
+    /* ── Back button ── */
+    backBtn.addEventListener('click', () => window.history.back());
+
+    /* ── Pinch-zoom & pan state ── */
+    let scale = 1, tX = 0, tY = 0;
+    let lastDist = 0, lastMidX = 0, lastMidY = 0;
+    let isDragging = false, dragStartX = 0, dragStartY = 0, dragStartTX = 0, dragStartTY = 0;
+    let activeTouches = [];
+    const MIN_SCALE = 1, MAX_SCALE = 8;
+
+    function applyTransform() {
+      svgMap.style.transform = `translate(${tX}px,${tY}px) scale(${scale})`;
+    }
+
+    function clampTranslate() {
+      const wRect = mapWrapper.getBoundingClientRect();
+      const maxTX = 0;
+      const minTX = wRect.width  - wRect.width  * scale;
+      const maxTY = 0;
+      const minTY = wRect.height - wRect.height * scale;
+      tX = Math.min(maxTX, Math.max(minTX, tX));
+      tY = Math.min(maxTY, Math.max(minTY, tY));
+    }
+
+    function getTouchDist(t1, t2) {
+      const dx = t1.clientX - t2.clientX;
+      const dy = t1.clientY - t2.clientY;
+      return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    /* ── Touch events on wrapper ── */
+    mapWrapper.addEventListener('touchstart', e => {
+      activeTouches = Array.from(e.touches);
+      if (activeTouches.length === 2) {
+        lastDist = getTouchDist(activeTouches[0], activeTouches[1]);
+        lastMidX = (activeTouches[0].clientX + activeTouches[1].clientX) / 2;
+        lastMidY = (activeTouches[0].clientY + activeTouches[1].clientY) / 2;
+        isDragging = false;
+      } else if (activeTouches.length === 1) {
+        dragStartX = activeTouches[0].clientX;
+        dragStartY = activeTouches[0].clientY;
+        dragStartTX = tX;
+        dragStartTY = tY;
+        isDragging = true;
+      }
+    }, { passive: true });
+
+    mapWrapper.addEventListener('touchmove', e => {
+      activeTouches = Array.from(e.touches);
+      if (activeTouches.length === 2) {
+        e.preventDefault();
+        const newDist = getTouchDist(activeTouches[0], activeTouches[1]);
+        const newMidX = (activeTouches[0].clientX + activeTouches[1].clientX) / 2;
+        const newMidY = (activeTouches[0].clientY + activeTouches[1].clientY) / 2;
+        const wRect = mapWrapper.getBoundingClientRect();
+
+        const ratio = newDist / lastDist;
+        const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * ratio));
+
+        // pivot at midpoint
+        const originX = lastMidX - wRect.left;
+        const originY = lastMidY - wRect.top;
+        tX = newMidX - wRect.left - (originX - tX) * (newScale / scale) - (newMidX - lastMidX);
+        tY = newMidY - wRect.top  - (originY - tY) * (newScale / scale) - (newMidY - lastMidY);
+
+        scale = newScale;
+        lastDist = newDist;
+        lastMidX = newMidX;
+        lastMidY = newMidY;
+        clampTranslate();
+        applyTransform();
+        isDragging = false;
+      } else if (activeTouches.length === 1 && isDragging) {
+        if (scale > 1) {
+          e.preventDefault();
+          const dx = activeTouches[0].clientX - dragStartX;
+          const dy = activeTouches[0].clientY - dragStartY;
+          tX = dragStartTX + dx;
+          tY = dragStartTY + dy;
+          clampTranslate();
+          applyTransform();
+        }
+      }
+    }, { passive: false });
+
+    mapWrapper.addEventListener('touchend', () => {
+      if (Array.from(event.touches).length < 2) isDragging = false;
+    }, { passive: true });
+
+    /* ── Plot interaction ── */
+    let lastTappedPlot = null;
+
+    document.querySelectorAll('.plot-shape').forEach(shape => {
+      const plotId = shape.dataset.plot;
+
+      /* Desktop: hover tooltip + panel */
+      shape.addEventListener('mouseenter', e => {
+        const d = PLOT_DATA[plotId];
+        tooltip.textContent = d ? d.name : plotId;
+        tooltip.classList.add('visible');
+        shape.classList.add('active');
+        openPanel(plotId, e.clientX);
+      });
+      shape.addEventListener('mousemove', e => {
+        tooltip.style.left = (e.clientX + 14) + 'px';
+        tooltip.style.top  = (e.clientY - 28) + 'px';
+      });
+      shape.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('visible');
+        shape.classList.remove('active');
+        closePanel();
+      });
+
+      /* Mobile: tap to open panel */
+      shape.addEventListener('touchstart', e => {
+        shape._tapStartX = e.touches[0].clientX;
+        shape._tapStartY = e.touches[0].clientY;
+        shape._tapStartTime = Date.now();
+      }, { passive: true });
+
+      shape.addEventListener('touchend', e => {
+        const dx = Math.abs(e.changedTouches[0].clientX - shape._tapStartX);
+        const dy = Math.abs(e.changedTouches[0].clientY - shape._tapStartY);
+        const dt = Date.now() - shape._tapStartTime;
+        if (dx < 10 && dy < 10 && dt < 500) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (lastTappedPlot && lastTappedPlot !== shape) {
+            lastTappedPlot.classList.remove('tapped');
+          }
+          if (lastTappedPlot === shape) {
+            // same plot tapped again — toggle off
+            shape.classList.remove('tapped');
+            lastTappedPlot = null;
+            closePanel();
+            tooltip.classList.remove('visible');
+            return;
+          }
+          shape.classList.add('tapped');
+          lastTappedPlot = shape;
+          openPanel(plotId, e.changedTouches[0].clientX);
+          dismissHint();
+          /* Show tooltip briefly on tap */
+          const d = PLOT_DATA[plotId];
+          tooltip.textContent = d ? d.name : plotId;
+          const tx = e.changedTouches[0].clientX;
+          const ty = e.changedTouches[0].clientY;
+          tooltip.style.left = (tx + 14) + 'px';
+          tooltip.style.top  = (ty - 40) + 'px';
+          tooltip.classList.add('visible');
+          clearTimeout(tooltip._hideTimer);
+          tooltip._hideTimer = setTimeout(() => tooltip.classList.remove('visible'), 2000);
+        }
+      }, { passive: false });
+    });
+  
+    // ── Arrival highlight: show the plot we navigated from ──
+    (function() {
+      try {
+        var arrivalPlot = sessionStorage.getItem('yoganadArrivalPlot');
+        if (!arrivalPlot) return;
+        sessionStorage.removeItem('yoganadArrivalPlot');
+        var shape = document.querySelector('.plot-shape[data-plot="' + arrivalPlot + '"]');
+        if (!shape) return;
+        shape.classList.add('active');
+        var svg = document.getElementById('svgMap');
+        if (svg && typeof openPanel === 'function') {
+          var bb = shape.getBBox();
+          var rect = svg.getBoundingClientRect();
+          var vbW = svg.viewBox.baseVal.width || 3840;
+          var vbH = svg.viewBox.baseVal.height || 2160;
+          var scaleX = rect.width / vbW;
+          var scaleY = rect.height / vbH;
+          var screenX = rect.left + (bb.x + bb.width / 2) * scaleX;
+          setTimeout(function() {
+            openPanel(arrivalPlot, Math.min(screenX + 14, window.innerWidth - 320));
+          }, 150);
+        }
+      } catch(e) {}
+    })();
+</script>
+
+  <div class="mobile-hint" id="mobileHint">Tap a plot &middot; Pinch to zoom</div>
+</body>
+</html>

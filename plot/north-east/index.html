@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yoganad — Premium Property Visualization</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@200;300;400;500&family=Cinzel:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: oklch(82% 0.13 78);
+      --gold-dim: oklch(68% 0.10 78);
+      --gold-bright: oklch(90% 0.11 78);
+      --dark: #0a0a08;
+      --dark-glass: rgba(12, 11, 8, 0.82);
+      --dark-glass-light: rgba(16, 14, 10, 0.72);
+      --gold-border: rgba(200, 175, 120, 0.25);
+      --gold-border-hover: rgba(200, 175, 120, 0.45);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--dark);
+      font-family: 'Jost', sans-serif;
+      color: var(--gold);
+    }
+
+    .bg-div {
+      position: fixed;
+      inset: 0;
+      background-image: url('background.png');
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 16px; left: 16px;
+      z-index: 900;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--dark-glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--gold-border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--gold);
+      transition: background .25s, border-color .25s;
+    }
+    .back-btn:hover {
+      background: rgba(200, 175, 120, 0.18);
+      border-color: var(--gold-border-hover);
+    }
+
+    .brand {
+      position: fixed;
+      top: 18px; right: 20px;
+      z-index: 900;
+      font-family: 'Cinzel', serif;
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    .svg-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+    }
+
+    .plot-shape {
+      fill: rgba(196, 134, 11, 0.15);
+      stroke: rgba(103, 77, 24, 0.6);
+      stroke-width: 1.5;
+      cursor: pointer;
+      transition: fill 0.35s ease, stroke 0.35s ease, stroke-width 0.25s ease, filter 0.35s ease;
+      filter: drop-shadow(0 0 0px transparent);
+    }
+    .plot-shape:hover,
+    .plot-shape.active {
+      fill: rgba(255, 173, 9, 0.879);
+      stroke: oklch(59.498% 0.07449 83.667);
+      stroke-width: 2.2;
+      filter: drop-shadow(0 0 14px rgba(140, 110, 50, 0.65));
+    }
+
+    .tooltip {
+      position: fixed;
+      z-index: 950;
+      pointer-events: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      background: var(--dark-glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--gold-border);
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--gold-bright);
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .side-panel {
+      position: fixed;
+      top: 0; right: 0;
+      width: 340px;
+      max-width: 85vw;
+      height: 100%;
+      z-index: 800;
+      background: var(--dark-glass);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-left: 1px solid var(--gold-border);
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .side-panel.open { transform: translateX(0); }
+
+    /* ── Left-side panel variant (plot is on right half of screen) ── */
+    .side-panel.panel-left {
+      right: auto;
+      left: 0;
+      border-left: none;
+      border-right: 1px solid var(--gold-border);
+      transform: translateX(-100%);
+    }
+    .side-panel.panel-left.open { transform: translateX(0); }
+
+    .panel-header {
+      padding: 32px 28px 20px;
+      border-bottom: 1px solid rgba(200, 175, 120, 0.12);
+    }
+    .panel-eyebrow {
+      font-family: 'Jost', sans-serif;
+      font-size: 10px; font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 6px;
+    }
+    .panel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 500;
+      color: var(--gold-bright);
+      letter-spacing: 0.02em;
+    }
+
+    .panel-body { padding: 24px 28px; flex: 1; }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(200, 175, 120, 0.08);
+    }
+    .info-row:last-child { border-bottom: none; }
+
+    .info-label {
+      font-size: 12px; font-weight: 300;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .info-label svg {
+      width: 16px; height: 16px;
+      stroke: var(--gold-dim);
+      fill: none; stroke-width: 1.5;
+      flex-shrink: 0;
+    }
+
+    .info-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 500;
+      color: var(--gold-bright);
+      letter-spacing: 0.02em;
+      text-align: right;
+    }
+
+    .panel-divider {
+      width: 40px; height: 1px;
+      background: linear-gradient(90deg, var(--gold-border), transparent);
+      margin: 8px 0 16px;
+    }
+
+    .panel-note {
+      font-size: 12px; font-weight: 300;
+      line-height: 1.7;
+      color: rgba(200, 175, 120, 0.45);
+      letter-spacing: 0.02em;
+      margin-top: 12px;
+    }
+
+    /* ── Close button inside panel ─────────────────────────── */
+    .panel-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid var(--gold-border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--gold-dim);
+      transition: background .2s, border-color .2s;
+    }
+    .panel-close:hover { background: rgba(200,175,120,.12); border-color: var(--gold-border-hover); }
+
+    /* ── Zoom / pan wrapper for SVG ─────────────────────────── */
+    .map-wrapper {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      overflow: hidden;
+      touch-action: none;
+    }
+    .map-wrapper .svg-overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+
+    /* ── Mobile bottom-sheet panel ──────────────────────────── */
+    @media (max-width: 640px) {
+      .brand { font-size: 11px; letter-spacing: 0.12em; right: 12px; top: 14px; }
+
+      .side-panel {
+        top: auto;
+        bottom: 0; right: 0; left: 0;
+        width: 100%; max-width: 100%;
+        height: auto;
+        max-height: 65vh;
+        border-left: none;
+        border-top: 1px solid var(--gold-border);
+        border-radius: 18px 18px 0 0;
+        transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .side-panel.open { transform: translateY(0); }
+      /* On mobile the panel is always bottom-sheet — ignore left/right positioning */
+      .side-panel.panel-left {
+        right: 0; left: 0;
+        border-right: none;
+        border-top: 1px solid var(--gold-border);
+        transform: translateY(100%);
+      }
+      .side-panel.panel-left.open { transform: translateY(0); }
+
+      .panel-header { padding: 22px 20px 16px; }
+      .panel-body { padding: 16px 20px 28px; }
+
+      /* Drag handle */
+      .panel-header::before {
+        content: '';
+        display: block;
+        width: 36px; height: 4px;
+        border-radius: 2px;
+        background: var(--gold-border-hover);
+        margin: 0 auto 14px;
+      }
+
+      .panel-close { display: flex; }
+
+      .mobile-hint {
+        position: fixed;
+        bottom: 20px; left: 50%;
+        transform: translateX(-50%);
+        z-index: 200;
+        font-family: 'Jost', sans-serif;
+        font-size: 12px; font-weight: 300;
+        letter-spacing: 0.10em;
+        color: rgba(200, 175, 120, 0.55);
+        background: var(--dark-glass);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--gold-border);
+        padding: 6px 16px;
+        border-radius: 20px;
+        white-space: nowrap;
+        pointer-events: none;
+        transition: opacity 0.6s ease;
+      }
+      .mobile-hint.hidden { opacity: 0; }
+    }
+
+    @media (min-width: 641px) {
+      .side-panel { width: 340px; max-width: 85vw; }
+      .panel-close { display: none; }
+      .mobile-hint { display: none; }
+    }
+
+    /* ── Landscape mobile: compact floating box, no scroll ───────── */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .side-panel {
+        /* Reset bottom-sheet / full-height styles */
+        top: 50%;
+        bottom: auto;
+        right: 16px;
+        left: auto;
+        width: auto;
+        min-width: 260px;
+        max-width: 42vw;
+        height: auto;
+        max-height: calc(100vh - 32px);
+        border-radius: 14px;
+        border: 1px solid var(--gold-border);
+        border-left: 1px solid var(--gold-border);
+        border-top: 1px solid var(--gold-border);
+        transform: translateY(-50%) translateX(calc(100% + 20px));
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+        opacity: 0;
+        overflow: hidden;
+      }
+      .side-panel.open {
+        transform: translateY(-50%) translateX(0);
+        opacity: 1;
+      }
+      /* Left variant in landscape */
+      .side-panel.panel-left {
+        right: auto;
+        left: 16px;
+        border-right: 1px solid var(--gold-border);
+        transform: translateY(-50%) translateX(calc(-100% - 20px));
+      }
+      .side-panel.panel-left.open {
+        transform: translateY(-50%) translateX(0);
+        opacity: 1;
+      }
+
+      .panel-header {
+        padding: 14px 16px 10px;
+        position: relative;
+      }
+      .panel-eyebrow { font-size: 9px; margin-bottom: 2px; }
+      .panel-title { font-size: 18px; }
+      .panel-close { display: flex; top: 10px; right: 10px; width: 26px; height: 26px; }
+
+      .panel-body {
+        padding: 8px 16px 14px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 12px;
+        overflow: hidden;
+      }
+
+      .info-row {
+        padding: 7px 0;
+        border-bottom: 1px solid rgba(200, 175, 120, 0.08);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+      }
+      .info-row:last-child { border-bottom: none; }
+      .info-label { font-size: 9px; }
+      .info-label svg { width: 12px; height: 12px; }
+      .info-value { font-size: 14px; text-align: left; }
+
+      .panel-divider { display: none; }
+      .panel-note { display: none; }
+      .mobile-hint { display: none; }
+    }
+
+    .plot-shape.tapped {
+      fill: rgba(255, 173, 9, 0.879);
+      stroke: oklch(59.498% 0.07449 83.667);
+      stroke-width: 2.2;
+      filter: drop-shadow(0 0 14px rgba(140, 110, 50, 0.65));
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-div"></div>
+
+  <div class="back-btn" id="backBtn" title="Go Back">
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"
+      stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="12 16 6 10 12 4" />
+    </svg>
+  </div>
+  
+
+  <div class="map-wrapper" id="mapWrapper">
+  <svg class="svg-overlay" id="svgMap" viewBox="0 0 3840 2160" preserveAspectRatio="xMidYMid slice">
+
+    <path class="plot-shape" data-plot="plot-5101" d="m3507.5 1538.78 73.14-.21-28.42-121.43-71.86-.19z"/><path class="plot-shape" data-plot="plot-5102" d="m3507.5 1538.78-74.08-.21-25.53-121.82 72.47.2z"/><path class="plot-shape" data-plot="plot-5103" d="m3433.42 1538.57-73.92-.22-24.57-121.79 72.96.19z"/><path class="plot-shape" data-plot="plot-5104" d="m3359.5 1538.35-73.89-.22-23.27-121.77 72.59.2z"/><path class="plot-shape" data-plot="plot-5105" d="m3285.61 1538.13-73.85-.21-22.05-121.75 72.63.19z"/><path class="plot-shape" data-plot="plot-5106" d="m3211.76 1537.92-73.68-.22-20.91-121.73 72.54.2z"/><path class="plot-shape" data-plot="plot-5107" d="m3138.08 1537.7-75.09-.22-18.89-121.7 73.07.19z"/><path class="plot-shape" data-plot="plot-5108" d="m3062.99 1537.48-73.34-.22-18.12-121.68 72.57.2z"/><path class="plot-shape" data-plot="plot-5109" d="m2989.65 1537.26-73.91-.21-16.67-121.66 72.46.19z"/><path class="plot-shape" data-plot="plot-5110" d="m2915.74 1537.05-73.76-.22-15.6-121.64 72.69.2z"/><path class="plot-shape" data-plot="plot-5111" d="m2841.98 1536.83-74.74-.22-13.98-121.61 73.12.19z"/><path class="plot-shape" data-plot="plot-5112" d="m2767.24 1536.61-74.11-.22-12.5-121.59 72.63.2z"/><path class="plot-shape" data-plot="plot-5113" d="m2693.13 1536.39-73.08-.21-11.72-121.57 72.3.19z"/><path class="plot-shape" data-plot="plot-5114" d="m2620.05 1536.18-74.47-.22-9.79-121.55 72.54.2z"/><path class="plot-shape" data-plot="plot-5115" d="m2545.58 1535.96-72.85-.22-9.05-121.52 72.11.19z"/><path class="plot-shape" data-plot="plot-5116" d="m2378.46 1535.47-72.85-.22-6.39-121.47 71.88.19z"/><path class="plot-shape" data-plot="plot-5117" d="m2305.61 1535.25-74.29-.21-4.61-121.46 72.51.2z"/><path class="plot-shape" data-plot="plot-5118" d="m2231.32 1535.04-73.34-.22-3.91-121.43 72.64.19z"/><path class="plot-shape" data-plot="plot-5119" d="m2157.98 1534.82-74.96-.22-1.84-121.41 72.89.2z"/><path class="plot-shape" data-plot="plot-5120" d="m2083.02 1534.6-73.05-.22-1.33-121.38 72.54.19z"/><path class="plot-shape" data-plot="plot-5121" d="m2009.97 1534.38-74.86-.22.58-121.36 72.95.2z"/><path class="plot-shape" data-plot="plot-5122" d="m1935.69 1412.8-.58 121.36-72.25-.21 1.06-121.34z"/><path class="plot-shape" data-plot="plot-5123" d="m1863.92 1412.61-1.06 121.34-74.66-.22 2.34-121.32z"/><path class="plot-shape" data-plot="plot-5124" d="m1790.54 1412.41-2.34 121.32-74.22-.21 4.26-121.3z"/><path class="plot-shape" data-plot="plot-5125" d="m1718.24 1412.22-4.26 121.3-73.6-.22 4.9-121.28z"/><path class="plot-shape" data-plot="plot-5126" d="m1645.28 1412.02-4.9 121.28-74.12-.22 6.24-121.26z"/><path class="plot-shape" data-plot="plot-5127" d="m1572.5 1411.82-6.24 121.26-73.9-.22 7.75-121.23z"/><path class="plot-shape" data-plot="plot-5128" d="m1500.11 1411.63-7.75 121.23-74.15-.21 9.06-121.22z"/><path class="plot-shape" data-plot="plot-5129" d="m1427.27 1411.43-9.06 121.22-73.89-.22 10.32-121.19z"/><path class="plot-shape" data-plot="plot-5130" d="m1354.64 1411.24-10.32 121.19-74.34-.22 11.5-121.17z"/><path class="plot-shape" data-plot="plot-5131" d="m1281.48 1411.04-11.5 121.17-73.62-.22 13.15-121.14z"/><path class="plot-shape" data-plot="plot-5132" d="m1077.19 1410.49-15.44 121.11-61.03-.18 16.11-121.09z"/><path class="plot-shape" data-plot="plot-5133" d="m1016.83 1410.33-16.11 121.09-61.18-.18 17.34-121.07z"/><path class="plot-shape" data-plot="plot-5134" d="m956.88 1410.17-17.34 121.07-62.87-.18 18.85-121.05z"/><path class="plot-shape" data-plot="plot-5135" d="m895.52 1410.01-18.85 121.05-61.13-.18 19.97-121.03h.01z"/><path class="plot-shape" data-plot="plot-5136" d="m835.51 1409.85-19.97 121.03-61.38-.18 20.83-121.02z"/><path class="plot-shape" data-plot="plot-5137" d="m774.99 1409.68-20.83 121.02-61.44-.18 21.71-121z"/><path class="plot-shape" data-plot="plot-5138" d="m714.43 1409.52-21.71 121-61.48-.19 22.77-120.97z"/><path class="plot-shape" data-plot="plot-5139" d="m654.01 1409.36-22.77 120.97-61.5-.18 23.85-120.95z"/><path class="plot-shape" data-plot="plot-5140" d="m593.59 1409.2-23.85 120.95-61.49-.18 24.93-120.94z"/><path class="plot-shape" data-plot="plot-5141" d="m533.18 1409.03-24.93 120.94-61.99-.18 25.91-120.92z"/><path class="plot-shape" data-plot="plot-5142" d="m472.17 1408.87-25.91 120.92-61.09-.18 26.82-120.9z"/><path class="plot-shape" data-plot="plot-5143" d="m411.99 1408.71-26.82 120.9-62.08-.18 28.3-120.88z"/><path class="plot-shape" data-plot="plot-5144" d="m351.39 1408.55-28.3 120.88-61.33-.18 29.5-120.87z"/><path class="plot-shape" data-plot="plot-5145" d="m291.26 1408.38-29.5 120.87-62.51-.18 30.92-120.85z"/><path class="plot-shape" data-plot="plot-5146" d="m230.17 1408.22-30.92 120.85-59.69-.18 31.89-120.83z"/><path class="plot-shape" data-plot="plot-5147" d="m260.43 1289.92-30.26 118.3-58.72-.16 31.22-118.28z"/><path class="plot-shape" data-plot="plot-5148" d="m320.13 1290.07-28.87 118.31-61.09-.16 30.26-118.3z"/><path class="plot-shape" data-plot="plot-5149" d="m379.1 1290.22-27.71 118.33-60.13-.17 28.87-118.31h.01z"/><path class="plot-shape" data-plot="plot-5150" d="m438.24 1290.37-26.25 118.34-60.6-.16 27.71-118.33z"/><path class="plot-shape" data-plot="plot-5151" d="m557.57 1290.67-24.39 118.36-61.01-.16 25.36-118.35z"/><path class="plot-shape" data-plot="plot-5152" d="m438.24 1290.37 59.29.15-25.36 118.35-60.18-.16z"/><path class="plot-shape" data-plot="plot-5153" d="m616.94 1290.82-23.35 118.38-60.41-.17 24.39-118.36z"/><path class="plot-shape" data-plot="plot-5154" d="m676.3 1290.97-22.29 118.39-60.42-.16 23.35-118.38z"/><path class="plot-shape" data-plot="plot-5155" d="m735.67 1291.12-21.24 118.4-60.42-.16 22.29-118.39z"/><path class="plot-shape" data-plot="plot-5156" d="m795.36 1291.27-20.37 118.41-60.56-.16 21.24-118.4z"/><path class="plot-shape" data-plot="plot-5157" d="m855.06 1291.42-19.54 118.43h-.01l-60.52-.17 20.37-118.41z"/><path class="plot-shape" data-plot="plot-5158" d="m913.97 1291.56-18.45 118.45-60-.16 19.54-118.43z"/><path class="plot-shape" data-plot="plot-5159" d="m973.84 1291.71-16.96 118.46-61.36-.16 18.45-118.45z"/><path class="plot-shape" data-plot="plot-5160" d="m1032.59 1291.86-15.76 118.47-59.95-.16 16.96-118.46z"/><path class="plot-shape" data-plot="plot-5161" d="m1092.29 1292.01-15.1 118.48-60.36-.16 15.76-118.47z"/><path class="plot-shape" data-plot="plot-5162" d="m1292.73 1292.51-11.25 118.53-71.97-.19 12.87-118.51z"/><path class="plot-shape" data-plot="plot-5163" d="m1364.74 1292.69-10.1 118.55-73.16-.2 11.25-118.53z"/><path class="plot-shape" data-plot="plot-5164" d="m1436.12 1292.87-8.85 118.56-72.63-.19 10.1-118.55z"/><path class="plot-shape" data-plot="plot-5165" d="m1507.7 1293.05-7.59 118.58-72.84-.2 8.85-118.56z"/><path class="plot-shape" data-plot="plot-5166" d="m1578.6 1293.23-6.1 118.59-72.39-.19 7.59-118.58z"/><path class="plot-shape" data-plot="plot-5167" d="m1650.06 1293.41-4.78 118.61-72.78-.2 6.1-118.59z"/><path class="plot-shape" data-plot="plot-5168" d="m1722.41 1293.59-4.17 118.63-72.96-.2 4.78-118.61z"/><path class="plot-shape" data-plot="plot-5169" d="m1792.83 1293.77-2.29 118.64-72.3-.19 4.17-118.63z"/><path class="plot-shape" data-plot="plot-5170" d="m1864.96 1293.95-1.04 118.66-73.38-.2 2.29-118.64z"/><path class="plot-shape" data-plot="plot-5171" d="m1936.25 1294.13-.56 118.67-71.77-.19 1.04-118.66z"/><path class="plot-shape" data-plot="plot-5172" d="m2008.64 1413-72.95-.2.56-118.67 71.1.18z"/><path class="plot-shape" data-plot="plot-5173" d="m2081.18 1413.19-72.54-.19-1.29-118.69 72.03.18z"/><path class="plot-shape" data-plot="plot-5174" d="m2154.07 1413.39-72.89-.2-1.8-118.7 70.87.17z"/><path class="plot-shape" data-plot="plot-5175" d="m2226.71 1413.58-72.64-.19-3.82-118.73 71.95.18z"/><path class="plot-shape" data-plot="plot-5176" d="m2299.22 1413.78-72.51-.2-4.51-118.74 70.78.18z"/><path class="plot-shape" data-plot="plot-5177" d="m2371.1 1413.97-71.88-.19-6.24-118.76 70.92.18z"/><path class="plot-shape" data-plot="plot-5178" d="m2535.79 1414.41-72.11-.19-8.85-118.79 71.39.18z"/><path class="plot-shape" data-plot="plot-5179" d="m2608.33 1414.61-72.54-.2-9.57-118.8 70.65.17z"/><path class="plot-shape" data-plot="plot-5180" d="m2680.63 1414.8-72.3-.19-11.46-118.83 71.55.18h.01z"/><path class="plot-shape" data-plot="plot-5181" d="m2753.26 1415-72.63-.2-12.2-118.84 71.17.18z"/><path class="plot-shape" data-plot="plot-5182" d="m2826.38 1415.19-73.12-.19-13.66-118.86 71.53.18z"/><path class="plot-shape" data-plot="plot-5183" d="m2899.07 1415.39-72.69-.2-15.25-118.87 71.64.18z"/><path class="plot-shape" data-plot="plot-5184" d="m2971.53 1415.58-72.46-.19-16.3-118.89 71.05.18z"/><path class="plot-shape" data-plot="plot-5185" d="m3044.1 1415.78-72.57-.2-17.71-118.9 71.82.18z"/><path class="plot-shape" data-plot="plot-5186" d="m3117.17 1415.97-73.07-.19-18.46-118.92 71.1.18z"/><path class="plot-shape" data-plot="plot-5187" d="m3189.71 1416.17-72.54-.2-20.43-118.93 71.43.18z"/><path class="plot-shape" data-plot="plot-5188" d="m3262.34 1416.36-72.63-.19-21.54-118.95 71.44.18z"/><path class="plot-shape" data-plot="plot-5189" d="m3334.93 1416.56-72.59-.2-22.73-118.96 71.31.18z"/><path class="plot-shape" data-plot="plot-5190" d="m3407.89 1416.75-72.96-.19-24.01-118.98 72.03.18z"/><path class="plot-shape" data-plot="plot-5191" d="m3480.36 1416.95-72.47-.2-24.94-118.99 70.9.17z"/><path class="plot-shape" data-plot="plot-5192" d="m3552.22 1417.14-71.86-.19-26.51-119.02 70.26.18z"/><path class="plot-shape" data-plot="plot-5193" d="m2917.56 1227.89-55.87-.17-13.39-97.65 56.59.82z"/><path class="plot-shape" data-plot="plot-5194" d="m2861.69 1227.72-58.63-.17-13.84-98.33 59.08.85z"/><path class="plot-shape" data-plot="plot-5195" d="m2803.06 1227.55-60.5-.18-10.74-98.28 57.4.13z"/><path class="plot-shape" data-plot="plot-5196" d="m2742.56 1227.37-57.88-.18-10.46-98.22 57.6.12z"/><path class="plot-shape" data-plot="plot-5197" d="m2684.68 1227.19-59.15-.17-9.94-98.18 58.63.13z"/><path class="plot-shape" data-plot="plot-5198" d="m2625.53 1227.02-58.55-.18-9.13-98.13 57.73.13h.01z"/><path class="plot-shape" data-plot="plot-5199" d="m2566.98 1226.84-59.42-.18-7.79-98.08 58.08.13z"/><path class="plot-shape" data-plot="plot-5200" d="m2507.56 1226.66-58.31-.17-7.01-98.04 57.53.13z"/><path class="plot-shape" data-plot="plot-5201" d="m2359.8 1226.22-70.03-.21-4.75-97.91 68.6.15z"/><path class="plot-shape" data-plot="plot-5202" d="m2289.77 1226.01-58.26-.17-4.06-97.87 57.57.13z"/><path class="plot-shape" data-plot="plot-5203" d="m2231.51 1225.84-59.76-.18-3.25-97.82 58.95.13z"/><path class="plot-shape" data-plot="plot-5204" d="m2171.75 1225.66-58.53-.18-2.45-97.76 57.73.12z"/><path class="plot-shape" data-plot="plot-5205" d="m2113.22 1225.48-59.59-.18-1.26-97.71 58.4.13z"/><path class="plot-shape" data-plot="plot-5206" d="m2053.63 1225.3-57.78-.17-1.16-97.67 57.68.13z"/><path class="plot-shape" data-plot="plot-5207" d="m1995.85 1225.13-58.11-.17-.7-97.63 57.65.13z"/><path class="plot-shape" data-plot="plot-5208" d="m1937.74 1224.96-59.41-.18.29-97.58 58.42.13z"/><path class="plot-shape" data-plot="plot-5209" d="m1878.62 1127.2-.29 97.58-58.92-.18 1.56-97.53z"/><path class="plot-shape" data-plot="plot-5210" d="m1820.97 1127.07-1.56 97.53-58.38-.17 1.54-97.49z"/><path class="plot-shape" data-plot="plot-5211" d="m1762.57 1126.94-1.54 97.49-58.91-.18 2.68-97.43z"/><path class="plot-shape" data-plot="plot-5212" d="m1704.8 1126.82-2.68 97.43-59.53-.18 3.79-97.38z"/><path class="plot-shape" data-plot="plot-5213" d="m1646.38 1126.69-3.79 97.38-59.11-.17 5.28-97.34z"/><path class="plot-shape" data-plot="plot-5214" d="m1588.76 1126.56-5.28 97.34-57.83-.18 5.08-97.29z"/><path class="plot-shape" data-plot="plot-5215" d="m1530.73 1126.43-5.08 97.29-59.74-.18 6.7-97.24z"/><path class="plot-shape" data-plot="plot-5216" d="m1472.61 1126.3-6.7 97.24-59.14-.17 7.83-97.2z"/><path class="plot-shape" data-plot="plot-5217" d="m1414.6 1126.17-7.83 97.2-58.14-.18 7.89-97.15z"/><path class="plot-shape" data-plot="plot-5218" d="m1356.52 1126.04-7.89 97.15-59.07-.17 9.47-97.1z"/><path class="plot-shape" data-plot="plot-5219" d="m1299.03 1125.92-9.47 97.1-58.24-.18 10.18-97.05z"/><path class="plot-shape" data-plot="plot-5220" d="m1109.35 1125.5-12.05 96.94-58.78-.18 13.83-96.89z"/><path class="plot-shape" data-plot="plot-5221" d="m1052.35 1125.37-13.83 96.89-57.63-.17 13.26-96.85z"/><path class="plot-shape" data-plot="plot-5222" d="m994.15 1125.24-13.26 96.85-60.03-.18 14.82-96.8z"/><path class="plot-shape" data-plot="plot-5223" d="m935.68 1125.11-14.82 96.8-57.66-.17 14.93-96.76z"/><path class="plot-shape" data-plot="plot-5224" d="m878.13 1124.98-14.93 96.76-59.72-.18 16.39-96.71z"/><path class="plot-shape" data-plot="plot-5225" d="m819.87 1124.85-16.39 96.71-58.7-.17 17.24-96.66z"/><path class="plot-shape" data-plot="plot-5226" d="m762.02 1124.73-17.24 96.66-58.75-.18 18.04-96.61z"/><path class="plot-shape" data-plot="plot-5227" d="m704.07 1124.6-18.04 96.61-59.34-.18 19.08-96.56z"/><path class="plot-shape" data-plot="plot-5228" d="m645.77 1124.47-19.08 96.56-58.86-.17 20.16-96.52z"/><path class="plot-shape" data-plot="plot-5229" d="m587.99 1124.34-20.16 96.52-58.91-.18 20.83-96.47z"/><path class="plot-shape" data-plot="plot-5230" d="m529.75 1124.21-20.83 96.47-58.66-.18 21.63-96.42z"/><path class="plot-shape" data-plot="plot-5231" d="m471.89 1124.08-21.63 96.42-58.04-.17 22.4-96.37z"/><path class="plot-shape" data-plot="plot-5232" d="m492.84 1030.68-20.95 93.4-57.27-.12 21.71-93.4z"/><path class="plot-shape" data-plot="plot-5233" d="m549.91 1030.8-20.16 93.41-57.86-.13 20.95-93.4z"/><path class="plot-shape" data-plot="plot-5234" d="m607.5 1030.92-19.51 93.42-58.24-.13 20.16-93.41z"/><path class="plot-shape" data-plot="plot-5235" d="m664.23 1031.04-18.46 93.43-57.78-.13 19.51-93.42z"/><path class="plot-shape" data-plot="plot-5236" d="m721.52 1031.16-17.45 93.44-58.3-.13 18.46-93.43z"/><path class="plot-shape" data-plot="plot-5237" d="m778.69 1031.28-16.67 93.45-57.95-.13 17.45-93.44z"/><path class="plot-shape" data-plot="plot-5238" d="m835.72 1031.4-15.85 93.45-57.85-.12 16.67-93.45z"/><path class="plot-shape" data-plot="plot-5239" d="m892.56 1031.51-14.43 93.47-58.26-.13 15.85-93.45z"/><path class="plot-shape" data-plot="plot-5240" d="m950 1031.63-14.32 93.48-57.55-.13 14.43-93.47z"/><path class="plot-shape" data-plot="plot-5241" d="m1006.95 1031.75-12.8 93.49-58.47-.13 14.32-93.48z"/><path class="plot-shape" data-plot="plot-5242" d="m1065.7 1031.88-13.35 93.49-58.2-.13 12.8-93.49z"/><path class="plot-shape" data-plot="plot-5243" d="m1120.98 1031.99-11.63 93.51-57-.13 13.35-93.49z"/><path class="plot-shape" data-plot="plot-5244" d="m1308.15 1032.38-9.12 93.54-57.53-.13 9.8-93.52z"/><path class="plot-shape" data-plot="plot-5245" d="m1364.12 1032.5-7.6 93.54-57.49-.12 9.12-93.54z"/><path class="plot-shape" data-plot="plot-5246" d="m1422.14 1032.62-7.54 93.55-58.08-.13 7.6-93.54z"/><path class="plot-shape" data-plot="plot-5247" d="m1479.05 1032.74-6.44 93.56-58.01-.13 7.54-93.55z"/><path class="plot-shape" data-plot="plot-5248" d="m1535.61 1032.86-4.88 93.57-58.12-.13 6.44-93.56z"/><path class="plot-shape" data-plot="plot-5249" d="m1593.85 1032.98-5.09 93.58-58.03-.13 4.88-93.57z"/><path class="plot-shape" data-plot="plot-5250" d="m1650.02 1033.1-3.64 93.59-57.62-.13 5.09-93.58z"/><path class="plot-shape" data-plot="plot-5251" d="m1707.38 1033.22-2.58 93.6-58.42-.13 3.64-93.59z"/><path class="plot-shape" data-plot="plot-5252" d="m1764.06 1033.34-1.49 93.6-57.77-.12 2.58-93.6z"/><path class="plot-shape" data-plot="plot-5253" d="m1822.48 1033.46-1.51 93.61-58.4-.13 1.49-93.6z"/><path class="plot-shape" data-plot="plot-5254" d="m1878.91 1033.58-.29 93.62-57.65-.13 1.51-93.61z"/><path class="plot-shape" data-plot="plot-5255" d="m1937.04 1127.33-58.42-.13.29-93.62 57.47.12z"/><path class="plot-shape" data-plot="plot-5256" d="m1994.69 1127.46-57.65-.13-.66-93.63 57.19.12z"/><path class="plot-shape" data-plot="plot-5257" d="m2052.37 1127.59-57.68-.13-1.12-93.64 57.6.12z"/><path class="plot-shape" data-plot="plot-5258" d="m2110.77 1127.72-58.4-.13-1.2-93.65 57.25.12z"/><path class="plot-shape" data-plot="plot-5259" d="m2168.5 1127.84-57.73-.12-2.35-93.66 56.98.12z"/><path class="plot-shape" data-plot="plot-5260" d="m2227.45 1127.97-58.95-.13-3.1-93.66 58.15.12z"/><path class="plot-shape" data-plot="plot-5261" d="m2285.02 1128.1-57.57-.13-3.9-93.67 56.92.12z"/><path class="plot-shape" data-plot="plot-5262" d="m2353.62 1128.25-68.6-.15-4.55-93.68 67.24.14z"/><path class="plot-shape" data-plot="plot-5263" d="m2499.77 1128.58-57.53-.13-6.71-93.71 56.79.12z"/><path class="plot-shape" data-plot="plot-5264" d="m2557.85 1128.71-58.08-.13-7.45-93.72 56.82.12z"/><path class="plot-shape" data-plot="plot-5265" d="m2615.58 1128.84-57.73-.13-8.71-93.73 56.95.12z"/><path class="plot-shape" data-plot="plot-5266" d="m2674.22 1128.97-58.63-.13h-.01l-9.49-93.74 57.13.12 4.67 34.34z"/><path class="plot-shape" data-plot="plot-5267" d="m2731.82 1129.09-57.6-.12-6.33-59.41h57.43z"/><path class="plot-shape" data-plot="plot-5268" d="m2789.22 1129.22-57.4-.13-6.5-59.53h58.24z"/><path class="plot-shape" data-plot="plot-5269" d="m2105.83 969.94-55.59-.16-1.75-89.39h55.12z"/><path class="plot-shape" data-plot="plot-5270" d="m2050.24 969.78-56.3-.17-.48-89.22h55.03z"/><path class="plot-shape" data-plot="plot-5271" d="m1993.94 969.61-56.81-.17-.15-89.05h56.48z"/><path class="plot-shape" data-plot="plot-5272" d="m1937.13 969.44-56.93-.17 1.19-89.02 36.22.14h19.37z"/><path class="plot-shape" data-plot="plot-5273" d="m1881.39 880.25-1.19 89.02-56.42-.17 1.87-89.07 45.52.18z"/><path class="plot-shape" data-plot="plot-5274" d="m1825.65 880.03-1.87 89.07-56.4-.16 2.69-89.12z"/><path class="plot-shape" data-plot="plot-5275" d="m1770.07 879.82-2.69 89.12-56.66-.17 3.09-89.17z"/><path class="plot-shape" data-plot="plot-5276" d="m1713.81 879.6-3.09 89.17-55-.17 2.79-89.22z"/><path class="plot-shape" data-plot="plot-5277" d="m1658.51 879.38-2.79 89.22-58.36-.17 4.59-89.27z"/><path class="plot-shape" data-plot="plot-5278" d="m1601.95 879.16-4.59 89.27-56.2-.17 5.21-89.31z"/><path class="plot-shape" data-plot="plot-5279" d="m1546.37 878.95-5.21 89.31-57.84-.17 7.13-89.36z"/><path class="plot-shape" data-plot="plot-5280" d="m1490.45 878.73-7.13 89.36-56.95-.17 7.96-89.41z"/><path class="plot-shape" data-plot="plot-5281" d="m1434.33 878.51-7.96 89.41-54.79-.16 7.47-89.47z"/><path class="plot-shape" data-plot="plot-5282" d="m1379.05 878.29-7.47 89.47-56.71-.17 8.28-89.51z"/><path class="plot-shape" data-plot="plot-5283" d="m1323.15 878.08-8.28 89.51-56.7-.16 9.85-89.57z"/><path class="plot-shape" data-plot="plot-5284" d="m1145.59 877.39-11.45 89.67-56.15-.17 12.52-89.72z"/><path class="plot-shape" data-plot="plot-5285" d="m1090.51 877.17-12.52 89.72-55.75-.16 12.35-89.78z"/><path class="plot-shape" data-plot="plot-5286" d="m1034.59 876.95-12.35 89.78-56.27-.17 13.31-89.82z"/><path class="plot-shape" data-plot="plot-5287" d="m979.28 876.74-13.31 89.82-57.92-.17 14.8-89.87z"/><path class="plot-shape" data-plot="plot-5288" d="m922.85 876.52-14.8 89.87-56.05-.17 15.3-89.92z"/><path class="plot-shape" data-plot="plot-5289" d="M867.3 876.3 852 966.22l-56.79-.17 16.08-89.96z"/><path class="plot-shape" data-plot="plot-5290" d="m811.29 876.09-16.08 89.96-55.77-.16 15.93-90.02z"/><path class="plot-shape" data-plot="plot-5291" d="m755.37 875.87-15.93 90.02h-.01l-56.15-.17 17.14-89.64 24.44-.33z"/><path class="plot-shape" data-plot="plot-5292" d="m825.49 796.57-14.2 79.52-55.92-.22-30.51-.12 15.67-79.28z"/><path class="plot-shape" data-plot="plot-5293" d="M880.86 796.63 867.3 876.3l-56.01-.21 14.2-79.52z"/><path class="plot-shape" data-plot="plot-5294" d="m936 796.69-13.15 79.83-55.55-.22 13.56-79.67z"/><path class="plot-shape" data-plot="plot-5295" d="m991.13 796.76-11.85 79.98-56.43-.22L936 796.69z"/><path class="plot-shape" data-plot="plot-5296" d="m1045.62 796.82-11.03 80.13-55.31-.21 11.85-79.98z"/><path class="plot-shape" data-plot="plot-5297" d="m1101.7 796.89-11.19 80.28-55.92-.22 11.03-80.13z"/><path class="plot-shape" data-plot="plot-5298" d="m1155.87 796.95-10.28 80.44-55.08-.22 11.19-80.28z"/><path class="plot-shape" data-plot="plot-5299" d="m1330.64 797.15-7.49 80.93-55.13-.22 8.89-80.77z"/><path class="plot-shape" data-plot="plot-5300" d="m1385.83 797.21-6.78 81.08-55.9-.21 7.49-80.93z"/><path class="plot-shape" data-plot="plot-5301" d="m1441.56 797.28-7.23 81.23-55.28-.22 6.78-81.08z"/><path class="plot-shape" data-plot="plot-5302" d="m1496.94 797.34-6.49 81.39-56.12-.22 7.23-81.23z"/><path class="plot-shape" data-plot="plot-5303" d="m1551.13 797.4-4.76 81.55-55.92-.22 6.49-81.39z"/><path class="plot-shape" data-plot="plot-5304" d="m1606.14 797.47-4.19 81.69-55.58-.21 4.76-81.55z"/><path class="plot-shape" data-plot="plot-5305" d="m1661.07 797.53-2.56 81.85-56.56-.22 4.19-81.69z"/><path class="plot-shape" data-plot="plot-5306" d="m1716.65 797.59-2.84 82.01-55.3-.22 2.56-81.85z"/><path class="plot-shape" data-plot="plot-5307" d="m1772.55 797.66-2.48 82.16-56.26-.22 2.84-82.01z"/><path class="plot-shape" data-plot="plot-5308" d="m1827.39 797.72-.45 21.11-1.29 61.2-55.58-.21 2.48-82.16z"/><path class="plot-shape" data-plot="plot-5309" d="m1872.94 818.83-1.77 61.38-45.52-.18 1.29-61.2z"/><path class="plot-shape" data-plot="plot-5310" d="m1918.28 818.83-.67 61.56-36.22-.14-10.22-.04 1.77-61.38z"/><path class="plot-shape" data-plot="plot-5311" d="m1173.31 659.56-11.45 83.8h-53.61l10.31-84.01z"/><path class="plot-shape" data-plot="plot-5312" d="m1118.56 659.35-10.31 84.01h-54.59l12.48-84.2z"/><path class="plot-shape" data-plot="plot-5313" d="m1066.14 659.16-12.48 84.2h-55.67l13.15-84.41z"/><path class="plot-shape" data-plot="plot-5314" d="m1011.14 658.95-13.15 84.41h-54.24l13.89-84.6z"/><path class="plot-shape" data-plot="plot-5315" d="m957.64 658.76-13.89 84.6h-54.5l14.71-84.8z"/><path class="plot-shape" data-plot="plot-5316" d="m903.96 658.56-14.71 84.8h-54.88l15.11-85.01z"/><path class="plot-shape" data-plot="plot-5317" d="m849.48 658.35-15.11 85.01h-54.01l16.17-84.78 25-.33z"/><path class="plot-shape" data-plot="plot-5318" d="m917.78 578.92-13.82 79.64-54.48-.21-27.95-.1 14-79.33z"/><path class="plot-shape" data-plot="plot-5319" d="m970.75 578.92-13.11 79.84-53.68-.2 13.82-79.64z"/><path class="plot-shape" data-plot="plot-5320" d="m1023.61 578.92-12.47 80.03-53.5-.19 13.11-79.84z"/><path class="plot-shape" data-plot="plot-5321" d="m1077.53 578.92-4 30.33-7.39 49.91-55-.21 12.47-80.03z"/><path class="plot-shape" data-plot="plot-5322" d="m1180.19 609.25-6.88 50.31-54.75-.21-52.42-.19 7.39-49.91z"/><path class="plot-shape" data-plot="plot-5407" d="m602.89 909.88-25.7 56.54-134-19 27.53-56.8z"/><path class="plot-shape" data-plot="plot-5408" d="m621.63 868.65-18.74 41.23-132.17-19.26 19.48-40.19z"/><path class="plot-shape" data-plot="plot-5409" d="m640.06 828.11-18.43 40.54-131.43-18.22 19.33-39.9z"/><path class="plot-shape" data-plot="plot-5410" d="m658.42 787.72-18.36 40.39-130.53-17.58 19.12-39.44z"/><path class="plot-shape" data-plot="plot-5411" d="m675.95 749.17-17.53 38.55-129.77-16.63 18.81-38.81z"/><path class="plot-shape" data-plot="plot-5412" d="M692.79 712.1v.01l-16.84 37.06-128.49-16.89 18.34-37.85z"/><path class="plot-shape" data-plot="plot-5413" d="m709.99 674.28-17.2 37.82-126.99-17.67 18.66-38.5z"/><path class="plot-shape" data-plot="plot-5414" d="m727.27 636.27-17.28 38.01-125.53-18.35 17.84-36.82z"/><path class="plot-shape" data-plot="plot-5415" d="m744.05 599.36-16.78 36.91-124.97-17.16 17.68-36.48z"/><path class="plot-shape" data-plot="plot-5416" d="m760.29 563.63-16.24 35.73-124.07-16.73 15.21-31.38 3.34-4.15z"/><path class="plot-shape" data-plot="plot-5417" d="m776.7 527.53-16.41 36.1-121.76-16.53 27.43-34.14z"/><path class="plot-shape" data-plot="plot-5418" d="m793.19 491.25-16.49 36.28-110.74-14.57 27.9-34.71z"/><path class="plot-shape" data-plot="plot-5419" d="m922.56 441.15-16.37 31.43-111.33-19.33c4.23-5.35 10.94-15.55 19.84-30.15z"/><path class="plot-shape" data-plot="plot-5420" d="m940.44 406.81-17.88 34.34L814.7 423.1c5.65-9.27 12.18-20.31 19.51-33.02z"/><path class="plot-shape" data-plot="plot-5421" d="m958.13 372.83-17.69 33.98-106.23-16.73a3050 3050 0 0 0 18.78-33.07z"/><path class="plot-shape" data-plot="plot-5422" d="m975.28 339.89-17.15 32.94-105.14-15.82c5.96-10.63 12.28-22.03 18.92-34.15z"/><path class="plot-shape" data-plot="plot-5423" d="m992.94 305.97-17.66 33.92-103.37-17.03c5.79-10.53 11.82-21.61 18.09-33.21z"/><path class="plot-shape" data-plot="plot-5424" d="m1009.99 273.23-17.05 32.74L890 289.65q8.505-15.75 17.58-32.76z"/><path class="plot-shape" data-plot="plot-5425" d="m1027.08 240.41-17.09 32.82-102.41-16.34c5.42-10.19 10.99-20.7 16.7-31.53z"/><path class="plot-shape" data-plot="plot-5426" d="m1043.72 208.46-16.64 31.95-102.8-15.05c5.48-10.39 11.08-21.07 16.8-32.03z"/><path class="plot-shape" data-plot="plot-5427" d="m1059.76 177.66-16.04 30.8-102.64-15.13c5.36-10.29 10.83-20.83 16.4-31.61z"/><path class="plot-shape" data-plot="plot-5428" d="m1076.33 145.84-16.57 31.82-102.28-15.94c5.42-10.48 10.93-21.2 16.52-32.13z"/><path class="plot-shape" data-plot="plot-5429" d="m1092.13 115.5-15.8 30.34L974 129.59a8334 8334 0 0 0 15.68-30.76z"/><path class="plot-shape" data-plot="plot-5430" d="m1108.41 84.23-16.28 31.27-102.45-16.67c5.06-9.96 10.18-20.08 15.35-30.35z"/><path class="plot-shape" data-plot="plot-5431" d="m1124.19 53.92-15.78 30.31-103.38-15.75c5.77-11.45 11.6-23.08 17.5-34.9z"/><path class="plot-shape" data-plot="plot-5384" d="m1409.86 174.25-17.8 31.56-107.27-21.8 18.4-31.54z"/><path class="plot-shape" data-plot="plot-5385" d="m1392.06 205.81-17.86 31.65-107.71-22.07 18.3-31.38z"/><path class="plot-shape" data-plot="plot-5386" d="m1374.2 237.46-17.61 31.22-108.13-22.38 18.03-30.91z"/><path class="plot-shape" data-plot="plot-5387" d="m1356.59 268.68-18.71 33.16-108.35-23.08 18.93-32.46z"/><path class="plot-shape" data-plot="plot-5388" d="m1337.88 301.84-18.1 32.07-108.9-23.18 18.65-31.97z"/><path class="plot-shape" data-plot="plot-5389" d="m1319.78 333.91-18.25 32.36-109.62-23.02 18.97-32.52z"/><path class="plot-shape" data-plot="plot-5390" d="m1301.53 366.27-18.81 33.33-110.12-23.25 19.31-33.1z"/><path class="plot-shape" data-plot="plot-5391" d="m1282.72 399.6-19.09 33.84-110.35-23.95 19.32-33.14z"/><path class="plot-shape" data-plot="plot-5392" d="m1263.63 433.44-19.23 34.08-110.9-24.13 19.78-33.9z"/><path class="plot-shape" data-plot="plot-5393" d="m1244.4 467.52-19.16 33.96-111.44-24.32 19.7-33.77z"/><path class="plot-shape" data-plot="plot-5394" d="m1225.24 501.48-19.05 33.77-112.07-24.35 19.68-33.74z"/><path class="plot-shape" data-plot="plot-5395" d="m1113.8 477.16-19.68 33.74-111.93-24.32 20.26-33.72z"/><path class="plot-shape" data-plot="plot-5396" d="m1133.5 443.39-19.7 33.77-111.35-24.3 20.18-33.6z"/><path class="plot-shape" data-plot="plot-5397" d="m1153.28 409.49-19.78 33.9-110.87-24.13 20.26-33.73z"/><path class="plot-shape" data-plot="plot-5398" d="m1172.6 376.35-19.32 33.14-110.39-23.96 19.49-32.45z"/><path class="plot-shape" data-plot="plot-5399" d="m1191.91 343.25-19.31 33.1-110.22-23.27 19.75-32.87z"/><path class="plot-shape" data-plot="plot-5400" d="m1210.88 310.73-18.97 32.52-109.78-23.04 19.64-32.7z"/><path class="plot-shape" data-plot="plot-5401" d="m1229.53 278.76-18.65 31.97-109.11-23.22 19.15-31.88z"/><path class="plot-shape" data-plot="plot-5402" d="m1248.46 246.3-18.93 32.46-108.61-23.13 19.08-31.77z"/><path class="plot-shape" data-plot="plot-5404" d="m1266.49 215.39-18.03 30.91L1140 223.86l18.38-30.61z"/><path class="plot-shape" data-plot="plot-5405" d="m1284.79 184.01-18.3 31.38-108.11-22.14 18.71-31.13z"/><path class="plot-shape" data-plot="plot-5406" d="m1303.19 152.47-18.4 31.54-107.7-21.89 18.94-31.54z"/><path class="plot-shape" data-plot="plot-5368" d="m1661.86 343.25-16.43 33.1-103.8-21.86 16.81-32.22z"/><path class="plot-shape" data-plot="plot-5369" d="m1645.43 376.35-16.85 33.93-104.42-22.3 17.47-33.49z"/><path class="plot-shape" data-plot="plot-5370" d="m1628.58 410.28-16.66 33.57-105.38-22.12 17.62-33.75z"/><path class="plot-shape" data-plot="plot-5371" d="m1611.92 443.85-16.91 34.08-105.9-22.79 17.43-33.41z"/><path class="plot-shape" data-plot="plot-5372" d="m1595.01 477.93-17.28 34.81-106.67-23 18.05-34.6z"/><path class="plot-shape" data-plot="plot-5373" d="m1577.73 512.74-17.33 34.92-107.45-23.22 18.11-34.7z"/><path class="plot-shape" data-plot="plot-5374" d="m1560.4 547.66-17.77 35.78-107.98-23.93 18.3-35.07z"/><path class="plot-shape" data-plot="plot-5375" d="m1542.63 583.44-17.44 35.14-108.65-24.35 18.11-34.72z"/><path class="plot-shape" data-plot="plot-5376" d="m1434.65 559.51-18.11 34.72-107.01-23.98 18.56-34.36z"/><path class="plot-shape" data-plot="plot-5377" d="m1452.95 524.44-18.3 35.07-106.56-23.62 18.6-34.41z"/><path class="plot-shape" data-plot="plot-5378" d="m1471.06 489.74-18.11 34.7-106.26-22.96 18.65-34.54z"/><path class="plot-shape" data-plot="plot-5379" d="m1489.11 455.14-18.05 34.6-105.72-22.8 18.6-34.43z"/><path class="plot-shape" data-plot="plot-5380" d="m1506.54 421.73-17.43 33.41-105.17-22.63 17.72-32.8z"/><path class="plot-shape" data-plot="plot-5381" d="m1524.16 387.98-17.62 33.75-104.88-22.02 18.36-33.98z"/><path class="plot-shape" data-plot="plot-5382" d="m1541.63 354.49-17.47 33.49-104.14-22.25 17.88-33.08z"/><path class="plot-shape" data-plot="plot-5383" d="m1558.44 322.27-16.81 32.22-103.73-21.84 16.96-31.4z"/><path class="plot-shape" data-plot="plot-5323" d="m3538.72 1172.69-42.22 34.23-39.56-26.67 42.47-35.53z"/><path class="plot-shape" data-plot="plot-5324" d="m3499.41 1144.72-42.47 35.53-29.77 22.22-47.56-32 73.31-58.84z"/><path class="plot-shape" data-plot="plot-5325" d="m3452.92 1111.63-73.31 58.84-18.22 14.22-45.97-33.37 92.22-71.91z"/><path class="plot-shape" data-plot="plot-5326" d="m3407.64 1079.41-92.22 71.91-44.87-32.57 91.39-71.86z"/><path class="plot-shape" data-plot="plot-5327" d="m3361.94 1046.89-91.39 71.86-45.43-32.98 91.04-71.46z"/><path class="plot-shape" data-plot="plot-5328" d="m3316.16 1014.31-91.04 71.46-44.5-32.3 91.4-70.57z"/><path class="plot-shape" data-plot="plot-5329" d="m3272.02 982.9-91.4 70.57-44.6-32.38 91.63-69.76z"/><path class="plot-shape" data-plot="plot-5330" d="m3227.65 951.33-91.63 69.76-43.71-31.72 91.19-69.47z"/><path class="plot-shape" data-plot="plot-5331" d="m3183.5 919.9-91.19 69.47-43.32-31.45 91.35-68.73z"/><path class="plot-shape" data-plot="plot-5332" d="m3140.34 889.19-91.35 68.73-42.88-31.12 91.4-68.09z"/><path class="plot-shape" data-plot="plot-5333" d="m3097.51 858.71-91.4 68.09-42.83-31.09 91.55-67.37z"/><path class="plot-shape" data-plot="plot-5334" d="m3054.83 828.34-91.55 67.37-43.14-31.32 92.74-65.9z"/><path class="plot-shape" data-plot="plot-5335" d="m3012.88 798.49-92.74 65.9-40.7-29.54 91.94-65.89z"/><path class="plot-shape" data-plot="plot-5336" d="m2971.38 768.96-91.94 65.89h-.01l-41.31-30 91.77-65.42z"/><path class="plot-shape" data-plot="plot-5337" d="m2929.89 739.43-91.77 65.42-41.18-29.89 91.63-64.93z"/><path class="plot-shape" data-plot="plot-5338" d="m2888.57 710.03-91.63 64.93-39.29-28.52 91.88-64.2z"/><path class="plot-shape" data-plot="plot-5339" d="m2849.53 682.24-91.88 64.2-14.04-10.19-32-2.07.31-94.36 85.47 5.32z"/><path class="plot-shape" data-plot="plot-5340" d="m2711.92 639.82-.31 94.36-54.75-3.55.19-94.23z"/><path class="plot-shape" data-plot="plot-5341" d="m2657.05 636.4-.19 94.23-55.06-3.57 1.99-93.97z"/><path class="plot-shape" data-plot="plot-5342" d="m2603.79 633.09-1.99 93.97-53.93-3.49 1.72-93.86z"/><path class="plot-shape" data-plot="plot-5343" d="m2549.59 629.71-1.72 93.86-54.44-3.53 2.59-93.66z"/><path class="plot-shape" data-plot="plot-5344" d="m2496.02 626.38-2.59 93.66-54.86-3.55 3.16-93.49z"/><path class="plot-shape" data-plot="plot-5345" d="m2441.73 623-3.16 93.49-54.71-3.55 4.87-93.24z"/><path class="plot-shape" data-plot="plot-5346" d="m2388.73 619.7-4.87 93.24-54.84-3.55 6.28-93.02z"/><path class="plot-shape" data-plot="plot-5347" d="m2335.3 616.37-6.28 93.02-53.98-3.5 6.04-92.89z"/><path class="plot-shape" data-plot="plot-5348" d="m2281.08 613-6.04 92.89-53.09-3.43 5.97-92.77z"/><path class="plot-shape" data-plot="plot-5349" d="m2227.92 609.69-5.97 92.77-54.53-3.54 6.93-92.57z"/><path class="plot-shape" data-plot="plot-5350" d="m2174.35 606.35-6.93 92.57-55.49-3.59 8.86-92.31z"/><path class="plot-shape" data-plot="plot-5351" d="m2120.79 603.02-8.86 92.31-54.11-3.51 9.79-92.12z"/><path class="plot-shape" data-plot="plot-5352" d="m2067.61 599.7-9.79 92.12-53.32-3.45 9.65-91.99z"/><path class="plot-shape" data-plot="plot-5353" d="m2014.15 596.38-9.65 91.99-53.94-3.5 10.85-91.78z"/><path class="plot-shape" data-plot="plot-5354" d="m1961.41 593.09-10.85 91.78-55.29-3.58 12.62-91.53z"/><path class="plot-shape" data-plot="plot-5355" d="m1907.89 589.76-12.62 91.53-52.88-3.42 12.01-91.44z"/><path class="plot-shape" data-plot="plot-5356" d="m1854.4 586.43-12.01 91.44-53.03-3.44 12.23-91.29z"/><path class="plot-shape" data-plot="plot-5357" d="m1801.59 583.14-12.23 91.29-53.38-3.46 7.03-53.02 5.05-38.14z"/><path class="plot-shape" data-plot="plot-5358" d="m1743.01 617.95-7.03 53.02-.81-.05-135.11-29.34 24.51-50.6z"/><path class="plot-shape" data-plot="plot-5359" d="m1748.06 579.81-5.05 38.14-118.44-26.97 16.99-35.07z"/><path class="plot-shape" data-plot="plot-5360" d="m1762.9 543.61-13.18 27.47-1.66 8.73-106.5-23.9 16.86-34.8z"/><path class="plot-shape" data-plot="plot-5361" d="m1779.43 509.16-16.53 34.45-104.48-22.5 16.67-34.4z"/><path class="plot-shape" data-plot="plot-5363" d="m1796.03 474.56-16.6 34.6-104.34-22.45 16.67-34.4z"/><path class="plot-shape" data-plot="plot-5364" d="m1812.11 441.05-16.08 33.51-104.27-22.25 16.63-34.34z"/><path class="plot-shape" data-plot="plot-5365" d="m1828.72 406.42-16.61 34.63-103.72-23.08 15.94-32.9z"/><path class="plot-shape" data-plot="plot-5366" d="m1844.76 373-16.04 33.42-104.39-21.35 16.31-33.66z"/><path class="plot-shape" data-plot="plot-5367" d="M1860.5 340.19 1844.76 373l-104.12-21.59 15.42-31.83z"/>
+
+  </svg>
+  </div><!-- /map-wrapper -->
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <div class="side-panel" id="sidePanel">
+    <div class="panel-header">
+      <div class="panel-eyebrow">Property Details</div>
+      <div class="panel-title" id="panelTitle">—</div>
+      <button class="panel-close" id="panelClose" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+      </button>
+    </div>
+    <div class="panel-body">
+      <div class="info-row">
+        <span class="info-label">
+          <svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" rx="2"/></svg>
+          Plot Size
+        </span>
+        <span class="info-value" id="infoPlotSize">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          <svg viewBox="0 0 20 20"><path d="M3 17V7l7-4 7 4v10H3z"/><path d="M8 17v-5h4v5"/></svg>
+          Park Side
+        </span>
+        <span class="info-value" id="infoParkSide">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          <svg viewBox="0 0 20 20"><path d="M10 3v14M3 10h14"/><circle cx="10" cy="10" r="7"/></svg>
+          Front
+        </span>
+        <span class="info-value" id="infoFront">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          <svg viewBox="0 0 20 20"><line x1="4" y1="10" x2="16" y2="10"/><polyline points="4 7 4 13"/><polyline points="16 7 16 13"/></svg>
+          Length
+        </span>
+        <span class="info-value" id="infoLength">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><line x1="10" y1="3" x2="10" y2="6"/><line x1="10" y1="14" x2="10" y2="17"/><line x1="3" y1="10" x2="6" y2="10"/><line x1="14" y1="10" x2="17" y2="10"/><polygon points="10,5 11,8 9,8" fill="currentColor" stroke="none"/></svg>
+          Direction
+        </span>
+        <span class="info-value" id="infoDirection">—</span>
+      </div>
+      <div class="panel-divider"></div>
+      <div class="panel-note">
+        Hover over plot shapes on the map to view details. All measurements are approximate and subject to final survey.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PLOT_DATA = {
+      'plot-5101': { name: 'Plot 5101', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West'  },
+      'plot-5102': { name: 'Plot 5102', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West'  },
+      'plot-5103': { name: 'Plot 5103', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5104': { name: 'Plot 5104', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West'},
+      'plot-5105': { name: 'Plot 5105', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5106': { name: 'Plot 5106',plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5107': { name: 'Plot 5107', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5108': { name: 'Plot 5108', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5109': { name: 'Plot 5109', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5110': { name: 'Plot 5110', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West'},
+      'plot-5111': { name: 'Plot 5111', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5112': { name: 'Plot 5112', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5113': { name: 'Plot 5113', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5114': { name: 'Plot 5114', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5115': { name: 'Plot 5115',plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+
+      'plot-5116': { name: 'Plot 5116', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5117': { name: 'Plot 5117', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5118': { name: 'Plot 5118', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5119': { name: 'Plot 5119', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5120': { name: 'Plot 5120', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5121': { name: 'Plot 5121', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5122': { name: 'Plot 5122', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5123': { name: 'Plot 5123', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5124': { name: 'Plot 5124', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5125': { name: 'Plot 5125', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5126': { name: 'Plot 5126', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5127': { name: 'Plot 5127', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5128': { name: 'Plot 5128', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5129': { name: 'Plot 5129', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5130': { name: 'Plot 5130', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+         'plot-5131': { name: 'Plot 5131', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'West' },
+         
+      'plot-5132': { name: 'Plot 5132', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5133': { name: 'Plot 5133', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West'},
+      'plot-5134': { name: 'Plot 5134', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5135': { name: 'Plot 5135', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West'},
+      'plot-5136': { name: 'Plot 5136', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5137': { name: 'Plot 5137', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5138': { name: 'Plot 5138', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5139': { name: 'Plot 5139',plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West'},
+      'plot-5140': { name: 'Plot 5140', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5141': { name: 'Plot 5141', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5142': { name: 'Plot 5142',plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5143': { name: 'Plot 5143', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5144': { name: 'Plot 5144', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5145': { name: 'Plot 5145', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West' },
+      'plot-5146': { name: 'Plot 5146',plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'West'},
+
+      'plot-5147': { name: 'Plot 5147', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5148': { name: 'Plot 5148', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5149': { name: 'Plot 5149', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5150': { name: 'Plot 5150', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5151': { name: 'Plot 5151', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5152': { name: 'Plot 5152', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5153': { name: 'Plot 5153',plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5154': { name: 'Plot 5154', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5155': { name: 'Plot 5155', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5156': { name: 'Plot 5156', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5157': { name: 'Plot 5157',plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5158': { name: 'Plot 5158', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5159': { name: 'Plot 5159', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5160': { name: 'Plot 5160', plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5161': { name: 'Plot 5161',plotSize: '250 yds', parkSide: 'No', front: '30\'0" ft', length: '75 ft', direction: 'East'  },
+
+      'plot-5162': { name: 'Plot 5162', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5163': { name: 'Plot 5163',plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5164': { name: 'Plot 5164', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5165': { name: 'Plot 5165', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5166': { name: 'Plot 5166', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5167': { name: 'Plot 5167',plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5168': { name: 'Plot 5168', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5169': { name: 'Plot 5169', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5170': { name: 'Plot 5170',plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5171': { name: 'Plot 5171', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5172': { name: 'Plot 5172', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5173': { name: 'Plot 5173', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5174': { name: 'Plot 5174',plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5175': { name: 'Plot 5175', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5176': { name: 'Plot 5176', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5177': { name: 'Plot 5177', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5178': { name: 'Plot 5178', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5179': { name: 'Plot 5179', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5180': { name: 'Plot 5180', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5181': { name: 'Plot 5181', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5182': { name: 'Plot 5182', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5183': { name: 'Plot 5183', plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5184': { name: 'Plot 5184',plotSize: '300 yds', parkSide: 'No', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5185': { name: 'Plot 5185',plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5186': { name: 'Plot 5186', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5187': { name: 'Plot 5187', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5188': { name: 'Plot 5188', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5189': { name: 'Plot 5189',plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5190': { name: 'Plot 5190', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5191': { name: 'Plot 5191',plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'East'  },
+      'plot-5192': { name: 'Plot 5192', plotSize: '300 yds', parkSide: 'Yes', front: '36\'0" ft', length: '75 ft', direction: 'East' },
+
+      'plot-5193': { name: 'Plot 5193', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'  },
+      'plot-5194': { name: 'Plot 5194', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5195': { name: 'Plot 5195',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5196': { name: 'Plot 5196', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5197': { name: 'Plot 5197', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5198': { name: 'Plot 5198', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5199': { name: 'Plot 5199', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5200': { name: 'Plot 5200', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5201': { name: 'Plot 5201',plotSize: '260 yds', parkSide: 'No', front: '36\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5202': { name: 'Plot 5202', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5203': { name: 'Plot 5203',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5204': { name: 'Plot 5204', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5205': { name: 'Plot 5205', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5206': { name: 'Plot 5206', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5207': { name: 'Plot 5207', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5208': { name: 'Plot 5208', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5209': { name: 'Plot 5209', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5210': { name: 'Plot 5210',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5211': { name: 'Plot 5211', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5212': { name: 'Plot 5212', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5213': { name: 'Plot 5213', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5214': { name: 'Plot 5214', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5215': { name: 'Plot 5215', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5216': { name: 'Plot 5216', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5217': { name: 'Plot 5217', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5218': { name: 'Plot 5218',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5219': { name: 'Plot 5219', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5220': { name: 'Plot 5220', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5221': { name: 'Plot 5221', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5222': { name: 'Plot 5222', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5223': { name: 'Plot 5223', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5224': { name: 'Plot 5224', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5225': { name: 'Plot 5225', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5226': { name: 'Plot 5226',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5227': { name: 'Plot 5227', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5228': { name: 'Plot 5228', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5229': { name: 'Plot 5229', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5230': { name: 'Plot 5230', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5231': { name: 'Plot 5231', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5232': { name: 'Plot 5232', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5233': { name: 'Plot 5233', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5234': { name: 'Plot 5234',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East'},
+      'plot-5235': { name: 'Plot 5235',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East'},
+      'plot-5236': { name: 'Plot 5236', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5237': { name: 'Plot 5237', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5238': { name: 'Plot 5238', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5239': { name: 'Plot 5239', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5240': { name: 'Plot 5240', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5241': { name: 'Plot 5241', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5242': { name: 'Plot 5242', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5243': { name: 'Plot 5243', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East'},
+      'plot-5244': { name: 'Plot 5244', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5245': { name: 'Plot 5245',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East'},
+      'plot-5246': { name: 'Plot 5246',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5247': { name: 'Plot 5247', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5248': { name: 'Plot 5248', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5249': { name: 'Plot 5249', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5250': { name: 'Plot 5250', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5251': { name: 'Plot 5251', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5252': { name: 'Plot 5252', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5253': { name: 'Plot 5253', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5254': { name: 'Plot 5254', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5255': { name: 'Plot 5255', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5256': { name: 'Plot 5256', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5257': { name: 'Plot 5257', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5258': { name: 'Plot 5258',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5259': { name: 'Plot 5259', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5260': { name: 'Plot 5260', plotSize: '216.6 yds', parkSide: 'Yes', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5261': { name: 'Plot 5261', plotSize: '216.6 yds', parkSide: 'Yes', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5262': { name: 'Plot 5262', plotSize: '260 yds', parkSide: 'Yes', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5263': { name: 'Plot 5263', plotSize: '216.6 yds', parkSide: 'Yes', front: '30\'0" ft', length: '65 ft', direction: 'East'},
+      'plot-5264': { name: 'Plot 5264', plotSize: '216.6 yds', parkSide: 'Yes', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5265': { name: 'Plot 5265', plotSize: '216.6 yds', parkSide: 'Yes', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5266': { name: 'Plot 5266', plotSize: '216.6 yds', parkSide: 'Yes', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5267': { name: 'Plot 5267',plotSize: '135 yds', parkSide: 'Yes', front: '30\'0" ft', length: '41.6 ft', direction: 'East' },
+      'plot-5268': { name: 'Plot 5268', plotSize: '135 yds', parkSide: 'Yes', front: '30\'0" ft', length: '41.6 ft', direction: 'East'},
+      'plot-5269': { name: 'Plot 5269',  plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5270': { name: 'Plot 5270', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5271': { name: 'Plot 5271', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5272': { name: 'Plot 5272', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5273': { name: 'Plot 5273',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5274': { name: 'Plot 5274', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5275': { name: 'Plot 5275', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5276': { name: 'Plot 5276', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5277': { name: 'Plot 5277',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5278': { name: 'Plot 5278', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5279': { name: 'Plot 5279', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5280': { name: 'Plot 5280', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5281': { name: 'Plot 5281', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5282': { name: 'Plot 5282', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5283': { name: 'Plot 5283',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5284': { name: 'Plot 5284',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5285': { name: 'Plot 5285', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5286': { name: 'Plot 5286', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5287': { name: 'Plot 5287',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5288': { name: 'Plot 5288', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5289': { name: 'Plot 5289', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5290': { name: 'Plot 5290', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5291': { name: 'Plot 5291',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West'},
+      'plot-5292': { name: 'Plot 5292', plotSize: '313.2 yds', parkSide: 'No', front: '47\'0" ft', length: '60 ft', direction: 'East'},
+      'plot-5293': { name: 'Plot 5293', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5294': { name: 'Plot 5294', plotSize:'200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5295': { name: 'Plot 5295', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5296': { name: 'Plot 5296', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5297': { name: 'Plot 5297', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5298': { name: 'Plot 5298', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5299': { name: 'Plot 5299', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5300': { name: 'Plot 5300', plotSize:'200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5301': { name: 'Plot 5301', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5302': { name: 'Plot 5302', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5303': { name: 'Plot 5303', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East'},
+      'plot-5304': { name: 'Plot 5304', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5305': { name: 'Plot 5305', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5306': { name: 'Plot 5306', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5307': { name: 'Plot 5307', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East'},
+      'plot-5308': { name: 'Plot 5308', plotSize: '200 yds', parkSide: 'No', front: '30\'0" ft', length: '60 ft', direction: 'East' },
+      'plot-5309': { name: 'Plot 5309', plotSize:'125 yds', parkSide: 'No', front: '25\'0" ft', length: '45 ft', direction: 'East' },
+      'plot-5310': { name: 'Plot 5310', plotSize: '125 yds', parkSide: 'No', front: '25\'0" ft', length: '45 ft', direction: 'East' },
+
+
+      'plot-5311': { name: 'Plot 5311',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5312': { name: 'Plot 5312', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5313': { name: 'Plot 5313', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5314': { name: 'Plot 5314', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5315': { name: 'Plot 5315', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5316': { name: 'Plot 5316', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5317': { name: 'Plot 5317', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'West' },
+      'plot-5318': { name: 'Plot 5318',plotSize: '325.6 yds', parkSide: 'No', front: '46\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5319': { name: 'Plot 5319', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East'},
+      'plot-5320': { name: 'Plot 5320', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5321': { name: 'Plot 5321', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5322': { name: 'Plot 5322', plotSize: '267.1 yds', parkSide: 'No', front: '360\'0" ft', length: '40 ft', direction: 'East'},
+      'plot-5323': { name: 'Plot 5323', plotSize: '93.2 yds', parkSide: 'Yes', front: '25\'0" ft', length: '65 ft', direction: 'East' },
+      'plot-5324': { name: 'Plot 5324', plotSize: '198.4 yds', parkSide: 'Yes', front: '30\'0" ft', length: '59.6 ft', direction: 'East' },
+      'plot-5325': { name: 'Plot 5325', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5326': { name: 'Plot 5326', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5327': { name: 'Plot 5327', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East'},
+      'plot-5328': { name: 'Plot 5328', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East'},
+      'plot-5329': { name: 'Plot 5329', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5330': { name: 'Plot 5330', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5331': { name: 'Plot 5331', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5332': { name: 'Plot 5332', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5333': { name: 'Plot 5333', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5334': { name: 'Plot 5334', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East'},
+      'plot-5335': { name: 'Plot 5335', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5336': { name: 'Plot 5336', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5337': { name: 'Plot 5337', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5338': { name: 'Plot 5338', plotSize: '250 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5339': { name: 'Plot 5339', plotSize: '475.6 yds', parkSide: 'Yes', front: '27\'0" ft', length: '75 ft', direction: 'East' },
+      'plot-5340': { name: 'Plot 5340',plotSize: '247.4 yds', parkSide: 'Yes', front: '30\'0" ft', length: '74 ft', direction: 'East' },
+      'plot-5341': { name: 'Plot 5341', plotSize: '246.2 yds', parkSide: 'Yes', front: '30\'0" ft', length: '73.9 ft', direction: 'East' },
+      'plot-5342': { name: 'Plot 5342',plotSize: '245.4 yds', parkSide: 'Yes', front: '30\'0" ft', length: '73.6 ft', direction: 'East' },
+      'plot-5343': { name: 'Plot 5343', plotSize: '244.6 yds', parkSide: 'Yes', front: '30\'0" ft', length: '73.3 ft', direction: 'East' },
+      'plot-5344': { name: 'Plot 5344', plotSize: '244.6 yds', parkSide: 'Yes', front: '30\'0" ft', length: '73.3 ft', direction: 'East' },
+      'plot-5345': { name: 'Plot 5345', plotSize: '244.6 yds', parkSide: 'Yes', front: '30\'0" ft', length: '73.5 ft', direction: 'East' },
+      'plot-5346': { name: 'Plot 5346', plotSize: '245.2 yds', parkSide: 'Yes', front: '30\'0" ft', length: '73.8 ft', direction: 'East' },
+      'plot-5347': { name: 'Plot 5347',plotSize: '245.3 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75.11 ft', direction: 'East' },
+      'plot-5348': { name: 'Plot 5348', plotSize: '247.4 yds', parkSide: 'Yes', front: '30\'0" ft', length: '74.6 ft', direction: 'East'},
+      'plot-5349': { name: 'Plot 5349', plotSize: '249.2 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75.1 ft', direction: 'East'},
+      'plot-5350': { name: 'Plot 5350', plotSize: '253.3 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75.8 ft', direction: 'East' },
+      'plot-5351': { name: 'Plot 5351', plotSize: '255.4 yds', parkSide: 'Yes', front: '30\'0" ft', length: '76.2 ft', direction: 'East' },
+      'plot-5352': { name: 'Plot 5352', plotSize: '255 yds', parkSide: 'Yes', front: '30\'0" ft', length: '76.8 ft', direction: 'East'},
+      'plot-5353': { name: 'Plot 5353', plotSize: '255 yds', parkSide: 'Yes', front: '30\'0" ft', length: '76.4 ft', direction: 'East' },
+      'plot-5354': { name: 'Plot 5354', plotSize: '253.3 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75.8 ft', direction: 'East' },
+      'plot-5355': { name: 'Plot 5355', plotSize: '254.3 yds', parkSide: 'Yes', front: '30\'0" ft', length: '76.3 ft', direction: 'East'},
+      'plot-5356': { name: 'Plot 5356', plotSize:'252.5 yds', parkSide: 'Yes', front: '30\'0" ft', length: '75.2 ft', direction: 'East'},
+      'plot-5357': { name: 'Plot 5357', plotSize: '247.5 yds', parkSide: 'Yes', front: '30\'0" ft', length: '72.11 ft', direction: 'East'},
+      'plot-5358': { name: 'Plot 5358', plotSize: '349.8 yds', parkSide: 'No', front: '41\'3" ft', length: '60.4 ft', direction: 'North'},
+      'plot-5359': { name: 'Plot 5359', plotSize: '293 yds', parkSide: 'No', front: '30\'0" ft', length: '71.7 ft', direction: 'North' },
+      'plot-5360': { name: 'Plot 5360',  plotSize: '217.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65.3 ft', direction: 'North' },
+      'plot-5361': { name: 'Plot 5361', plotSize: '217.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65.3 ft', direction: 'North' },
+      'plot-5363': { name: 'Plot 5363', plotSize: '217.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65.3 ft', direction: 'North' },
+      'plot-5364': { name: 'Plot 5364',plotSize: '217.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65.3 ft', direction: 'North' },
+      'plot-5365': { name: 'Plot 5365',plotSize: '217.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65.3 ft', direction: 'North' },
+      'plot-5366': { name: 'Plot 5366',plotSize: '217.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65.3 ft', direction: 'North' },
+      'plot-5367': { name: 'Plot 5367', plotSize: '217.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65.3 ft', direction: 'North' },
+      'plot-5368': { name: 'Plot 5368', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5369': { name: 'Plot 5369',  plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5370': { name: 'Plot 5370', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5371': { name: 'Plot 5371', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5372': { name: 'Plot 5372',  plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5373': { name: 'Plot 5373',  plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5374': { name: 'Plot 5374',  plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5375': { name: 'Plot 5375',  plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5376': { name: 'Plot 5376',  plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North' },
+      'plot-5377': { name: 'Plot 5377',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North' },
+      'plot-5378': { name: 'Plot 5378', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North' },
+      'plot-5379': { name: 'Plot 5379',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North' },
+      'plot-5380': { name: 'Plot 5380',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North'},
+      'plot-5381': { name: 'Plot 5381', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North' },
+      'plot-5382': { name: 'Plot 5382', plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North' },
+      'plot-5383': { name: 'Plot 5383',plotSize: '216.6 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North'},
+      'plot-5384': { name: 'Plot 5384', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South'},
+      'plot-5385': { name: 'Plot 5385',plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5386': { name: 'Plot 5386', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5387': { name: 'Plot 5387', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5388': { name: 'Plot 5388', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5389': { name: 'Plot 5389',plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5390': { name: 'Plot 5390', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5391': { name: 'Plot 5391', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5392': { name: 'Plot 5392',plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South'},
+      'plot-5393': { name: 'Plot 5393',plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5394': { name: 'Plot 5394', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'South' },
+      'plot-5395': { name: 'Plot 5395',plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North' },
+      'plot-5396': { name: 'Plot 5396', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North'  },
+      'plot-5397': { name: 'Plot 5397', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North'  },
+      'plot-5398': { name: 'Plot 5398',plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North'  },
+      'plot-5399': { name: 'Plot 5399',plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North' },
+      'plot-5400': { name: 'Plot 5400', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North'  },
+      'plot-5401': { name: 'Plot 5401', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North'  },
+      'plot-5402': { name: 'Plot 5402',plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North'  },
+      'plot-5404': { name: 'Plot 5404', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North'  },
+      'plot-5405': { name: 'Plot 5405', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North'  },
+      'plot-5406': { name: 'Plot 5406', plotSize: '231.1 yds', parkSide: 'No', front: '30\'0" ft', length: '65 ft', direction: 'North'  },
+      'plot-5407': { name: 'Plot 5407',plotSize: '355.9 yds', parkSide: 'No', front: '42\'4" ft', length: '75.8 ft', direction: 'South'  },
+      'plot-5408': { name: 'Plot 5408', plotSize: '252.3 yds', parkSide: 'No', front: '30\'0" ft', length: '75.8 ft', direction: 'South' },
+      'plot-5409': { name: 'Plot 5409', plotSize: '252.6 yds', parkSide: 'No', front: '30\'0" ft', length: '75.8 ft', direction: 'South'},
+      'plot-5410': { name: 'Plot 5410', plotSize: '252.2 yds', parkSide: 'No', front: '30\'0" ft', length: '75.7 ft', direction: 'South'},
+      'plot-5411': { name: 'Plot 5411', plotSize: '252 yds', parkSide: 'No', front: '30\'0" ft', length: '75.7 ft', direction: 'South' },
+      'plot-5412': { name: 'Plot 5412',plotSize: '252.2 yds', parkSide: 'No', front: '30\'0" ft', length: '75.7 ft', direction: 'South' },
+      'plot-5413': { name: 'Plot 5413',plotSize: '252.3 yds', parkSide: 'No', front: '30\'0" ft', length: '75.6 ft', direction: 'South' },
+      'plot-5414': { name: 'Plot 5414', plotSize: '250.7 yds', parkSide: 'No', front: '30\'0" ft', length: '75.6 ft', direction: 'South'},
+      'plot-5415': { name: 'Plot 5415', plotSize: '251.6 yds', parkSide: 'No', front: '30\'0" ft', length: '75.5 ft', direction: 'South'},
+      'plot-5416': { name: 'Plot 5416', plotSize: '250.1 yds', parkSide: 'No', front: '30\'0" ft', length: '74.5 ft', direction: 'South' },
+      'plot-5417': { name: 'Plot 5417', plotSize: '237 yds', parkSide: 'No', front: '30\'0" ft', length: '67.9 ft', direction: 'South' },
+      'plot-5418': { name: 'Plot 5418', plotSize: '214 yds', parkSide: 'No', front: '30\'0" ft', length: '61 ft', direction: 'South'  },
+      'plot-5419': { name: 'Plot 5419',  plotSize: '205.3 yds', parkSide: 'No', front: '27\'5" ft', length: '67.1 ft', direction: 'South'  },
+      'plot-5420': { name: 'Plot 5420', plotSize: '225.5 yds', parkSide: 'No', front: '30\'0" ft', length: '66.11 ft', direction: 'South'},
+      'plot-5421': { name: 'Plot 5421', plotSize: '233.2 yds', parkSide: 'No', front: '30\'0" ft', length: '65.5 ft', direction: 'South' },
+      'plot-5422': { name: 'Plot 5422', plotSize: '214.3 yds', parkSide: 'No', front: '30\'0" ft', length: '64.3 ft', direction: 'South' },
+      'plot-5423': { name: 'Plot 5423',plotSize: '214.3 yds', parkSide: 'No', front: '30\'0" ft', length: '64.3 ft', direction: 'South' },
+      'plot-5424': { name: 'Plot 5424', plotSize: '214.3 yds', parkSide: 'No', front: '30\'0" ft', length: '64.3 ft', direction: 'South'},
+      'plot-5425': { name: 'Plot 5425', plotSize: '214.3 yds', parkSide: 'No', front: '30\'0" ft', length: '64.3 ft', direction: 'South' },
+      'plot-5426': { name: 'Plot 5426',plotSize: '214.3 yds', parkSide: 'No', front: '30\'0" ft', length: '64.3 ft', direction: 'South'},
+      'plot-5427': { name: 'Plot 5427',plotSize: '216.7 yds', parkSide: 'No', front: '30\'0" ft', length: '64.11 ft', direction: 'South' },
+      'plot-5428': { name: 'Plot 5428', plotSize: '217.2 yds', parkSide: 'No', front: '30\'0" ft', length: '65.2 ft', direction: 'South' },
+      'plot-5429': { name: 'Plot 5429', plotSize: '226.9 yds', parkSide: 'No', front: '30\'0" ft', length: '65.8 ft', direction: 'South' },
+      'plot-5430': { name: 'Plot 5430',plotSize: '225.9 yds', parkSide: 'No', front: '30\'0" ft', length: '66.11 ft', direction: 'South'},
+      'plot-5431': { name: 'Plot 5431', plotSize: '245.8 yds', parkSide: 'No', front: '30\'0" ft', length: '68.1 ft', direction: 'South' },
+    };
+
+    /* ── DOM refs ── */
+    const tooltip    = document.getElementById('tooltip');
+    const sidePanel  = document.getElementById('sidePanel');
+    const panelTitle    = document.getElementById('panelTitle');
+    const infoPlotSize  = document.getElementById('infoPlotSize');
+    const infoParkSide  = document.getElementById('infoParkSide');
+    const infoFront     = document.getElementById('infoFront');
+    const infoLength    = document.getElementById('infoLength');
+    const infoDirection = document.getElementById('infoDirection');
+    const panelClose = document.getElementById('panelClose');
+    const mapWrapper = document.getElementById('mapWrapper');
+    const svgMap     = document.getElementById('svgMap');
+    const mobileHint = document.getElementById('mobileHint');
+    const backBtn    = document.getElementById('backBtn');
+
+    /* ── Panel open/close ── */
+    function openPanel(plotId, clientX) {
+      const d = PLOT_DATA[plotId] || {};
+      panelTitle.textContent    = d.name      || plotId;
+      infoPlotSize.textContent  = d.plotSize  || '—';
+      infoParkSide.textContent  = d.parkSide  || '—';
+      infoFront.textContent     = d.front     || '—';
+      infoLength.textContent    = d.length    || '—';
+      infoDirection.textContent = d.direction || '—';
+      /* Slide from left if plot is on right half of screen */
+      const onRight = clientX != null ? clientX > window.innerWidth / 2 : false;
+      sidePanel.classList.toggle('panel-left', onRight);
+      sidePanel.classList.add('open');
+    }
+    function closePanel() {
+      sidePanel.classList.remove('open');
+    }
+    function clearTapped() {
+      if (lastTappedPlot) {
+        lastTappedPlot.classList.remove('tapped');
+        lastTappedPlot = null;
+      }
+    }
+
+    /* ── Hint dismiss ── */
+    function dismissHint() {
+      if (mobileHint) mobileHint.classList.add('hidden');
+    }
+
+    /* ── Close button ── */
+    if (panelClose) panelClose.addEventListener('click', () => { closePanel(); clearTapped(); });
+
+    /* ── Tap on map background closes panel ── */
+    mapWrapper.addEventListener('click', e => {
+      if (e.target === mapWrapper || e.target === svgMap) { closePanel(); clearTapped(); }
+    });
+
+    /* ── Back button ── */
+    backBtn.addEventListener('click', () => window.history.back());
+
+    /* ── Pinch-zoom & pan state ── */
+    let scale = 1, tX = 0, tY = 0;
+    let lastDist = 0, lastMidX = 0, lastMidY = 0;
+    let isDragging = false, dragStartX = 0, dragStartY = 0, dragStartTX = 0, dragStartTY = 0;
+    let activeTouches = [];
+    const MIN_SCALE = 1, MAX_SCALE = 8;
+
+    function applyTransform() {
+      svgMap.style.transform = `translate(${tX}px,${tY}px) scale(${scale})`;
+    }
+
+    function clampTranslate() {
+      const wRect = mapWrapper.getBoundingClientRect();
+      const maxTX = 0;
+      const minTX = wRect.width  - wRect.width  * scale;
+      const maxTY = 0;
+      const minTY = wRect.height - wRect.height * scale;
+      tX = Math.min(maxTX, Math.max(minTX, tX));
+      tY = Math.min(maxTY, Math.max(minTY, tY));
+    }
+
+    function getTouchDist(t1, t2) {
+      const dx = t1.clientX - t2.clientX;
+      const dy = t1.clientY - t2.clientY;
+      return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    /* ── Touch events on wrapper ── */
+    mapWrapper.addEventListener('touchstart', e => {
+      activeTouches = Array.from(e.touches);
+      if (activeTouches.length === 2) {
+        lastDist = getTouchDist(activeTouches[0], activeTouches[1]);
+        lastMidX = (activeTouches[0].clientX + activeTouches[1].clientX) / 2;
+        lastMidY = (activeTouches[0].clientY + activeTouches[1].clientY) / 2;
+        isDragging = false;
+      } else if (activeTouches.length === 1) {
+        dragStartX = activeTouches[0].clientX;
+        dragStartY = activeTouches[0].clientY;
+        dragStartTX = tX;
+        dragStartTY = tY;
+        isDragging = true;
+      }
+    }, { passive: true });
+
+    mapWrapper.addEventListener('touchmove', e => {
+      activeTouches = Array.from(e.touches);
+      if (activeTouches.length === 2) {
+        e.preventDefault();
+        const newDist = getTouchDist(activeTouches[0], activeTouches[1]);
+        const newMidX = (activeTouches[0].clientX + activeTouches[1].clientX) / 2;
+        const newMidY = (activeTouches[0].clientY + activeTouches[1].clientY) / 2;
+        const wRect = mapWrapper.getBoundingClientRect();
+
+        const ratio = newDist / lastDist;
+        const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * ratio));
+
+        // pivot at midpoint
+        const originX = lastMidX - wRect.left;
+        const originY = lastMidY - wRect.top;
+        tX = newMidX - wRect.left - (originX - tX) * (newScale / scale) - (newMidX - lastMidX);
+        tY = newMidY - wRect.top  - (originY - tY) * (newScale / scale) - (newMidY - lastMidY);
+
+        scale = newScale;
+        lastDist = newDist;
+        lastMidX = newMidX;
+        lastMidY = newMidY;
+        clampTranslate();
+        applyTransform();
+        isDragging = false;
+      } else if (activeTouches.length === 1 && isDragging) {
+        if (scale > 1) {
+          e.preventDefault();
+          const dx = activeTouches[0].clientX - dragStartX;
+          const dy = activeTouches[0].clientY - dragStartY;
+          tX = dragStartTX + dx;
+          tY = dragStartTY + dy;
+          clampTranslate();
+          applyTransform();
+        }
+      }
+    }, { passive: false });
+
+    mapWrapper.addEventListener('touchend', () => {
+      if (Array.from(event.touches).length < 2) isDragging = false;
+    }, { passive: true });
+
+    /* ── Plot interaction ── */
+    let lastTappedPlot = null;
+
+    document.querySelectorAll('.plot-shape').forEach(shape => {
+      const plotId = shape.dataset.plot;
+
+      /* Desktop: hover tooltip + panel */
+      shape.addEventListener('mouseenter', e => {
+        const d = PLOT_DATA[plotId];
+        tooltip.textContent = d ? d.name : plotId;
+        tooltip.classList.add('visible');
+        shape.classList.add('active');
+        openPanel(plotId, e.clientX);
+      });
+      shape.addEventListener('mousemove', e => {
+        tooltip.style.left = (e.clientX + 14) + 'px';
+        tooltip.style.top  = (e.clientY - 28) + 'px';
+      });
+      shape.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('visible');
+        shape.classList.remove('active');
+        closePanel();
+      });
+
+      /* Mobile: tap to open panel */
+      shape.addEventListener('touchstart', e => {
+        // mark this touch start time/position for tap detection
+        shape._tapStartX = e.touches[0].clientX;
+        shape._tapStartY = e.touches[0].clientY;
+        shape._tapStartTime = Date.now();
+      }, { passive: true });
+
+      shape.addEventListener('touchend', e => {
+        const dx = Math.abs(e.changedTouches[0].clientX - shape._tapStartX);
+        const dy = Math.abs(e.changedTouches[0].clientY - shape._tapStartY);
+        const dt = Date.now() - shape._tapStartTime;
+        // only treat as tap if minimal movement and quick
+        if (dx < 10 && dy < 10 && dt < 500) {
+          e.preventDefault();
+          e.stopPropagation();
+          // clear previous tapped plot
+          clearTapped();
+          if (lastTappedPlot === shape) {
+            // same plot tapped again — already cleared, just close
+            closePanel();
+            tooltip.classList.remove('visible');
+            return;
+          }
+          shape.classList.add('tapped');
+          lastTappedPlot = shape;
+          openPanel(plotId, e.changedTouches[0].clientX);
+          dismissHint();
+          /* Show tooltip briefly on tap */
+          const d = PLOT_DATA[plotId];
+          tooltip.textContent = d ? d.name : plotId;
+          const tx = e.changedTouches[0].clientX;
+          const ty = e.changedTouches[0].clientY;
+          tooltip.style.left = (tx + 14) + 'px';
+          tooltip.style.top  = (ty - 40) + 'px';
+          tooltip.classList.add('visible');
+          clearTimeout(tooltip._hideTimer);
+          tooltip._hideTimer = setTimeout(() => tooltip.classList.remove('visible'), 2000);
+        }
+      }, { passive: false });
+    });
+  
+    // ── Arrival highlight: show the plot we navigated from ──
+    (function() {
+      try {
+        var arrivalPlot = sessionStorage.getItem('yoganadArrivalPlot');
+        if (!arrivalPlot) return;
+        sessionStorage.removeItem('yoganadArrivalPlot');
+        var shape = document.querySelector('.plot-shape[data-plot="' + arrivalPlot + '"]');
+        if (!shape) return;
+        shape.classList.add('active');
+        var svg = document.getElementById('svgMap');
+        if (svg && typeof openPanel === 'function') {
+          var bb = shape.getBBox();
+          var rect = svg.getBoundingClientRect();
+          var vbW = svg.viewBox.baseVal.width || 3840;
+          var vbH = svg.viewBox.baseVal.height || 2160;
+          var scaleX = rect.width / vbW;
+          var scaleY = rect.height / vbH;
+          var screenX = rect.left + (bb.x + bb.width / 2) * scaleX;
+          setTimeout(function() {
+            openPanel(arrivalPlot, Math.min(screenX + 14, window.innerWidth - 320));
+          }, 150);
+        }
+      } catch(e) {}
+    })();
+</script>
+
+
+  <div class="mobile-hint" id="mobileHint">Tap a plot &middot; Pinch to zoom</div>
+</body>
+</html>
