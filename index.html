@@ -3097,6 +3097,23 @@
         font-size: 8px;
       }
     }
+
+  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+     MOBILE LANDSCAPE: hide slider when overlay image active
+     \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+  @media (max-height: 600px) and (orientation: landscape) {
+    body.overlay-img-active .env-bar {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transition: opacity 0.25s ease !important;
+    }
+
+    /* Shift the overlay image + SVG layer upward so bottom isn't cut off */
+    body.overlay-img-active .option-overlay-img,
+    body.overlay-img-active .svg-overlay {
+      transform: translateY(-28px) !important;
+    }
+  }
   
 </style>
 
@@ -8451,6 +8468,7 @@
 
       // Show overlay image
       if (_optionOverlayImg) _optionOverlayImg.classList.add('visible');
+      document.body.classList.add('overlay-img-active');
 
       // Ensure pill bars match active marker
       if (activeMarker === 'amenities') {
@@ -8469,6 +8487,7 @@
 
     function hideOptionOverlay() {
       if (_optionOverlayImg) _optionOverlayImg.classList.remove('visible');
+      document.body.classList.remove('overlay-img-active');
       // Remove SVGs
       svgOverlay.classList.remove('visible', 'at-endpoint');
       hideAllSvgs();
