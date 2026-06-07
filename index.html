@@ -235,6 +235,17 @@
   body.desk-open .env-bar {
     bottom: 88px !important;
   }
+  /* Mobile landscape hamburger overrides (landscape phones are >769px wide) */
+  body.mob-controls-open .bottom-nav {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  body.mob-controls-open .search-container {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -950,7 +961,7 @@
     }
 
     /* Mobile landscape overrides */
-    @media (max-height: 500px) and (orientation: landscape) {
+    @media (max-height: 600px) and (orientation: landscape) {
       .search-container {
         top: 8px;
         left: 0;
@@ -1752,7 +1763,7 @@
     /* ══════════════════════════════════════════════════════
        MOBILE LANDSCAPE
     ══════════════════════════════════════════════════════ */
-    @media (max-height: 500px) and (orientation: landscape) {
+    @media (max-height: 600px) and (orientation: landscape) {
       /* === Mobile landscape: swap to mobile scrub video === */
       .bg-video:not(.mobile-bg-video) {
         opacity: 0 !important;
@@ -1779,8 +1790,8 @@
         transition: opacity 0.3s ease;
       }
       body.mob-controls-open .compass {
-        opacity: 1;
-        pointer-events: auto;
+        opacity: 1 !important;
+        pointer-events: auto !important;
       }
 
       .search-container {
@@ -1789,8 +1800,9 @@
         transition: opacity 0.3s ease, transform 0.3s ease;
       }
       body.mob-controls-open .search-container {
-        opacity: 1;
-        pointer-events: auto;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: none !important;
       }
 
       .compass::before {
@@ -1842,9 +1854,9 @@
         transition: opacity 0.3s ease, transform 0.3s ease;
       }
       body.mob-controls-open .bottom-nav {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateY(0);
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: translateY(0) !important;
       }
 
       .section-display {
@@ -2143,7 +2155,7 @@
       }
     }
 
-    @media (max-height: 500px) and (orientation: landscape) and (max-width: 599px) {
+    @media (max-height: 600px) and (orientation: landscape) and (max-width: 599px) {
       .nav-item {
         font-size: 0;
         gap: 0;
@@ -2443,7 +2455,7 @@
       opacity: 0.85;
     }
 
-    @media (max-height: 500px) and (orientation: landscape) {
+    @media (max-height: 600px) and (orientation: landscape) {
       .plot-info-card {
         width: 220px;
         padding: 12px 14px 12px;
@@ -3029,6 +3041,7 @@
 
       /* hide compass on mobile */
       .compass { display: none !important; }
+      body.mob-controls-open .compass { display: flex !important; }
 
       .brand {
         top: 17px;
@@ -3209,7 +3222,7 @@
 /* Mobile scrub video: hidden by default everywhere */
 .mobile-bg-video { opacity: 0 !important; }
 
-@media (max-height: 500px) and (orientation: landscape) {
+@media (max-height: 600px) and (orientation: landscape) {
   /* Swap: hide desktop video, show mobile video */
   /* Desktop video always hidden on mobile (src stripped by JS) */
   #bgVideo { opacity: 0 !important; }
@@ -3247,6 +3260,83 @@
   }
 }
 </style>
+
+<style>
+/* ══════════════════════════════════════════════════════
+   MOBILE SCRUB SLIDER — appears only when video is paused
+   Only active on mobile (max-width: 1024px)
+   ══════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  #mobScrubBar {
+    position: fixed;
+    bottom: 72px;
+    left: 50%;
+    transform: translateX(-50%) translateY(12px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    background: rgba(5, 10, 7, 0.88);
+    border: 1px solid rgba(34, 110, 54, 0.35);
+    border-radius: 40px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.55), inset 0 1px 0 rgba(34,110,54,0.15);
+    width: 80vw;
+    max-width: 420px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  #mobScrubBar.mob-scrub-visible {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(-50%) translateY(0);
+  }
+  #mobScrubRange {
+    -webkit-appearance: none;
+    flex: 1;
+    height: 2px;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    background: linear-gradient(to right, rgba(34,110,54,1.0) 0%, rgba(200,175,120,0.18) 0%);
+  }
+  #mobScrubRange::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(220,195,140,1.0), rgba(180,150,90,1.0) 70%);
+    border: 2px solid rgba(34,110,54,0.85);
+    box-shadow: 0 0 8px rgba(200,175,120,0.40), 0 2px 6px rgba(0,0,0,0.50);
+    cursor: grab;
+    transition: transform 0.15s;
+  }
+  #mobScrubRange::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.2);
+  }
+  #mobScrubRange::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(34,110,54,1.0);
+    border: 2px solid rgba(34,110,54,0.85);
+    box-shadow: 0 0 8px rgba(34,110,54,0.40), 0 2px 6px rgba(0,0,0,0.50);
+    cursor: grab;
+  }
+  .msb-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: rgba(34,110,54,0.85);
+    opacity: 0.8;
+  }
+}
+</style>
+
 </head>
 
 <body class="intro-active">
@@ -6327,6 +6417,21 @@
     <span class="mab-label mab-label-pause">Pause</span>
   </button>
 
+  <!-- MOBILE SCRUB SLIDER — shown when paused, hidden when playing -->
+  <div id="mobScrubBar">
+    <!-- rewind icon -->
+    <svg class="msb-icon" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="10,4 2,10 10,16"/>
+      <polygon points="18,4 10,10 18,16"/>
+    </svg>
+    <input type="range" id="mobScrubRange" min="0" max="1000" step="1" value="0">
+    <!-- fast-forward icon -->
+    <svg class="msb-icon" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="2,4 10,10 2,16"/>
+      <polygon points="10,4 18,10 10,16"/>
+    </svg>
+  </div>
+
   
   <!-- COMING SOON / NOT AVAILABLE TOAST -->
   <div id="csToast"><span id="csToastMsg">Coming Soon</span><span class="cs-sub" id="csToastSub">This section is under development</span></div>
@@ -7588,7 +7693,8 @@
     let uiHideTimer = null;
     let uiVisible = true;
     function isMobileLandscape() {
-      return window.innerHeight <= 500 && window.innerWidth > window.innerHeight;
+      var ua = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      return (window.innerHeight <= 600 || (ua && window.innerWidth > window.innerHeight)) && window.innerWidth > window.innerHeight;
     }
     function hideUI() {
       if (!isMobileLandscape()) return;
@@ -7609,8 +7715,8 @@
       if (isMobileLandscape()) uiHideTimer = setTimeout(hideUI, 3000);
     }
     uiToggleBtn.addEventListener('click', function (e) {
-      // All mobile orientations handled by capture-phase listener below
-      if (isMobileLandscape()) return;
+      // Portrait AND landscape handled by capture-phase listener below
+      if (isMobileLandscape() || window.innerWidth <= 1024) return;
       e.stopPropagation();
       if (uiVisible) hideUI(); else showUI();
     });
@@ -7620,10 +7726,11 @@
     // ══════════════════════════════════════════════════════
     (function() {
       function isMobPortrait() {
-        return window.innerWidth <= 768 && window.innerHeight > window.innerWidth;
+        return window.innerWidth <= 1024 && window.innerHeight > window.innerWidth;
       }
       function isMobLandscape() {
-        return window.innerHeight <= 500 && window.innerWidth > window.innerHeight;
+        var ua = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        return (window.innerHeight <= 600 || (ua && window.innerWidth > window.innerHeight)) && window.innerWidth > window.innerHeight;
       }
       function isMobileAny() {
         return isMobPortrait() || isMobLandscape();
@@ -7654,9 +7761,7 @@
         document.body.classList.remove('mob-controls-open');
         closeMobSubPill();
         // Hide bottom navbar + search on close (both portrait and landscape)
-        if (isMobLandscape()) {
-          bottomNav.classList.add('ui-hidden');
-        }
+        bottomNav.classList.add('ui-hidden');
         if (isMobileAny() && searchContainer) searchContainer.classList.add('ui-hidden');
         clearTimeout(_filterAutoHideTimer);
       }
@@ -7676,7 +7781,7 @@
       }
 
       // Init: hide navbar + search (hamburger controls it on mobile)
-      if (isMobLandscape()) {
+      if (isMobileAny()) {
         bottomNav.classList.add('ui-hidden');
       }
       if (isMobileAny() && searchContainer) searchContainer.classList.add('ui-hidden');
@@ -7689,7 +7794,8 @@
 
       // Override uiToggleBtn for portrait (capture phase)
       uiToggleBtn.addEventListener('click', function(e) {
-        if (!isMobileAny()) return;
+        var isTouchDevice = ('ontouchstart' in window) || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (!isMobileAny() && !isTouchDevice) return;
         e.stopPropagation();
         e.preventDefault();
         if (mobControlsOpen) closeMobControls(); else openMobControls();
@@ -8914,6 +9020,66 @@
       });
 
       updateBtnLabel();
+    })();
+
+
+    // ── MOBILE SCRUB SLIDER — show on pause, hide on play ──────────────────
+    (function setupMobScrubSlider() {
+      var isMob = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth <= 1024;
+      if (!isMob) return;
+
+      var scrubBar   = document.getElementById('mobScrubBar');
+      var scrubRange = document.getElementById('mobScrubRange');
+      if (!scrubBar || !scrubRange) return;
+
+      var scrubDragging = false;
+
+      // Update slider fill gradient
+      function updateFill() {
+        var pct = (parseFloat(scrubRange.value) / parseFloat(scrubRange.max)) * 100;
+        scrubRange.style.background =
+          'linear-gradient(to right, rgba(34,110,54,1.0) ' + pct + '%, rgba(200,175,120,0.18) ' + pct + '%)';
+      }
+
+      // Sync slider position from bgVideo currentTime
+      function syncSlider() {
+        if (scrubDragging) return;
+        if (!bgVideo || !bgVideo.duration) return;
+        var pct = bgVideo.currentTime / bgVideo.duration;
+        scrubRange.value = Math.round(pct * parseFloat(scrubRange.max));
+        updateFill();
+      }
+
+      // Show/hide scrub bar based on play state
+      function onPlay()  { scrubBar.classList.remove('mob-scrub-visible'); }
+      function onPause() { syncSlider(); scrubBar.classList.add('mob-scrub-visible'); }
+
+      bgVideo.addEventListener('play',  onPlay);
+      bgVideo.addEventListener('pause', onPause);
+      bgVideo.addEventListener('ended', onPlay);
+      bgVideo.addEventListener('timeupdate', syncSlider);
+
+      // Scrub on input
+      scrubRange.addEventListener('input', function() {
+        scrubDragging = true;
+        updateFill();
+        if (!bgVideo.duration) return;
+        var progress = parseFloat(scrubRange.value) / parseFloat(scrubRange.max);
+        bgVideo.currentTime = progress * bgVideo.duration;
+      });
+      scrubRange.addEventListener('pointerup',   function() { scrubDragging = false; });
+      scrubRange.addEventListener('touchend',    function() { scrubDragging = false; });
+      scrubRange.addEventListener('pointerdown', function(e) { e.stopPropagation(); });
+      scrubRange.addEventListener('touchstart',  function(e) { e.stopPropagation(); }, {passive:true});
+
+      // Init fill
+      updateFill();
+
+      // If already paused on setup, show immediately
+      if (bgVideo && bgVideo.paused) {
+        syncSlider();
+        scrubBar.classList.add('mob-scrub-visible');
+      }
     })();
 
     // Plot info cards removed — plots are now individual (plot-1 through plot-638)
