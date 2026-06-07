@@ -13,14 +13,14 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --gold: oklch(82% 0.13 78);
-      --gold-dim: oklch(68% 0.10 78);
-      --gold-bright: oklch(90% 0.11 78);
-      --dark: #0a0a08;
-      --dark-glass: rgba(12, 11, 8, 0.82);
-      --dark-glass-light: rgba(16, 14, 10, 0.72);
-      --gold-border: rgba(200, 175, 120, 0.25);
-      --gold-border-hover: rgba(200, 175, 120, 0.45);
+      --gold: #f5f5f0;
+      --gold-dim: #a8b8a8;
+      --gold-bright: #ffffff;
+      --dark: #0d0d0d;
+      --dark-glass: rgba(10, 14, 10, 0.88);
+      --dark-glass-light: rgba(12, 18, 12, 0.75);
+      --gold-border: rgba(30, 100, 50, 0.35);
+      --gold-border-hover: rgba(30, 140, 70, 0.60);
     }
 
     html, body {
@@ -58,7 +58,7 @@
       transition: background .25s, border-color .25s;
     }
     .back-btn:hover {
-      background: rgba(200, 175, 120, 0.18);
+      background: rgba(20, 80, 40, 0.25);
       border-color: var(--gold-border-hover);
     }
 
@@ -97,16 +97,16 @@
     }
     .plot-shape:hover,
     .plot-shape.active {
-      fill: rgba(255, 208, 113, 0.879);
-      stroke: oklch(82% 0.13 78);
+      fill: rgba(20, 120, 60, 0.55);
+      stroke: #4ade80;
       stroke-width: 2.2;
-      filter: drop-shadow(0 0 12px rgba(200, 175, 120, 0.30));
+      filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.40));
     }
     .plot-shape.tapped {
-      fill: rgba(255, 208, 113, 0.879);
-      stroke: oklch(82% 0.13 78);
+      fill: rgba(20, 120, 60, 0.55);
+      stroke: #4ade80;
       stroke-width: 2.2;
-      filter: drop-shadow(0 0 12px rgba(200, 175, 120, 0.30));
+      filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.40));
     }
 
     /* ── Tooltip ── */
@@ -168,7 +168,7 @@
     .panel-header {
       position: relative;
       padding: 32px 28px 20px;
-      border-bottom: 1px solid rgba(200, 175, 120, 0.12);
+      border-bottom: 1px solid rgba(30, 100, 50, 0.18);
     }
     .panel-eyebrow {
       font-family: 'Jost', sans-serif;
@@ -192,7 +192,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 14px 0;
-      border-bottom: 1px solid rgba(200, 175, 120, 0.08);
+      border-bottom: 1px solid rgba(30, 100, 50, 0.12);
     }
     .info-row:last-child { border-bottom: none; }
 
@@ -227,7 +227,7 @@
     .panel-note {
       font-size: 12px; font-weight: 300;
       line-height: 1.7;
-      color: rgba(200, 175, 120, 0.45);
+      color: rgba(160, 200, 160, 0.50);
       letter-spacing: 0.02em;
       margin-top: 12px;
     }
@@ -352,7 +352,7 @@
         font-family: 'Jost', sans-serif;
         font-size: 12px; font-weight: 300;
         letter-spacing: 0.10em;
-        color: rgba(200, 175, 120, 0.55);
+        color: rgba(160, 200, 160, 0.60);
         background: var(--dark-glass);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
@@ -426,7 +426,7 @@
 
       .info-row {
         padding: 7px 0;
-        border-bottom: 1px solid rgba(200, 175, 120, 0.08);
+        border-bottom: 1px solid rgba(30, 100, 50, 0.12);
         flex-direction: column;
         align-items: flex-start;
         gap: 2px;
@@ -445,60 +445,178 @@
 
 <body>
 
-  <!-- Background image -->
+  
   <div class="bg-div"></div>
 
-  <!-- BACK BUTTON -->
+  
   <div class="back-btn" id="backBtn" title="Go Back">
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"
-      stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="12 16 6 10 12 4" />
-    </svg>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="10 3 5 8 10 13"/></svg>
   </div>
 
 
   <div class="map-wrapper" id="mapWrapper">
-  <svg class="svg-overlay" id="svgMap" viewBox="0 0 3840 2160" preserveAspectRatio="xMidYMid slice">
-    <!-- FIX: was plot-42391 (typo) — corrected to plot-4239 (adjacent row shape) -->
-    <!-- FIX: was plot-42391 (typo) — this is the lower-row counterpart, now correctly plot-4239b -->
-    <!-- FIX: was plot-41481 (typo) — corrected to plot-4148 (upper-row shape) -->
-    <!-- FIX: was plot-41481 (typo) — this is the lower-row counterpart, now correctly plot-4148b -->
-    <!-- ═══ NEW PLOT SHAPES (4098–4115) ═══ -->
-    <path class="plot-shape" data-plot="plot-4100" d="m1302 585.11-5.33 2 7.66 7v5s-5.66 1.33-7 1.67c-1.33.33 0 5.33 0 5.33l4.67-2v2l-7.67 3.67-4.33 11.33 1.67 1 4.33-2v5.67l-177.67 142-90.37-67.58 215.71-170.47 38.83 27.55-5 4.5-2.42 4.66 5.34-1.33 6.83.67 9.5 2.33-1.33 6.33-5.09 7.09 1.67 9.33-.17-3.42 2.75-3.83 7.17-.5 3.5-1.25.75-5.75 3 2.33-3.33 6.34z"/>
-    <path class="plot-shape" data-plot="plot-4099" d="M1243.67 529.73 1027.96 700.2l-88.2-65.96 215.17-167.47z"/>
-    <path class="plot-shape" data-plot="plot-4098" d="M1154.93 466.77 939.76 634.24l-87.09-65.13 130.47-98.05h3.44l12.23-1.45 8.11-3.44 2.11-5.67-3.56.56-5-.12-3.33-1.77 15.89-12 3.44-1.34 4.11 1 6.67-1.77 2.89-3.45-.22-4.33-3.78-.22 42.89-31.23z"/>
-    <path class="plot-shape" data-plot="plot-4101" d="m1674.7 647.84-178.17 154.73-76.39-52.63 177.33-154.22z"/>
-    <path class="plot-shape" data-plot="plot-4102" d="m1760.47 705.73-175.03 158.09-88.91-61.25 178.17-154.73z"/>
-    <path class="plot-shape" data-plot="plot-4103" d="m1846.29 763.65-175.71 158.83-85.14-58.66 175.03-158.09z"/>
-    <path class="plot-shape" data-plot="plot-4104" d="M1935.38 823.77 1761.76 985.3l-91.18-62.82 175.71-158.83z"/>
-    <path class="plot-shape" data-plot="plot-4105" d="m2024.47 883.9-172.22 163.75-90.49-62.35 173.62-161.53z"/>
-    <path class="plot-shape" data-plot="plot-4106" d="m2115.84 945.56-171.65 165.43-91.94-63.34 172.22-163.75z"/>
-    <path class="plot-shape" data-plot="plot-4107" d="m2208.01 1007.77-169.02 168.54-94.8-65.32 171.65-165.43z"/>
-    <path class="plot-shape" data-plot="plot-4108" d="m2302.16 1071.31-168.33 170.34-94.84-65.34 169.02-168.54z"/>
-    <path class="plot-shape" data-plot="plot-4109" d="m2398.01 1136-167.49 172.26-96.69-66.61 168.33-170.34z"/>
-    <path class="plot-shape" data-plot="plot-4110" d="m2494.43 1201.07-164.38 175.76-99.53-68.57L2398.01 1136z"/>
-    <path class="plot-shape" data-plot="plot-4111" d="m2593.46 1267.9-163.96 177.45-99.45-68.52 164.38-175.76z"/>
-    <path class="plot-shape" data-plot="plot-4112" d="m2694.49 1336.09-164.73 178.34-100.26-69.08 163.96-177.45z"/>
-    <path class="plot-shape" data-plot="plot-4113" d="m2796.39 1404.86-161.6 181.93-105.03-72.36 164.73-178.34z"/>
-    <path class="plot-shape" data-plot="plot-4114" d="m2899.86 1474.7-161.84 183.21-103.23-71.12 161.6-181.93z"/>
-    <path class="plot-shape" data-plot="plot-4115" d="m2875.14 1681.94 12.44 4-41.77 46.23-107.79-74.26 161.84-183.21 93.06 62.8-114.23 129.33z"/>
+  <svg class="svg-overlay" id="svgMap" viewBox="0 0 7680 4320" preserveAspectRatio="xMidYMid slice">
 
-    <!-- ═══ GARDEN SHAPES (clickable → garden pages) ═══ -->
-    <path class="garden-shape" data-garden="garden-5" d="m1598.11 1975.28 365.33-367.56c-128.95-59.41-239.01-42.69-336.44 24.89-128.45 113.13-122.92 227.49-28.89 342.67"/>
-    <path class="garden-shape" data-garden="garden-4" d="M1639.81 1179.5c47.71-46.96 125.11-42.33 166.67-2.33l253.67 178c73 66.56-.89 192.83-134.67 142.17-60.05-12.37-117.37-13.6-175.94-5.33-30.49 8.46-57.81-.24-75.39-26.17-15.7-29.07-45.03-51.23-83-69-69.28-26.72-90.46-98.23-33.33-161l82-56.33Z"/>
-    <path class="garden-shape" data-garden="garden-3" d="m1003.17 1346.06 237.67 243 17-13.67 98.33-30.33c-4.05-31.78 2.58-57.4 26-73.33 132.79-156.56-88.67-326-254.67-216z"/>
-    <path class="garden-shape" data-garden="garden-2" d="M1313.42 1025.44c-37.11 34.44-31.86 75.94-2.08 99.28l49.86 35.39c41.26 29.23 83.55 29.44 126.89 0l83.33-77.56c24.84-29.52 27.33-71.56-7.11-96.89l-67.56-45.78c-39.12-10.38-74.12-8.79-102 13.56z"/>
-    <path class="garden-shape" data-garden="garden-1" d="m1057.83 1212.33 94-66.61c60.62-59.56 60.29-115.61-20.33-167.05l-314-239.33c-16.27-8.59-32.78-8.97-49.67 2.67L661.5 809.34l396.33 403Z"/>
+    <path class="plot-shape" data-plot="plot-1992" d="m2127.68 1102.92-27.53 320.23-181.19-.28 28.21-320.37z"/>
+    <path class="plot-shape" data-plot="plot-1991" d="m2311.69 1103.35-24.19 320.09-187.35-.29 27.53-320.23z"/>
+    <path class="plot-shape" data-plot="plot-1990" d="m2499.21 1103.79-22.08 319.95-189.63-.3 24.19-320.09z"/>
+    <path class="plot-shape" data-plot="plot-1989" d="m2687.27 1104.23-20.5 319.81-189.64-.3 22.08-319.95z"/>
+    <path class="plot-shape" data-plot="plot-1988" d="m2873.87 1104.67-14.86 319.67-192.24-.3 20.5-319.81z"/>
+    <path class="plot-shape" data-plot="plot-1987" d="m3060.42 1105.11-13.24 319.53-188.17-.3 14.86-319.67z"/>
+    <path class="plot-shape" data-plot="plot-1986" d="m3244.13 1105.54-10.57 319.39-186.38-.29 13.24-319.53z"/>
+    <path class="plot-shape" data-plot="plot-1985" d="m3429.8 1105.97-6.59 319.25-189.65-.29 10.57-319.39z"/>
+    <path class="plot-shape" data-plot="plot-1984" d="m3619.63 1106.41-4.39 319.12-192.03-.31 6.59-319.25z"/>
+    <path class="plot-shape" data-plot="plot-1983" d="m3822.83 1106.89-.64 318.96-206.95-.32 4.39-319.12z"/>
+    <path class="plot-shape" data-plot="plot-1982" d="m3822.19 1425.85-.69 340.98-210.96-.21 4.7-341.09z"/>
+    <path class="plot-shape" data-plot="plot-1981" d="m3615.24 1425.53-4.7 341.09-194.38-.19 7.05-341.21z"/>
+    <path class="plot-shape" data-plot="plot-1980" d="m3423.21 1425.22-7.05 341.21-193.89-.19 11.29-341.31z"/>
+    <path class="plot-shape" data-plot="plot-1979" d="m3233.56 1424.93-11.29 341.31-189.24-.18 14.15-341.42z"/>
+    <path class="plot-shape" data-plot="plot-1978" d="m3047.18 1424.64-14.15 341.42-189.9-.19 15.88-341.53z"/>
+    <path class="plot-shape" data-plot="plot-1977" d="m2859.01 1424.34-15.88 341.53-198.26-.19 21.9-341.64z"/>
+    <path class="plot-shape" data-plot="plot-1976" d="m2666.77 1424.04-21.9 341.64-191.33-.19 23.59-341.75z"/>
+    <path class="plot-shape" data-plot="plot-1975" d="m2477.13 1423.74-23.59 341.75-191.87-.19 25.83-341.86z"/>
+    <path class="plot-shape" data-plot="plot-1974" d="m2287.5 1423.44-25.83 341.86-190.92-.18 29.4-341.97z"/>
+    <path class="plot-shape" data-plot="plot-1973" d="m2100.15 1423.15-29.4 341.97-181.92-.18 30.13-342.07z"/>
+    <path class="plot-shape" data-plot="plot-2019" d="m4712.12 1481.59-224.59-.84-12.88-377.1 222.18.43z"/>
+    <path class="plot-shape" data-plot="plot-2018" d="m4716.8 1597.17-338.48-.41-2.88-116.43 112.09.42 224.59.84z"/>
+    <path class="plot-shape" data-plot="plot-2017" d="M4722.37 1734.56h-340.64l-3.41-137.8 338.48.41z"/>
+    <path class="plot-shape" data-plot="plot-2016" d="m4727.97 1872.8-342.81.2-3.43-138.44h340.64z"/>
+    <path class="plot-shape" data-plot="plot-2015" d="M4733.73 2015h-345.05l-3.52-142 342.81-.2z"/>
+    <path class="plot-shape" data-plot="plot-2014" d="M4739.5 2157.43h-347.3l-3.52-142.43h345.05z"/>
+    <path class="plot-shape" data-plot="plot-2013" d="m4745.45 2304.36-349.6.42-3.65-147.35h347.3z"/>
+    <path class="plot-shape" data-plot="plot-2012" d="m4751.38 2450.69-351.9.8-3.63-146.71 349.6-.42z"/>
+    <path class="plot-shape" data-plot="plot-2011" d="m4757.44 2600.28-354.29-.62-3.67-148.17 351.9-.8z"/>
+    <path class="plot-shape" data-plot="plot-2010" d="m4763.57 2751.62-356.64.78-3.78-152.74 354.29.62z"/>
+    <path class="plot-shape" data-plot="plot-2009" d="m4769.83 2906.07-359.1-.4-3.8-153.27 356.64-.78z"/>
+    <path class="plot-shape" data-plot="plot-2008" d="m4776.08 3060.41-361.5.83-3.85-155.57 359.1.4z"/>
+    <path class="plot-shape" data-plot="plot-2007" d="m4782.22 3212.06-363.92-.44-3.72-150.38 361.5-.83z"/>
+    <path class="plot-shape" data-plot="plot-2006" d="m4418.3 3211.62-367.02-.45-1.16-149.1 364.46-.83z"/>
+    <path class="plot-shape" data-plot="plot-2005" d="m4414.58 3061.24-364.46.83-1.21-156.81 361.82.41z"/>
+    <path class="plot-shape" data-plot="plot-2004" d="m4410.73 2905.67-361.82-.41-1.18-152.08 359.2-.78z"/>
+    <path class="plot-shape" data-plot="plot-2003" d="m4406.93 2752.4-359.2.78-1.2-154.14 356.62.62z"/>
+    <path class="plot-shape" data-plot="plot-2002" d="m4403.15 2599.66-356.62-.62-1.14-146.75 354.09-.8z"/>
+    <path class="plot-shape" data-plot="plot-2001" d="m4399.48 2451.49-354.09.8-1.14-147.09 351.6-.42z"/>
+    <path class="plot-shape" data-plot="plot-2000" d="m4395.85 2304.78-351.6.42-1.15-147.77h349.1z"/>
+    <path class="plot-shape" data-plot="plot-1999" d="M4392.2 2157.43h-349.1L4042 2015h346.68z"/>
+    <path class="plot-shape" data-plot="plot-1998" d="M4388.68 2015H4042l-1.1-141.79 344.26-.21z"/>
+    <path class="plot-shape" data-plot="plot-1997" d="m4385.16 1873-344.26.21-1.08-138.65h341.91z"/>
+    <path class="plot-shape" data-plot="plot-1996" d="M4381.73 1734.56h-341.91l-1.07-138.21 339.57.41z"/>
+    <path class="plot-shape" data-plot="plot-1995" d="m4378.32 1596.76-339.57-.41-.91-117.28 224.15.84 113.45.42z"/>
+    <path class="plot-shape" data-plot="plot-1994" d="m4487.53 1480.75-112.09-.42-113.45-.42-7.48-376.68 220.14.42z"/>
+    <path class="plot-shape" data-plot="plot-1993" d="m4261.99 1479.91-224.15-.84-2.92-376.26 219.59.42z"/>
+    <path class="plot-shape" data-plot="plot-1972" d="m1964.05 2529.04-27.88 317.87-163.03-.2 30.92-317.96z"/>
+    <path class="plot-shape" data-plot="plot-1971" d="m2132.59 2529.34-28.1 317.78-168.32-.21 27.88-317.87z"/>
+    <path class="plot-shape" data-plot="plot-1970" d="m2299.58 2529.64-23.66 317.69-171.43-.21 28.1-317.78z"/>
+    <path class="plot-shape" data-plot="plot-1969" d="m2465.35 2529.94-21.66 317.6-167.77-.21 23.66-317.69z"/>
+    <path class="plot-shape" data-plot="plot-1968" d="m2632.71 2530.24-18.47 317.51-170.55-.21 21.66-317.6z"/>
+    <path class="plot-shape" data-plot="plot-1967" d="m2800.06 2530.55-16.78 317.4-169.04-.2 18.47-317.51z"/>
+    <path class="plot-shape" data-plot="plot-1966" d="m2969 2530.85-13.72 317.32-172-.22 16.78-317.4z"/>
+    <path class="plot-shape" data-plot="plot-1965" d="m3137.29 2531.15-12.92 317.22-169.09-.2 13.72-317.32z"/>
+    <path class="plot-shape" data-plot="plot-1964" d="m3301.78 2531.45-8.15 317.13-169.26-.21 12.92-317.22z"/>
+    <path class="plot-shape" data-plot="plot-1963" d="m3470.76 2531.76-7.05 317.03-170.08-.21 8.15-317.13z"/>
+    <path class="plot-shape" data-plot="plot-1962" d="m3636.83 2532.05-3.82 316.95-169.3-.21 7.05-317.03z"/>
+    <path class="plot-shape" data-plot="plot-1961" d="m3817.17 2532.38-.64 316.84-183.52-.22 3.82-316.95z"/>
+    <path class="plot-shape" data-plot="plot-1960" d="m3816.53 2849.22-.75 368.5-187.21-.27 4.44-368.45z"/>
+    <path class="plot-shape" data-plot="plot-1959" d="m3633.01 2849-4.44 368.45-173.06-.24 8.2-368.42z"/>
+    <path class="plot-shape" data-plot="plot-1958" d="m3463.71 2848.79-8.2 368.42-171.34-.25 9.46-368.38z"/>
+    <path class="plot-shape" data-plot="plot-1957" d="m3293.63 2848.58-9.46 368.38-174.8-.25 15-368.34z"/>
+    <path class="plot-shape" data-plot="plot-1956" d="m3124.37 2848.37-15 368.34-170.01-.24 15.92-368.3z"/>
+    <path class="plot-shape" data-plot="plot-1955" d="m2955.28 2848.17-15.92 368.3-175.54-.25 19.46-368.27z"/>
+    <path class="plot-shape" data-plot="plot-1954" d="m2783.28 2847.95-19.46 368.27-171-.25 21.42-368.22z"/>
+    <path class="plot-shape" data-plot="plot-1953" d="m2614.24 2847.75-21.42 368.22-174.23-.25 25.1-368.18z"/>
+    <path class="plot-shape" data-plot="plot-1952" d="m2443.69 2847.54-25.1 368.18-170.09-.24 27.42-368.15z"/>
+    <path class="plot-shape" data-plot="plot-1951" d="m2275.92 2847.33-27.42 368.15-176.55-.25 32.54-368.11z"/>
+    <path class="plot-shape" data-plot="plot-1950" d="m2104.49 2847.12-32.54 368.11-168.06-.24 32.28-368.08z"/>
+    <path class="plot-shape" data-plot="plot-1949" d="m1936.17 2846.91-32.28 368.08-166.53-.24 35.78-368.04z"/>
+    <path class="plot-shape" data-plot="plot-2046" d="m5590.49 1481.52-216.85-.38-28.26-374.81 211.56.36z"/>
+    <path class="plot-shape" data-plot="plot-2045" d="m5600.77 1596.38-332.39.41-8.04-115.84 113.3.19 216.85.38z"/>
+    <path class="plot-shape" data-plot="plot-2044" d="M5613.4 1737.56h-335.25l-9.77-140.77 332.39-.41z"/>
+    <path class="plot-shape" data-plot="plot-2043" d="m5625.85 1876.56-338.13-1.14-9.57-137.86h335.25z"/>
+    <path class="plot-shape" data-plot="plot-2042" d="M5638.24 2015h-340.83l-9.69-139.58 338.13 1.14z"/>
+    <path class="plot-shape" data-plot="plot-2041" d="M5651.21 2160h-343.73l-10.07-145h340.83z"/>
+    <path class="plot-shape" data-plot="plot-2040" d="m5664.2 2305.13-346.68-.38-10.04-144.75h343.73z"/>
+    <path class="plot-shape" data-plot="plot-2039" d="m5677.23 2450.72-349.52.77-10.19-146.74 346.68.38z"/>
+    <path class="plot-shape" data-plot="plot-2038" d="M5690.62 2600.33h-352.58l-10.33-148.84 349.52-.77z"/>
+    <path class="plot-shape" data-plot="plot-2037" d="m5704.16 2751.52-355.57.83-10.55-152.02h352.58z"/>
+    <path class="plot-shape" data-plot="plot-2036" d="m5717.95 2905.62-358.58 1.97-10.78-155.24 355.57-.83z"/>
+    <path class="plot-shape" data-plot="plot-2035" d="m5731.95 3062-361.89-.42-10.69-153.99 358.58-1.97z"/>
+    <path class="plot-shape" data-plot="plot-2034" d="m5745.49 3213.33-364.91-.23-10.52-151.52 361.89.42z"/>
+    <path class="plot-shape" data-plot="plot-2033" d="m5380.58 3213.1-366.95-.24-7.24-151.71 363.67.43z"/>
+    <path class="plot-shape" data-plot="plot-2032" d="m5370.06 3061.58-363.67-.43-7.23-151.58 360.21-1.98z"/>
+    <path class="plot-shape" data-plot="plot-2031" d="m5359.37 2907.59-360.21 1.98-7.47-156.4 356.9-.82z"/>
+    <path class="plot-shape" data-plot="plot-2030" d="m5348.59 2752.35-356.9.82-7.29-152.84h353.64z"/>
+    <path class="plot-shape" data-plot="plot-2029" d="M5338.04 2600.33H4984.4l-7.07-148.07 350.38-.77z"/>
+    <path class="plot-shape" data-plot="plot-2028" d="m5327.71 2451.49-350.38.77-7.05-147.9 347.24.39z"/>
+    <path class="plot-shape" data-plot="plot-2027" d="m5317.52 2304.75-347.24-.39-6.89-144.36h344.09z"/>
+    <path class="plot-shape" data-plot="plot-2026" d="M5307.48 2160h-344.09l-6.92-145h340.94z"/>
+    <path class="plot-shape" data-plot="plot-2025" d="M5297.41 2015h-340.94l-6.72-140.72 337.97 1.14z"/>
+    <path class="plot-shape" data-plot="plot-2024" d="m5287.72 1875.42-337.97-1.14-6.52-136.72h334.92z"/>
+    <path class="plot-shape" data-plot="plot-2023" d="M5278.15 1737.56h-334.92l-6.7-140.37 331.85-.4z"/>
+    <path class="plot-shape" data-plot="plot-2022" d="m5268.38 1596.79-331.85.4-5.57-116.81 217.82.37 111.56.2z"/>
+    <path class="plot-shape" data-plot="plot-2021" d="m5373.64 1481.14-113.3-.19-111.56-.2-23.92-374.8 220.52.38z"/>
+    <path class="plot-shape" data-plot="plot-2020" d="m5148.78 1480.75-217.82-.37-17.89-374.8 211.78.37h.01z"/>
+    <path class="plot-shape" data-plot="plot-2061" d="m6329.47 3217.14-354-1.11-14.87-154.92h351.43z"/>
+    <path class="plot-shape" data-plot="plot-2060" d="M6312.03 3061.11H5960.6l-14.09-146.85 348.96-1.34z"/>
+    <path class="plot-shape" data-plot="plot-2059" d="m6388.58 2912.69-93.11.23-348.96 1.34-14.69-153.09 353.43-.03 86.44-1.11z"/>
+    <path class="plot-shape" data-plot="plot-2058" d="m6285.25 2761.14-353.43.03-13.95-145.34h351.04z"/>
+    <path class="plot-shape" data-plot="plot-2057" d="M6268.91 2615.83h-351.04l-13.44-140.04 348.65-.73z"/>
+    <path class="plot-shape" data-plot="plot-2056" d="m6253.08 2475.06-348.65.73-13.56-141.23 346.59 1.62z"/>
+    <path class="plot-shape" data-plot="plot-2055" d="m6237.46 2336.18-346.59-1.62-13.23-137.92 343.95-1.61z"/>
+    <path class="plot-shape" data-plot="plot-2054" d="m6221.59 2195.03-343.95 1.61-13.34-139.03h341.84z"/>
+    <path class="plot-shape" data-plot="plot-2053" d="M6206.14 2057.61H5864.3l-13.05-135.98 339.65.41z"/>
+    <path class="plot-shape" data-plot="plot-2052" d="m6190.9 1922.04-339.65-.41-12.76-132.93 337.37-.35z"/>
+    <path class="plot-shape" data-plot="plot-2051" d="m6175.86 1788.35-337.37.35-12.84-133.78 335.17-.37z"/>
+    <path class="plot-shape" data-plot="plot-2050" d="m6160.82 1654.55-335.17.37-12.72-132.52 332.8-2z"/>
+    <path class="plot-shape" data-plot="plot-2049" d="m6145.73 1520.4-332.8 2-12.45-129.76 330.75-1.16z"/>
+    <path class="plot-shape" data-plot="plot-2048" d="m6131.23 1391.48-330.75 1.16-13.1-136.44 328.51-1.18z"/>
+    <path class="plot-shape" data-plot="plot-2047" d="m6115.89 1255.02-328.51 1.18-13.74-143.2h326.28z"/>
+    <path class="plot-shape" data-plot="plot-2062" d="m5459.54 3779.5-230.01-.42-19.39-322.83 226.58.4z"/>
+    <path class="plot-shape" data-plot="plot-2063" d="m5695.12 3779.94-235.58-.44-22.82-322.85 231.4.41z"/>
+    <path class="plot-shape" data-plot="plot-2064" d="m5927.47 3780.37-232.35-.43-27-322.88 230.1.41z"/>
+    <path class="plot-shape" data-plot="plot-2065" d="m6163.43 3780.8-235.96-.43-29.25-322.9 231.61.41z"/>
+    <path class="plot-shape" data-plot="plot-2066" d="m6398.68 3781.24-235.25-.44-33.6-322.92 232.84.41z"/>
+    <path class="plot-shape" data-plot="plot-2067" d="m6630.4 3781.67-231.72-.43-36.01-322.95 229.5.4z"/>
+    <path class="plot-shape" data-plot="plot-2068" d="m6854.53 3782.08-224.13-.41-38.23-322.98 219.47.39z"/>
+    <path class="plot-shape" data-plot="plot-1948" d="m1521.53 3056.46-16.86 155.93-364.35-1.33 19.84-155.56z"/>
+    <path class="plot-shape" data-plot="plot-1947" d="m1538.4 2900.46-16.87 156-361.37-.96 19.9-155.92z"/>
+    <path class="plot-shape" data-plot="plot-1946" d="m1554.87 2748.25-16.47 152.21-358.34-.88 19.54-153.19z"/>
+    <path class="plot-shape" data-plot="plot-1945" d="m1571.5 2594.47-16.63 153.78-355.27-1.86 19.44-152.4z"/>
+    <path class="plot-shape" data-plot="plot-1944" d="m1587.51 2446.44-16.01 148.03-352.46-.48 19.01-149z"/>
+    <path class="plot-shape" data-plot="plot-1943" d="m1603.3 2300.4-15.79 146.04-349.46-1.45 18.74-146.82z"/>
+    <path class="plot-shape" data-plot="plot-1942" d="m1619.14 2153.91-15.84 146.49-346.51-2.23 18.52-145.21z"/>
+    <path class="plot-shape" data-plot="plot-1941" d="m1634.53 2011.62-15.39 142.29-343.83-.95 18.15-142.26z"/>
+    <path class="plot-shape" data-plot="plot-1940" d="m1649.89 1869.63-15.36 141.99-341.07-.92 18.12-142z"/>
+    <path class="plot-shape" data-plot="plot-1939" d="m1665.03 1729.65-15.14 139.98-338.31-.93 17.78-139.37z"/>
+    <path class="plot-shape" data-plot="plot-1938" d="m1679.95 1591.67-14.92 137.98-335.67-.32 17.56-137.66z"/>
+    <path class="plot-shape" data-plot="plot-1937" d="m1692.5 1475.62-12.55 116.05h-333.03l14.93-117 175.38.51z"/>
+    <path class="plot-shape" data-plot="plot-1936" d="m1733.17 1099.56-40.67 376.06-155.27-.44 43.51-375.62z"/>
+    <path class="plot-shape" data-plot="plot-1935" d="m1580.74 1099.56-43.51 375.62-175.38-.51 47.86-375.11z"/>
+    <path class="plot-shape" data-plot="plot-1934" d="m1409.71 1099.56-47.86 375.11-155.99-.44 49.32-374.67z"/>
+    <path class="plot-shape" data-plot="plot-1933" d="m1255.18 1099.56-49.32 374.67-153.71-.44 53.46-374.23z"/>
+    <path class="plot-shape" data-plot="plot-1932" d="m1361.85 1474.67-14.93 117h-311.61l16.84-117.88 153.71.44z"/>
+    <path class="plot-shape" data-plot="plot-1931" d="m1346.92 1591.67-17.56 137.66-313.67-.29 19.62-137.37z"/>
+    <path class="plot-shape" data-plot="plot-1930" d="m1329.36 1729.33-17.78 139.37-315.71-.86 19.82-138.8z"/>
+    <path class="plot-shape" data-plot="plot-1929" d="m1311.58 1868.7-18.12 142-317.88-.86 20.29-142z"/>
+    <path class="plot-shape" data-plot="plot-1928" d="m1293.46 2010.7-18.15 142.26-320.05-.89 20.32-142.23z"/>
+    <path class="plot-shape" data-plot="plot-1927" d="m1275.31 2152.96-18.52 145.21-322.1-2.07 20.57-144.03z"/>
+    <path class="plot-shape" data-plot="plot-1926" d="m1256.79 2298.17-18.74 146.82-324.43-1.35 21.07-147.54z"/>
+    <path class="plot-shape" data-plot="plot-1925" d="m1238.05 2444.99-19.01 149-326.84-.44 21.42-149.91z"/>
+    <path class="plot-shape" data-plot="plot-1924" d="m1219.04 2593.99-19.44 152.4-328.98-1.73 21.58-151.11z"/>
+    <path class="plot-shape" data-plot="plot-1923" d="m1199.6 2746.39-19.54 153.19-331.46-.82 22.02-154.1z"/>
+    <path class="plot-shape" data-plot="plot-1922" d="m1180.06 2899.58-19.9 155.92-333.82-.88 22.26-155.86z"/>
+    <path class="plot-shape" data-plot="plot-1921" d="m1160.16 3055.5-19.84 155.56-336.15-1.23 22.17-155.21z"/>
+
+    <path class="garden-shape" data-garden="garden-6" d="M1770.17 2321.42c.48 10.71 5.04 18.39 17.83 19.92l2017.72 3.64c13.35-1.06 19.87-8.02 21.17-19.5l.99-26.19.83-2.17v-6.25l.67-2.25 4.42.5 2.83-.5v-7.42l-4.75-4.75h3.92l1.58-2.67-1.33-6.08-1.83-4.58-.83-3.83-3-4.67-9.25-.67 20.08-10.33 6.17-6 1.17-5.5 3-4 .5-9.33-.75-6.42 5.83-.42-1.25-4.17-1-3.58.75-2.08-2.25-1.42s-1.75-3.25-2.33-3.25-4.75-2.5-4.75-2.5l.08-4.08-3.75-7.25-5.42-1.58h-6.33l-3.5-4.58.58-36.25h2.75l2-1.08-1.58-4.92h3.17l.75-4.75-4.75-6-3.33-1.67.42-5.42-5.08-2.25 6-2.17 3.5 2.5 1.17-1.33-3.67-3.17 4.17-3.33-2.83-4.33-2.83-1.17-.42-28.25.56-3.5 5.06.39h4.83l3.94-1.44v-4.33l-4.56-3.5-4.78-7.17-6.11-4.33 1.33-3.78h3.11l2.44-6.56-4.89-3.33 1.11-110.11s-1.33-8.89-12.33-12.33l-4.22-1.67 2.22-2.22h9l-2.22-9 .89-7.56 5.44.67 4.33.89-1.11-5.78-7.44-3.44-6.67-2.22 9.56-.78-.22-3.56-.11-5.67-6.11-3.44-3.56.56 4.67-7.22-2.56-2.56-5.67 3.78-3-3.78 1.44-7.67-2.33-3.22-6.11 3.67-3.56 1.67-6.22-3.89-4.22 5.67-11-.33-3.67 7.11-7.22-.22v4.56l-4.89.22 4.33 7.11 5.44.44-7.11 4.11-4.89-2.78-9.33.78-3.22-3.11-5 5.89-14.89-1.89-13.11-2.11-9.11 1.44-4.22-5.44 6.44-.67.56-6.11-9.56 1.11 6-4.67-.67-2.33-3.44-1.44.33-2.22-3.67-1.33-7.22 4.33.22-7-6.56-.11-3.22 3.78-4.67-2.56-2.67-2-7.89-1.67-3.22 3.67 2.33 3.22-2.22 2.22-3.67.56-.78 1.89 1.56 2-2.22.67-5.11 4.67 4.22 3.22-1.78 1.22-11.67-.44-1.89 4.22-4.67 2.33.11 3.33-.33 2-1.33 4.33 2.78 4.22.22 1.89-2 3.33-2.44.67 4.22 2.22-2.44 1.83-4.11 1.61-3.22 6.06-135.17-.14.83-3.42 2.08 1.25 2.25-1.75 2.42-1.67s-4.92-5.08-4.67-5.33 3.67-1.92 4.25-2.08.67-3.92.67-3.92l5 .58s.58-1.5.42-1.92-5-5.33-5-5.33l2.67-1.92-6-7.08-7.58-3.92-3.58-2 6.67-6.33 3.42-.67.83-3.92-3.25-2-3.58-3.83-6.5 2.5s-4.17 2.58-3.75 1.67 1.92-7.75 1.92-7.75l-7-.33-.5 2.75-2.25 4.67-4.25-3.92-2.58-2.25-3.17 3.17-5.08-4.5-1.08 5.42-3.92 2.42-2.42 2-.33 2.58-1.08 2.83-.75 1.92.67 3.58-6.08 1.42-8 .08-4.83 1.25 5.08 5.58.58 2.58-.92 2.5-4.92 3.33 4.58 2.83.92 3.42s4.83.83 5.08.92.75 7.33.75 7.33l3.08.83 5.75 3.67 2.67 3.5-42.75-.75-1.92-2 5.58-.5-1.83-3.42-4.25-2.25-.83-4.83-2.67-1-3.08-6.5-3.75-3.42-7.58.92-4.17-2.92 3.33-4.67-1.67-2.17 1.83-5.33-4.42-.25-5.08-1.67-4-3.25-4.75-3.17-7.5-3.08-10.08 1.42-10.17 2.17-5-.83-2.92 3.25-1.5 1.67.67 2-3.83.75-3-1.42-1.17 2.42.17 3.67.67 1.25-2.5 2-.67 2.83-1.67 3.5-4.92.08v3.75l1.75 2.25 1.75.92 4 2.08 1 1.58-5.08 1.92-4.25-1.25-1.75 3.42-2.75 1-1.08 2.75-3.67 1.33s1.5 3.17 1.33 3.83-1.67 1.25-1.67 1.25h-21.42l-1.25-4 1.92-.5-.17-5.08-2.67-5.83.42-2.58 4.17 1.83 2.08-2.75-2.42-2.67-.17-2-1.17-6.08-4.58-4-5.17-4.08-6.17-2.42 4.5-6.67 3.83-5.83-3.42-1.67-5.58.5-1.17 3-2.17-5.5v-1.83l-7.75 1.17.42 2.92-4.17 1-2.5-4-6.08-.5-4.92-.33-1 2.58-.08 3.25-1.17 1.75-4.58-.5s-.25 3.5 0 3.67 1.58 2.33 1.58 2.33l-4.25 1.33-1.25 3.33.92 4.25-8.5-.25-5.33.17.25 4 3.83 1.08 2.42.92-.17 2-2.42 1.58-3.67 2.33-2.08 4.5 4.67 1.25-.5 2.08 2.33 1.75 3.42.83s.5 5.08.5 5.33v6.25l4-.17-.42-3.58 4 .08.58 5.33h-46.58l-1.58-2.67 2.5-1.5-1.08-3.42-4.83-4.75-6-5-3.92-2.75-9.75 1.58-1.75-4.17.42-3.92-2.08-2.58.75-4.17-6.17 1.08-2.5-2.5-6.17 1-4.5-3.67-4.08-1.67-5.67.17.08 3.42-9.83.17-2.75 2.33-6.83.75-1.25 2.83-.25 3.5-.67 4.92s-5.75-3.25-6.5-3.25-4.25.67-4.25.67l.42 4.17 2.33 2.5-.83 2.17-.5.83-.75 1.83-1 1.5-1.67 3.08-1.25 2.17.5 4.25 1.67-.17-.08 1.58-23.75-.42.5-3.25 1.5 1.08-.25-2.83-1.17-5.83-.42-2.83 3.5-1.25 2.92-.92-3.5-3.58-3.75-3.83 2.5-1-2.42-6.42-8.42-3.5-5.08-2.17 4.67-7.25 1.5-5.92-.5-3.42-5.33 1.67-4.83 2.83.08-7.58-6.33-.25-2.67 6.67-3.5-3.17-2.42-3-4.33-.08-4.33-3.67-1.83 4.67-1.75 6s-3.5 0-3.5.25-.08 5.25-.08 5.25l-3.5 1.42-2.25 5-4.08 4-7.83-.42 4.33 6.25-3.75 2.92-6.67 3.25 4.75-5.25-5.42-6.42-8-2.17-3.17 3.83-4.5-4.5 7.5-2.67-3-3.33-4.17-1.5-7.83 1.58-6.67 3.42-5.08.5-11.33 7-11.58 2.25-6.5 8.42-.33 4.25-10.17 5.92.08 3.25-3.42 5.92-28.08.33-1.42-7.58-.25-4.58-.75-4.83 5 .42 2.58-1.5-4.42-4.42-1.5-5.08-6-6.33-6.08-2.33 6.5-8.08 2-3.83-4.17-3.75-5.08-1.58-4.42.33-2.25-4.17-10.33 1.83-4.83-2.25-8.75-2.56.58 5.89-3 4.25-6.42 1.75 1.67 5-6.17 2.17-8.17 4.08-2 3.17 5.08 6.58-6.33 2.25s-4.08 4.75-2.58 4.92 7.25 1.83 7.67 2.42 3.42 4.75 3.42 4.75l.08 7.17s3.33 1.83 3.42 3.08-5.33 3.5-5.33 3.5l-7.58-.92 3.42-2.92-2.58-6.5-4.17-3.42-1.83-5.92-2.75-1.17 3-7.17-7.83-5.75-2.83-2.25-4.33 6.17s-3.17-6.58-2.83-6.67 3.25-5 3.25-5l-3.42-2.92-8.33 1.67-8.83 4.58s-2.33-.42-3.08-.08-5.75 3.67-5.75 3.67l1.92 5.33-7.42 3.17-3.92.08s1.42-6.17.83-6.17-4.33-1.17-4.33-1.17l-13.25 5.08.33 8.08-6 7.08-4.67 4.75 5-9.25s3-5.83 1.17-6.25-9.33-11.08-9.33-11.08l-5.58-2.42-3-2.42 2.25-5.58 8.42-5.25-8.17-5.75-8.33 3.17s1.33-6.92.17-6.75-7.83.58-7.83.58l-2.67 5.58-3.17-4.75-6.83-2.47-6.5-1.69 1.17 6.83-4.42 2.83s-1.83-.75-1.67.42 1.17 3.92 1.17 3.92l-4.33 2.25s-.08 3.58.5 4.42-9.08.5-9.58.75-4.58 1.08-4.58 1.08l.33-3.25-3-2.83-7.75 2.67-8 1.5-3.42 3.08-8.75 2-5.42 3.33-5.42-1.58-2.67-.5-3.75 2.25-1.75 3.75-3.42-3-4.58-1.5-3.67-2.75-2.67.08-.67 4.83-3.67 1.58-2.75-4.25 1.92-3 1.83-2.83.75-1.67-1.67-1.17-9.17.58-5.58 2.75h-5.58l-4.42 3.75-2.25 3.33h-19.25l-5.75-5.5-3-2.5 2.08-4.17 3.42-6.25-.58-1.33-4.83-1.17.17-2.58-6.17.08-2.5 2-.92-6.33-5.33-.67-3.25 2-.67 2.58-3.25-3.08-6.08-.67-3.08-2.08-2 .33-2.17 2.5.17 3 .25 2.08-5.25-.33-1.83 3 1.58 2.58-4 1.33 1.08 3.75.83 2.5-8.17.67-8.42.83 1.17 3.67 7.58 4.17-7.17 3.58-3.33 3.42 4.67 6.17 5.33 1 1.75 2.83-1.5 2.83-.83 5.67-5 3.83-254.83 1.67-.88-4.08 5.67-2.08 4.17-2.54-.17-3.38-4.33-6.22-4.44-1.89 3.67-1.67v-6l-4.56-3.22.89-3.22 4.67-4.56-5-2.89-5.89-4.67-8.78-.56 2.11-7.33 5.22-4.44-1-3.22-11.89 1.78-4.33 3.56-2.11-3.67-10.56-2.44-4.44 2.67-1.78 3.11 1.44 3.22-3.78-.56-1.33-.89-1.78 2.33 1.89 3.11-4.11 1-1.11 2.22 3.22 3.33-6.44 2.44-4.44 2.78-5.33 7.11 1.89 4 3.22 3.33 1.89 4.89.11 6.11 2.89 1 2.22 5.22 1.78 6.56-73.44.33-2-2.33-5.78-.67-.44-4.78-5-7.22-5.44 1.44-.11 2.33-4.22-4.44 3.78-2.22-5.22-2.56-6.33.89-3.44 3.44-.78-2.78 2.56-4.67-6.89-1.89-4.56.89-4.78 1.78 1 2.22-.22 1.11-1.33.33-7 .89-4.11 3.44.22 2.44 2.11 2.56 1.78 3.33.11 2.22-3.44-.56-4.33.33-4.33.22-.11 3.78-220.11-.56-6.11.44-.78-3.44-1.56 1.78-.44 2.33-3.11 2.44-2.78 1.11-3.11-4.33-1.22.78-1.11 1.67-2 .67-1.44.44v3.89l-1.78 2.67-7.78.11-6.44 1.89-3 .33 3.78 7.56-1.33 3.22-.56 2-2.33 7.89.67 2 5.22.11-3.56 3.56-6.33 4.11-1.22 2.56 2.67 1.67 5.78-1.11-.56 2.33-1.56 5.22-2.78 3.33-6.56 1.44-6.44 2.22-2.11 3.67v2.11l-1.33 1.56-2.44 1.78-1.89 6.56-3.33 3.56-3.11.89 4.78 6 3.33.78-.44 3.56-2.89.11-1.11 3.22-5.89 1.11-.56 3.78.89 2.44 3.78.33 4.22 2.56 3 2.22-2.11 2.56-2.22.78 1.22 2.78.44 3.11.22 2.78 2.44 5.44-1.56 2.78s-.22 2.89-1.22 2.89-4.78.67-4.78.67l.44 3.89 4.89 1.44.33 4.11.56 2.67 8.67-.89 2.33.78-4.11 1.11.33 2.22 3 4.11 2.56 4.11 3-3.22 3.89 3.89-.78 2.56-3.44 1.33-2.22 6.67-2.44 2.11-1.56 4 .78 4.67 7.22-.89-.11 7.67.67 2.22 1.44 2.33-1.33 1.56-1.78 1.78-.22 5.56 3 3.11-2.89 1.56-.22 4.56-.56.56-4.67-.56-1.33-1.78-3.22.44-5.44 4-2.78 2.89.11 4.67 2.11 4.56 4.33.78.33 7.33.44 14 .67 5.56-4 2.11-1.33 6.11-1.89 2.78-.11 9.11.89 5.67 1 5.22 3.56 3.56s.33 1.78-2.67 2.67l-4.11 1.22-4.11-1.89s-2.22 2.22-2.89 3.44-2.22 2.22-3.56 2.67-3.33 4.11-3.33 4.11l2.56 4.33s5.33 4.22 5.89 4.44 4.89 3.67 4.89 3.67l4.89 9.11.78 8.33-.44 6s-6 4.33-6.22 4.78-1.89 7.44-1.89 7.44 0 5.33-.11 6.33 0 3.44-.22 5.33 2.89 4.44 2.89 4.44l2.22 4.78-3.78 6.11-1 10.78 9.11-1.33-.44 10.11 5.89-3.67 3 3.78-1.42 22.58Z"/>
   </svg>
-  </div><!-- /map-wrapper -->
+  </div>
 
-  <!-- MOUSE TOOLTIP -->
+  
   <div class="tooltip" id="tooltip"></div>
 
-  <!-- GARDEN BADGE -->
+  
   <div class="garden-badge" id="gardenBadge"></div>
 
-  <!-- SIDE PANEL -->
+  
   <div class="side-panel" id="sidePanel">
     <div class="panel-header">
       <div class="panel-eyebrow">Property Details</div>
@@ -554,25 +672,155 @@
     // ══════════════════════════════════════
     // PER-PLOT DATA TABLE
     // ══════════════════════════════════════
-    const PLOT_DATA = {
-      'plot-4098': { name: 'Plot 4098',  plotSize: '450 yds', parkSide: 'Yes', front: '45\'0" ft', length: '90 ft', direction: 'East' },
-      'plot-4099': { name: 'Plot 4099',  plotSize: '450 yds', parkSide: 'Yes', front: '45\'0" ft', length: '90 ft', direction: 'East' },
-      'plot-4100': { name: 'Plot 4100', plotSize: '450 yds', parkSide: 'Yes', front: '45\'0" ft', length: '90 ft', direction: 'East' },
-      'plot-4101': { name: 'Plot 4101', plotSize: '391 yds', parkSide: 'Yes', front: '38\'0" ft', length: '93.3 ft', direction: 'East' },
-      'plot-4102': { name: 'Plot 4102', plotSize: '422.1 yds', parkSide: 'Yes', front: '40\'0" ft', length: '92.8 ft', direction: 'East' },
-      'plot-4103': { name: 'Plot 4103',  plotSize: '450.7 yds', parkSide: 'Yes', front: '40\'0" ft', length: '92.7 ft', direction: 'East' },
-      'plot-4104': { name: 'Plot 4104',  plotSize: '400.1 yds', parkSide: 'Yes', front: '40\'0" ft', length: '92.3 ft', direction: 'East' },
-      'plot-4105': { name: 'Plot 4105',  plotSize: '407.5 yds', parkSide: 'Yes', front: '40\'0" ft', length: '91.10 ft', direction: 'East' },
-      'plot-4106': { name: 'Plot 4106', plotSize: '406 yds', parkSide: 'Yes', front: '40\'0" ft', length: '91.6 ft', direction: 'East' },
-      'plot-4107': { name: 'Plot 4107',  plotSize: '405.9 yds', parkSide: 'Yes', front: '40\'0" ft', length: '91.2 ft', direction: 'East' },
-      'plot-4108': { name: 'Plot 4108', plotSize: '402.9 yds', parkSide: 'Yes', front: '40\'0" ft', length: '90.10 ft', direction: 'East' },
-      'plot-4109': { name: 'Plot 4109', plotSize: '401.3 yds', parkSide: 'Yes', front: '40\'0" ft', length: '90.5 ft', direction: 'East' },
-      'plot-4110': { name: 'Plot 4110', plotSize: '399.9 yds', parkSide: 'Yes', front: '40\'0" ft', length: '90.1 ft', direction: 'East' },
-      'plot-4111': { name: 'Plot 4111', plotSize: '395.2 yds', parkSide: 'Yes', front: '40\'0" ft', length: '89.9 ft', direction: 'East' },
-      'plot-4112': { name: 'Plot 4112', plotSize: '396.6 yds', parkSide: 'Yes', front: '40\'0" ft', length: '89.5 ft', direction: 'East' },
-      'plot-4113': { name: 'Plot 4113',  plotSize: '395.2 yds', parkSide: 'Yes', front: '40\'0" ft', length: '89.1 ft', direction: 'East' },
-      'plot-4114': { name: 'Plot 4114', plotSize: '395.5 yds', parkSide: 'Yes', front: '40\'0" ft', length: '88.8 ft', direction: 'East'},
-      'plot-4115': { name: 'Plot 4115', plotSize: '308.06 yds', parkSide: 'Yes', front: '40\'0" ft', length: '88.4 ft', direction: 'East'},
+        const PLOT_DATA = {
+      'plot-1921': { name: 'Plot 1921', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1922': { name: 'Plot 1922', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1923': { name: 'Plot 1923', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1924': { name: 'Plot 1924', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1925': { name: 'Plot 1925', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1926': { name: 'Plot 1926', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1927': { name: 'Plot 1927', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1928': { name: 'Plot 1928', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1929': { name: 'Plot 1929', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1930': { name: 'Plot 1930', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1931': { name: 'Plot 1931', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1932': { name: 'Plot 1932', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1933': { name: 'Plot 1933', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1934': { name: 'Plot 1934', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1935': { name: 'Plot 1935', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1936': { name: 'Plot 1936', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1937': { name: 'Plot 1937', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1938': { name: 'Plot 1938', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1939': { name: 'Plot 1939', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1940': { name: 'Plot 1940', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1941': { name: 'Plot 1941', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1942': { name: 'Plot 1942', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1943': { name: 'Plot 1943', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1944': { name: 'Plot 1944', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1945': { name: 'Plot 1945', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1946': { name: 'Plot 1946', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1947': { name: 'Plot 1947', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1948': { name: 'Plot 1948', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1949': { name: 'Plot 1949', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1950': { name: 'Plot 1950', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1951': { name: 'Plot 1951', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1952': { name: 'Plot 1952', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1953': { name: 'Plot 1953', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1954': { name: 'Plot 1954', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1955': { name: 'Plot 1955', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1956': { name: 'Plot 1956', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1957': { name: 'Plot 1957', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1958': { name: 'Plot 1958', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1959': { name: 'Plot 1959', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1960': { name: 'Plot 1960', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1961': { name: 'Plot 1961', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1962': { name: 'Plot 1962', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1963': { name: 'Plot 1963', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1964': { name: 'Plot 1964', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1965': { name: 'Plot 1965', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1966': { name: 'Plot 1966', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1967': { name: 'Plot 1967', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1968': { name: 'Plot 1968', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1969': { name: 'Plot 1969', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1970': { name: 'Plot 1970', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1971': { name: 'Plot 1971', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1972': { name: 'Plot 1972', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1973': { name: 'Plot 1973', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1974': { name: 'Plot 1974', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1975': { name: 'Plot 1975', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1976': { name: 'Plot 1976', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1977': { name: 'Plot 1977', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1978': { name: 'Plot 1978', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1979': { name: 'Plot 1979', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1980': { name: 'Plot 1980', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1981': { name: 'Plot 1981', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1982': { name: 'Plot 1982', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1983': { name: 'Plot 1983', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1984': { name: 'Plot 1984', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1985': { name: 'Plot 1985', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1986': { name: 'Plot 1986', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1987': { name: 'Plot 1987', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1988': { name: 'Plot 1988', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1989': { name: 'Plot 1989', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1990': { name: 'Plot 1990', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1991': { name: 'Plot 1991', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1992': { name: 'Plot 1992', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1993': { name: 'Plot 1993', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1994': { name: 'Plot 1994', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1995': { name: 'Plot 1995', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1996': { name: 'Plot 1996', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1997': { name: 'Plot 1997', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1998': { name: 'Plot 1998', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-1999': { name: 'Plot 1999', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2000': { name: 'Plot 2000', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2001': { name: 'Plot 2001', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2002': { name: 'Plot 2002', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2003': { name: 'Plot 2003', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2004': { name: 'Plot 2004', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2005': { name: 'Plot 2005', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2006': { name: 'Plot 2006', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2007': { name: 'Plot 2007', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2008': { name: 'Plot 2008', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2009': { name: 'Plot 2009', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2010': { name: 'Plot 2010', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2011': { name: 'Plot 2011', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2012': { name: 'Plot 2012', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2013': { name: 'Plot 2013', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2014': { name: 'Plot 2014', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2015': { name: 'Plot 2015', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2016': { name: 'Plot 2016', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2017': { name: 'Plot 2017', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2018': { name: 'Plot 2018', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2019': { name: 'Plot 2019', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2020': { name: 'Plot 2020', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2021': { name: 'Plot 2021', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2022': { name: 'Plot 2022', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2023': { name: 'Plot 2023', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2024': { name: 'Plot 2024', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2025': { name: 'Plot 2025', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2026': { name: 'Plot 2026', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2027': { name: 'Plot 2027', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2028': { name: 'Plot 2028', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2029': { name: 'Plot 2029', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2030': { name: 'Plot 2030', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2031': { name: 'Plot 2031', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2032': { name: 'Plot 2032', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2033': { name: 'Plot 2033', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2034': { name: 'Plot 2034', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2035': { name: 'Plot 2035', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2036': { name: 'Plot 2036', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2037': { name: 'Plot 2037', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2038': { name: 'Plot 2038', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2039': { name: 'Plot 2039', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2040': { name: 'Plot 2040', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2041': { name: 'Plot 2041', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2042': { name: 'Plot 2042', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2043': { name: 'Plot 2043', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2044': { name: 'Plot 2044', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2045': { name: 'Plot 2045', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2046': { name: 'Plot 2046', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2047': { name: 'Plot 2047', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2048': { name: 'Plot 2048', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2049': { name: 'Plot 2049', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2050': { name: 'Plot 2050', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2051': { name: 'Plot 2051', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2052': { name: 'Plot 2052', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2053': { name: 'Plot 2053', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2054': { name: 'Plot 2054', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2055': { name: 'Plot 2055', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2056': { name: 'Plot 2056', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2057': { name: 'Plot 2057', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2058': { name: 'Plot 2058', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2059': { name: 'Plot 2059', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2060': { name: 'Plot 2060', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2061': { name: 'Plot 2061', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2062': { name: 'Plot 2062', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2063': { name: 'Plot 2063', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2064': { name: 'Plot 2064', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2065': { name: 'Plot 2065', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2066': { name: 'Plot 2066', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2067': { name: 'Plot 2067', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
+      'plot-2068': { name: 'Plot 2068', plotSize: '—', parkSide: '—', front: '—', length: '—', direction: '—' },
     };
 
     /* ── DOM refs ── */
@@ -787,6 +1035,7 @@
       'garden-3': 'Garden 3',
       'garden-4': 'Garden 4',
       'garden-5': 'Garden 5',
+      'garden-6': 'Garden 6',
     };
 
     let lastTappedGarden = null;
@@ -865,8 +1114,8 @@
         if (svg && typeof openPanel === 'function') {
           var bb = shape.getBBox();
           var rect = svg.getBoundingClientRect();
-          var vbW = svg.viewBox.baseVal.width || 3840;
-          var vbH = svg.viewBox.baseVal.height || 2160;
+          var vbW = svg.viewBox.baseVal.width || 7680;
+          var vbH = svg.viewBox.baseVal.height || 4320;
           var scaleX = rect.width / vbW;
           var scaleY = rect.height / vbH;
           var screenX = rect.left + (bb.x + bb.width / 2) * scaleX;
