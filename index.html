@@ -141,6 +141,8 @@
       position: fixed;
       top: 0;
       left: 0;
+      width: 100vw;
+      height: 100vh;
       object-fit: cover;
       z-index: 10; /* above video (z:1), below svg-overlay (z:15) */
       pointer-events: none;
@@ -3107,12 +3109,13 @@
       pointer-events: none !important;
       transition: opacity 0.25s ease !important;
     }
+  }
 
-    /* Shift the overlay image + SVG layer upward so bottom isn't cut off */
-    body.overlay-img-active .option-overlay-img,
-    body.overlay-img-active .svg-overlay {
-      transform: translateY(-28px) !important;
-    }
+  /* Hide any element with this class - used by JS for mobile landscape overlay */
+  .landscape-overlay-hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
   }
   
 </style>
@@ -8470,6 +8473,16 @@
       if (_optionOverlayImg) _optionOverlayImg.classList.add('visible');
       document.body.classList.add('overlay-img-active');
 
+      // Mobile landscape: hide slider + pill bars, shift overlay image up
+      var _isLandscape = window.matchMedia('(max-height: 600px) and (orientation: landscape)').matches;
+      var _hide = function(el){ if(el){ el.style.opacity='0'; el.style.pointerEvents='none'; } };
+      if (_isLandscape) {
+        var _oi = document.getElementById('optionOverlayImg');
+        if (_oi) _oi.style.transform = 'translateY(-30px)';
+        var _so = document.querySelector('.svg-overlay');
+        if (_so) _so.style.transform = 'translateY(-30px)';
+      }
+
       // Ensure pill bars match active marker
       if (activeMarker === 'amenities') {
         amenitiesBar.classList.add('visible');
@@ -8483,11 +8496,30 @@
       svgOverlay.classList.add('at-endpoint');
       checkAndShowSvg();
       updateSectionDisplay();
+
+      // Mobile landscape: hide ALL bottom UI LAST so nothing can undo it
+      if (_isLandscape) {
+        ['envBar','mobGardensPills','mobPlotsPills','amenitiesBar','plotBar'].forEach(function(id){
+          var el = document.getElementById(id);
+          if (el) el.classList.add('landscape-overlay-hidden');
+        });
+      }
     }
 
     function hideOptionOverlay() {
       if (_optionOverlayImg) _optionOverlayImg.classList.remove('visible');
       document.body.classList.remove('overlay-img-active');
+
+      // Mobile landscape: restore all bottom UI
+      ['envBar','mobGardensPills','mobPlotsPills','amenitiesBar','plotBar'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.classList.remove('landscape-overlay-hidden');
+      });
+      var _oi2 = document.getElementById('optionOverlayImg');
+      if (_oi2) _oi2.style.transform = '';
+      var _so2 = document.querySelector('.svg-overlay');
+      if (_so2) _so2.style.transform = '';
+
       // Remove SVGs
       svgOverlay.classList.remove('visible', 'at-endpoint');
       hideAllSvgs();
