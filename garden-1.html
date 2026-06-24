@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Yoganad — Premium Property Visualization</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@200;300;400;500&family=Cinzel:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="Subpages/garden-1/styles.css">
+
+  <link rel="preload" as="video" href="Subpages/garden-1/scrub.mp4" crossorigin>
+
+  <style>
+    /* ── Rolex Palette CSS Vars ── */
+    :root {
+      --gold: rgba(169, 126, 38, 1);
+      --gold-light: rgba(201, 168, 76, 0.70);
+      --gold-bright: rgba(218, 185, 95, 1);
+      --gold-dim: rgba(169, 126, 38, 0.55);
+      --gold-deep: rgba(140, 100, 25, 0.90);
+      --glass-bg: rgba(3, 10, 5, 0.76);
+      --glass-bg-strong: rgba(2, 7, 3, 0.94);
+      --glass-border: rgba(169, 126, 38, 0.28);
+      --glass-border-hover: rgba(201, 168, 76, 0.55);
+      --glass-border-active: rgba(218, 185, 95, 0.85);
+      --text-primary: rgba(245, 240, 228, 0.96);
+      --text-muted: rgba(169, 126, 38, 0.80);
+    }
+
+    /* iOS tap highlight suppression */
+    @media (pointer: coarse) { * { -webkit-tap-highlight-color: transparent; } }
+
+    /* ── Full-screen video ── */
+    #bgVideo {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      background: #060a04;
+    }
+
+    /* ── Play/Pause button ── */
+    #playPauseBtn {
+      position: fixed;
+      bottom: 80px;
+      left: 24px;
+      z-index: 900;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--gold-light);
+      transition: opacity 0.35s ease, transform 0.2s ease, background 0.2s, border-color 0.2s;
+      opacity: 1;
+      pointer-events: auto;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(201,168,76,0.1);
+    }
+
+    #playPauseBtn:hover {
+      background: rgba(3, 12, 6, 0.88);
+      border-color: var(--glass-border-hover);
+    }
+
+    #playPauseBtn:active {
+      transform: scale(0.91);
+      background: rgba(169, 126, 38, 0.18);
+      border-color: var(--glass-border-active);
+    }
+
+    #playPauseBtn svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      #playPauseBtn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50% !important;
+        left: 16px;
+      }
+      #playPauseBtn svg { width: 16px; height: 16px; }
+    }
+
+    @supports (bottom: env(safe-area-inset-bottom)) {
+      @media (max-width: 768px) {
+        #playPauseBtn {
+          bottom: calc(80px + env(safe-area-inset-bottom));
+        }
+      }
+    }
+
+    /* Hide canvas scene */
+    .scene { display: none; }
+
+    /* ── iOS tap-to-start overlay ── */
+    #iosTapOverlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 999998;
+      background: #040a05;
+      flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+    }
+    #iosTapOverlay.show { display: flex; }
+
+    #iosTapOverlay .tap-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px; font-weight: 300; letter-spacing: 0.08em;
+      color: var(--text-primary);
+    }
+    #iosTapOverlay .tap-eyebrow {
+      font-family: 'Cinzel', serif; font-size: 11px;
+      letter-spacing: 0.35em; color: var(--gold-light);
+      text-transform: uppercase;
+    }
+    #iosTapOverlay .tap-sub {
+      font-family: 'Jost', sans-serif; font-size: 10px;
+      letter-spacing: 0.18em; color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    #iosTapOverlay button {
+      font-family: 'Jost', sans-serif;
+      font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--gold-light);
+      background: rgba(169,126,38,0.10);
+      border: 1px solid var(--glass-border-hover);
+      border-radius: 30px; padding: 14px 32px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    #iosTapOverlay button:active {
+      background: rgba(169,126,38,0.22);
+      border-color: var(--glass-border-active);
+    }
+
+    /* ── 360 View button — mobile ── */
+    @media (max-width: 768px) {
+      #btn360View {
+        bottom: calc(90px + env(safe-area-inset-bottom, 0px)) !important;
+        right: 16px !important;
+        padding: 8px 14px !important;
+        font-size: 10px !important;
+        letter-spacing: 0.18em !important;
+        gap: 6px !important;
+      }
+      #btn360View svg { width: 14px; height: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Canvas scene hidden (no longer used) -->
+  <div class="scene">
+    <canvas id="bgCanvas" class="bg-canvas"></canvas>
+  </div>
+
+  <!-- Full-screen autoplay video (no loop — plays once then stops) -->
+  <video
+    id="bgVideo"
+    src="Subpages/garden-1/scrub.mp4"
+    autoplay
+    muted
+    playsinline
+    webkit-playsinline
+    preload="auto"
+  ></video>
+
+  <!-- Play / Pause button — centered above bottom nav -->
+  <button id="playPauseBtn" aria-label="Play / Pause" title="Play / Pause">
+    <!-- Pause icon (shown while playing) -->
+    <svg id="iconPause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" stroke="none"/>
+      <rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" stroke="none"/>
+    </svg>
+    <!-- Play icon (shown while paused / ended) -->
+    <svg id="iconPlay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+      <polygon points="5,3 19,12 5,21" fill="currentColor" stroke="none"/>
+    </svg>
+  </button>
+
+  <!-- Thin loading bar at top -->
+  <div id="loadBar" style="
+    position:fixed;top:0;left:0;width:0%;height:2px;z-index:9999;
+    background:linear-gradient(to right,rgba(169,126,38,0.40),rgba(218,185,95,1));
+    transition:width 0.15s linear;pointer-events:none;
+  "></div>
+
+  <!-- FULL SCREEN LOADER -->
+  <div id="siteLoader" style="
+    position:fixed;inset:0;z-index:99999;
+    background:#040a05;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+    transition:opacity 0.8s ease;
+  ">
+    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.35em;color:rgba(201,168,76,0.60);text-transform:uppercase;margin-bottom:4px;">Estate Collection</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:rgba(245,240,228,0.96);letter-spacing:0.08em;">Leo's</div>
+    <div style="width:180px;height:1px;background:rgba(169,126,38,0.15);border-radius:1px;overflow:hidden;margin-top:8px;">
+      <div id="loaderFill" style="
+        height:100%;width:0%;
+        background:linear-gradient(to right,rgba(169,126,38,0.35),rgba(218,185,95,0.95));
+        border-radius:1px;
+        transition:width 0.05s linear;
+      "></div>
+    </div>
+    <div id="loaderPct" style="font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.2em;color:rgba(169,126,38,0.55);margin-top:2px;">0%</div>
+  </div>
+
+  <!-- iOS tap-to-start overlay -->
+  <div id="iosTapOverlay">
+    <div class="tap-eyebrow">Estate Collection</div>
+    <div class="tap-title">Leo's</div>
+    <div class="tap-sub">Tap to begin experience</div>
+    <button id="iosTapBtn">Begin Experience</button>
+  </div>
+
+  <!-- 360 VIEW BUTTON -->
+  <a id="btn360View" href="../../garden/index.html?room=1" title="360° View"
+    style="
+      position:fixed;
+      bottom:80px;
+      right:24px;
+      z-index:900;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 20px;
+      border-radius:30px;
+      background:rgba(3,10,5,0.76);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      border:1px solid rgba(169,126,38,0.38);
+      box-shadow:0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(201,168,76,0.10);
+      color:rgba(201,168,76,0.85);
+      font-family:'Jost',sans-serif;
+      font-size:11px;
+      font-weight:400;
+      letter-spacing:0.22em;
+      text-transform:uppercase;
+      text-decoration:none;
+      cursor:pointer;
+      transition:background 0.2s, border-color 0.2s, transform 0.15s;
+      -webkit-tap-highlight-color:transparent;
+    "
+    onmouseenter="this.style.background='rgba(169,126,38,0.18)';this.style.borderColor='rgba(201,168,76,0.70)';this.style.boxShadow='0 4px 24px rgba(169,126,38,0.18)';"
+    onmouseleave="this.style.background='rgba(3,10,5,0.76)';this.style.borderColor='rgba(169,126,38,0.38)';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.5)';"
+    ontouchstart="this.style.background='rgba(169,126,38,0.22)';this.style.borderColor='rgba(218,185,95,0.85)';"
+    ontouchend="this.style.background='rgba(3,10,5,0.76)';this.style.borderColor='rgba(169,126,38,0.38)';"
+  >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9"/>
+      <path d="M17 3l3 3-3 3"/>
+      <ellipse cx="12" cy="12" rx="9" ry="4"/>
+    </svg>
+    360 View
+  </a>
+
+  <!-- BACK BUTTON -->
+  <div class="back-btn" id="backBtn" title="Go Back"
+    style="position:fixed;top:16px;left:16px;z-index:900;width:38px;height:38px;border-radius:50%;
+           background:rgba(3,10,5,0.76);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+           border:1px solid rgba(169,126,38,0.28);display:flex;align-items:center;justify-content:center;
+           box-shadow:0 4px 20px rgba(0,0,0,0.5);cursor:pointer;color:rgba(201,168,76,0.85);transition:background .25s,border-color .25s;">
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="12 16 6 10 12 4" />
+    </svg>
+  </div>
+
+  <!-- BOTTOM NAV: injected by JS (desktop=full bar, mobile=circle) -->
+  <div id="bottomNavContainer"></div>
+
+  <script>
+    // ═══════════════════════════════════════════════════
+    // CONFIG
+    // ═══════════════════════════════════════════════════
+    const IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const IS_IOS    = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    // ═══════════════════════════════════════════════════
+    // VIDEO + PLAY/PAUSE
+    // ═══════════════════════════════════════════════════
+    const bgVideo       = document.getElementById('bgVideo');
+    const playPauseBtn  = document.getElementById('playPauseBtn');
+    const iconPlay      = document.getElementById('iconPlay');
+    const iconPause     = document.getElementById('iconPause');
+    const iosTapOverlay = document.getElementById('iosTapOverlay');
+    const iosTapBtn     = document.getElementById('iosTapBtn');
+    const loaderEl      = document.getElementById('siteLoader');
+    const loaderFill    = document.getElementById('loaderFill');
+    const loaderPct     = document.getElementById('loaderPct');
+    const loadBar       = document.getElementById('loadBar');
+
+    function updatePlayPauseIcons() {
+      if (bgVideo.paused) {
+        iconPause.style.display = 'none';
+        iconPlay.style.display  = 'block';
+        playPauseBtn.classList.add('paused');
+      } else {
+        iconPlay.style.display  = 'none';
+        iconPause.style.display = 'block';
+        playPauseBtn.classList.remove('paused');
+      }
+    }
+
+    playPauseBtn.addEventListener('click', () => {
+      if (bgVideo.paused) {
+        bgVideo.play();
+      } else {
+        bgVideo.pause();
+      }
+    });
+
+    bgVideo.addEventListener('play',  updatePlayPauseIcons);
+    bgVideo.addEventListener('pause', updatePlayPauseIcons);
+
+    // Video ends — stop on last frame, show play icon
+    bgVideo.addEventListener('ended', () => {
+      bgVideo.pause();
+      updatePlayPauseIcons();
+    });
+
+    updatePlayPauseIcons();
+
+    // ── Loader: 3s minimum ──
+    let timerDone = false;
+    const LOADER_MS   = 3000;
+    const loaderStart = performance.now();
+
+    function tickLoader() {
+      const elapsed = performance.now() - loaderStart;
+      const timePct = Math.min(elapsed / LOADER_MS, 1);
+      let bufPct = 0;
+      if (bgVideo.buffered.length && bgVideo.duration) {
+        bufPct = bgVideo.buffered.end(bgVideo.buffered.length - 1) / bgVideo.duration;
+      }
+      const combined = Math.max(timePct, bufPct * 0.95);
+      loaderFill.style.width = Math.round(combined * 100) + '%';
+      loaderPct.textContent  = Math.round(combined * 100) + '%';
+      if (timePct < 1) requestAnimationFrame(tickLoader);
+    }
+    requestAnimationFrame(tickLoader);
+
+    setTimeout(() => { timerDone = true; tryHideLoader(); }, LOADER_MS);
+    bgVideo.addEventListener('canplaythrough', tryHideLoader);
+    bgVideo.addEventListener('playing',        tryHideLoader);
+
+    function tryHideLoader() {
+      if (!timerDone) return;
+      loaderFill.style.width = '100%';
+      loaderPct.textContent  = '100%';
+      loadBar.style.width    = '100%';
+      setTimeout(() => {
+        if (loaderEl && loaderEl.parentNode) {
+          loaderEl.style.opacity = '0';
+          loaderEl.style.pointerEvents = 'none';
+          setTimeout(() => { if (loaderEl && loaderEl.parentNode) loaderEl.remove(); }, 800);
+        }
+        loadBar.style.opacity = '0';
+        setTimeout(() => { if (loadBar && loadBar.parentNode) loadBar.remove(); }, 600);
+      }, 200);
+    }
+
+    // ── iOS autoplay blocked → tap overlay ──
+    const playPromise = bgVideo.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        if (loaderEl) {
+          loaderEl.style.opacity = '0';
+          loaderEl.style.pointerEvents = 'none';
+        }
+        iosTapOverlay.classList.add('show');
+      });
+    }
+
+    iosTapBtn.addEventListener('click', () => {
+      iosTapOverlay.classList.remove('show');
+      if (loaderEl) {
+        loaderEl.style.opacity = '1';
+        loaderEl.style.pointerEvents = 'auto';
+      }
+      bgVideo.play().catch(() => {});
+    });
+
+    // ═══════════════════════════════════════════════════
+    // BACK BUTTON
+    // ═══════════════════════════════════════════════════
+    document.getElementById('backBtn').addEventListener('click', () => {
+      if (document.referrer) window.history.back(); else window.location.href = '/';
+    });
+
+    // ═══════════════════════════════════════════════════
+    // BOTTOM NAV — desktop: full bar | mobile: circle only
+    // ═══════════════════════════════════════════════════
+    (function() {
+      const isMobile = window.innerWidth <= 768;
+      const container = document.getElementById('bottomNavContainer');
+
+      if (isMobile) {
+        // ── MOBILE: inject a standalone circle button, no nav bar ──
+        const btn = document.createElement('button');
+        btn.id = 'mobileHomeBtn';
+        btn.setAttribute('aria-label', 'Home');
+        btn.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" width="22" height="22"><path d="M3 9.5L10 3l7 6.5V18H13v-4.5H7V18H3V9.5z"/></svg>';
+        btn.style.cssText = [
+          'position:fixed',
+          'bottom:24px',
+          'left:50%',
+          'transform:translateX(-50%)',
+          'z-index:900',
+          'width:56px',
+          'height:56px',
+          'border-radius:50%',
+          'background:rgba(3,10,5,0.88)',
+          'border:1px solid rgba(169,126,38,0.45)',
+          'box-shadow:0 4px 24px rgba(0,0,0,0.6)',
+          'display:flex',
+          'align-items:center',
+          'justify-content:center',
+          'cursor:pointer',
+          'color:rgba(201,168,76,0.85)',
+          'backdrop-filter:blur(20px)',
+          '-webkit-backdrop-filter:blur(20px)',
+          'padding:0',
+          'outline:none',
+          '-webkit-tap-highlight-color:transparent'
+        ].join(';');
+        btn.addEventListener('click', () => { window.location.href = 'index.html'; });
+        btn.addEventListener('touchstart', function() {
+          this.style.background = 'rgba(169,126,38,0.22)';
+          this.style.borderColor = 'rgba(218,185,95,0.85)';
+        }, {passive:true});
+        btn.addEventListener('touchend', function() {
+          this.style.background = 'rgba(3,10,5,0.88)';
+          this.style.borderColor = 'rgba(169,126,38,0.45)';
+        }, {passive:true});
+        container.appendChild(btn);
+
+      } else {
+        // ── DESKTOP: full nav bar ──
+        const nav = document.createElement('div');
+        nav.className = 'bottom-nav';
+        nav.id = 'bottomNav';
+        nav.innerHTML = '<div class="nav-item active" id="nav-home"><svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 9.5L10 3l7 6.5V18H13v-4.5H7V18H3V9.5z"/></svg>Home</div>';
+        nav.addEventListener('click', e => {
+          const item = e.target.closest('.nav-item');
+          if (!item) return;
+          if (item.id === 'nav-home') { window.location.href = 'index.html'; return; }
+          document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+          item.classList.add('active');
+        });
+        container.appendChild(nav);
+      }
+    })();
+
+  </script>
+</body>
+</html>
