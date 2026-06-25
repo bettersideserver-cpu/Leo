@@ -325,7 +325,15 @@
     // BACK BUTTON
     // ═══════════════════════════════════════════════════
     document.getElementById('backBtn').addEventListener('click', () => {
-      if (document.referrer) window.history.back(); else window.location.href = '/';
+      const ref = sessionStorage.getItem('tourReferrer');
+      if (ref) {
+        sessionStorage.removeItem('tourReferrer');
+        window.location.href = ref;
+      } else {
+        // Always go to the main map page directly — never history.back(),
+        // which would step back into the 360 tour and create a loop.
+        window.location.href = 'index.html?from=map';
+      }
     });
 
     // ═══════════════════════════════════════════════════
@@ -393,5 +401,17 @@
     })();
 
   </script>
+<script>
+(function() {
+  var btn = document.getElementById('btn360View');
+  if (btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      sessionStorage.setItem('tourReferrer', window.location.href);
+      window.location.href = btn.getAttribute('href');
+    });
+  }
+})();
+</script>
 </body>
 </html>
