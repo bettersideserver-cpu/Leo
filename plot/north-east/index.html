@@ -604,31 +604,42 @@
     /* ── Plot size filter slider ─────────────────────────── */
     .plot-filter {
       position: fixed;
-      bottom: 28px;
-      left: 50%;
-      transform: translateX(-50%);
+      bottom: 20px;
+      right: 16px;
+      left: auto;
+      transform: none;
       z-index: 500;
       background: var(--dark-glass);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--gold-border);
-      border-radius: 14px;
-      padding: 14px 22px 16px;
-      min-width: 280px;
-      max-width: 90vw;
+      border-radius: 12px;
+      padding: 10px 14px 12px;
+      width: 200px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 7px;
       pointer-events: all;
+    }
+
+    .filter-label {
+      font-family: 'Jost', sans-serif;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      text-align: center;
     }
 
     .range-values {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-family: 'Jost', sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 300;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.04em;
       color: var(--gold-dim);
     }
 
@@ -639,49 +650,275 @@
     #minValue::before { content: 'Min: '; }
     #maxValue::before { content: 'Max: '; }
 
+    /* Dual-range track container */
     .slider-wrap {
       position: relative;
-      height: 28px;
+      height: 36px;
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      align-items: center;
+    }
+
+    /* Background track */
+    .slider-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(30, 100, 50, 0.35);
+      pointer-events: none;
+    }
+
+    /* Highlighted fill between thumbs */
+    .slider-range-fill {
+      position: absolute;
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, rgba(74,222,128,0.5), #4ade80);
+      pointer-events: none;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0;
+      right: 0;
     }
 
     .slider-wrap input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
+      position: absolute;
       width: 100%;
       height: 4px;
       border-radius: 2px;
-      background: rgba(30, 100, 50, 0.35);
+      background: transparent;
       outline: none;
       cursor: pointer;
+      pointer-events: none;
     }
 
     .slider-wrap input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
+      pointer-events: all;
       width: 18px;
       height: 18px;
       border-radius: 50%;
       background: #4ade80;
-      border: 2px solid rgba(10, 14, 10, 0.8);
+      border: 2px solid rgba(10, 14, 10, 0.85);
       box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
-      cursor: pointer;
+      cursor: grab;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .slider-wrap input[type="range"]:active::-webkit-slider-thumb {
+      cursor: grabbing;
+      transform: scale(1.15);
+      box-shadow: 0 0 14px rgba(74, 222, 128, 0.9);
     }
 
     .slider-wrap input[type="range"]::-moz-range-thumb {
+      pointer-events: all;
       width: 18px;
       height: 18px;
       border-radius: 50%;
       background: #4ade80;
-      border: 2px solid rgba(10, 14, 10, 0.8);
-      cursor: pointer;
+      border: 2px solid rgba(10, 14, 10, 0.85);
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+      cursor: grab;
     }
 
-    @media (max-width: 640px) {
+    .slider-wrap input[type="range"]::-moz-range-track {
+      background: transparent;
+    }
+
+    /* ── Mobile slider toggle button ── */
+    .slider-toggle-btn {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      /* Toggle button — visible on mobile */
+      .slider-toggle-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        bottom: 16px;
+        right: 12px;
+        z-index: 501;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--dark-glass);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--gold-border);
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(74,222,128,0.25);
+      }
+
+      .slider-toggle-btn svg {
+        width: 18px;
+        height: 18px;
+        stroke: #4ade80;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+
+      /* Slider panel hidden by default on mobile */
       .plot-filter {
-        bottom: 70px;
-        min-width: 240px;
+        bottom: 60px;
+        right: 12px;
+        width: 160px;
+        padding: 8px 10px 10px;
+        gap: 5px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(8px) scale(0.96);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+
+      .plot-filter.slider-open {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0) scale(1);
+      }
+
+      .filter-label {
+        font-size: 8px;
+      }
+
+      .range-values {
+        font-size: 10px;
+      }
+
+      .slider-wrap {
+        height: 30px;
+      }
+
+      .slider-wrap input[type="range"]::-webkit-slider-thumb {
+        width: 16px;
+        height: 16px;
+      }
+
+      .slider-wrap input[type="range"]::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    /* Landscape mobile — targets landscape orientation with limited height (phones in landscape) */
+    @media (orientation: landscape) and (max-height: 600px) {
+      /* Toggle button — always visible in landscape mobile, high z-index to avoid being hidden */
+      .slider-toggle-btn {
+        display: flex !important;
+        position: fixed !important;
+        bottom: 10px !important;
+        right: 10px !important;
+        z-index: 999 !important;
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 50%;
+        background: var(--dark-glass);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--gold-border);
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(74,222,128,0.25);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .slider-toggle-btn svg {
+        width: 15px !important;
+        height: 15px !important;
+        stroke: #4ade80;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+
+      /* Panel opens upward from the button */
+      .plot-filter {
+        bottom: 50px !important;
+        right: 10px !important;
+        left: auto !important;
+        width: 150px !important;
+        padding: 7px 10px 9px !important;
+        gap: 4px !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: translateY(8px) scale(0.96) !important;
+        transition: opacity 0.2s ease, transform 0.2s ease !important;
+      }
+
+      .plot-filter.slider-open {
+        opacity: 1 !important;
+        pointer-events: all !important;
+        transform: translateY(0) scale(1) !important;
+      }
+
+      .filter-label {
+        font-size: 7px;
+      }
+
+      .range-values {
+        font-size: 9px;
+      }
+
+      .slider-wrap {
+        height: 26px;
+      }
+
+      .slider-wrap input[type="range"]::-webkit-slider-thumb {
+        width: 14px;
+        height: 14px;
+      }
+
+      .slider-wrap input[type="range"]::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    /* Landscape on wider screens (tablets in landscape) — also show toggle */
+    @media (orientation: landscape) and (min-height: 601px) and (max-width: 1024px) {
+      .slider-toggle-btn {
+        display: flex !important;
+        position: fixed !important;
+        bottom: 10px !important;
+        right: 10px !important;
+        z-index: 999 !important;
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 50%;
+        background: var(--dark-glass);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--gold-border);
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(74,222,128,0.25);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .slider-toggle-btn svg {
+        width: 15px !important;
+        height: 15px !important;
+      }
+
+      .plot-filter {
+        bottom: 50px !important;
+        right: 10px !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: translateY(8px) scale(0.96) !important;
+        transition: opacity 0.2s ease, transform 0.2s ease !important;
+      }
+
+      .plot-filter.slider-open {
+        opacity: 1 !important;
+        pointer-events: all !important;
+        transform: translateY(0) scale(1) !important;
       }
     }
 
@@ -1081,12 +1318,18 @@
   </svg>
   </div><!-- /map-wrapper -->
 
+<button class="slider-toggle-btn" id="sliderToggleBtn" aria-label="Toggle plot size filter">
+  <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2.5" style="fill:#4ade80;stroke:none"/><circle cx="15" cy="12" r="2.5" style="fill:#4ade80;stroke:none"/><circle cx="9" cy="18" r="2.5" style="fill:#4ade80;stroke:none"/></svg>
+</button>
 <div class="plot-filter">
+  <div class="filter-label">Plot Size (sq.yd)</div>
   <div class="range-values">
     <span id="minValue">100</span>
     <span id="maxValue">550</span>
   </div>
   <div class="slider-wrap">
+    <div class="slider-track"></div>
+    <div class="slider-range-fill" id="rangeFill"></div>
     <input type="range" id="minSlider" min="100" max="550" value="100">
     <input type="range" id="maxSlider" min="100" max="550" value="550">
   </div>
@@ -1721,6 +1964,19 @@
   minValue.textContent = min;
   maxValue.textContent = max;
 
+  // Update the visual range fill between the two thumbs
+  const sliderMin = parseFloat(minSlider.min);
+  const sliderMax = parseFloat(minSlider.max);
+  const total = sliderMax - sliderMin;
+  const leftPct  = ((Math.min(min, max) - sliderMin) / total) * 100;
+  const rightPct = ((sliderMax - Math.max(min, max)) / total) * 100;
+  const rangeFill = document.getElementById('rangeFill');
+  if (rangeFill) {
+    rangeFill.style.left  = leftPct + '%';
+    rangeFill.style.right = rightPct + '%';
+    rangeFill.style.width = 'auto';
+  }
+
   document.querySelectorAll(".plot-shape").forEach(plot => {
     const plotId = plot.dataset.plot;
     const size = getPlotSize(plotId);
@@ -1745,6 +2001,37 @@
     const maxSliderEl = document.getElementById('maxSlider');
     if (minSliderEl) minSliderEl.addEventListener('input', updatePlotFilter);
     if (maxSliderEl) maxSliderEl.addEventListener('input', updatePlotFilter);
+    // Init fill bar visually but don't filter plots until user moves slider
+    (function initFill() {
+      const sliderMin = parseFloat(minSlider.min);
+      const sliderMax = parseFloat(minSlider.max);
+      const total = sliderMax - sliderMin;
+      const leftPct  = 0;
+      const rightPct = 0;
+      const rangeFill = document.getElementById('rangeFill');
+      if (rangeFill) {
+        rangeFill.style.left  = '0%';
+        rangeFill.style.right = '0%';
+        rangeFill.style.width = 'auto';
+      }
+      if (minSlider) minValue.textContent = minSlider.value;
+      if (maxSlider) maxValue.textContent = maxSlider.value;
+    })();
+
+    /* ── Slider toggle (mobile only) ── */
+    const sliderToggleBtn = document.getElementById('sliderToggleBtn');
+    const plotFilterEl = document.querySelector('.plot-filter');
+    if (sliderToggleBtn && plotFilterEl) {
+      sliderToggleBtn.addEventListener('click', function() {
+        plotFilterEl.classList.toggle('slider-open');
+      });
+      // Close when tapping outside
+      document.addEventListener('touchstart', function(e) {
+        if (!plotFilterEl.contains(e.target) && !sliderToggleBtn.contains(e.target)) {
+          plotFilterEl.classList.remove('slider-open');
+        }
+      }, { passive: true });
+    }
 
 
     /* ── 360° Hotspot interaction ── */

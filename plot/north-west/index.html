@@ -599,6 +599,348 @@
     0%   { stroke-width: 8; opacity: 0.9; r: 62px; }
     100% { stroke-width: 2; opacity: 0;   r: 130px; }
   }
+
+    /* ── Plot shape transition (for filter animations) ── */
+    .plot-shape {
+      transition: fill 0.3s ease, stroke 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+      transform-origin: center;
+      transform-box: fill-box;
+    }
+
+    .plot-shape.size-match {
+      fill: rgba(74, 222, 128, .65) !important;
+      stroke: #4ade80 !important;
+      stroke-width: 2.5px !important;
+      filter: drop-shadow(0 0 18px rgba(74, 222, 128, 1)) !important;
+      animation: plotPopOut 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .plot-shape.size-exit {
+      animation: plotFadeOut 0.25s ease forwards;
+    }
+
+    @keyframes plotPopOut {
+      0%   { transform: scale(1);    opacity: 0.3; }
+      60%  { transform: scale(1.08); opacity: 1;   }
+      100% { transform: scale(1.04); opacity: 1;   }
+    }
+
+    @keyframes plotFadeOut {
+      0%   { opacity: 1; }
+      100% { opacity: 0.15; fill: transparent; stroke: transparent; filter: none; }
+    }
+
+    /* ── Plot size filter slider ─────────────────────────── */
+    .plot-filter {
+      position: fixed;
+      bottom: 20px;
+      right: 16px;
+      left: auto;
+      transform: none;
+      z-index: 500;
+      background: var(--dark-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--gold-border);
+      border-radius: 12px;
+      padding: 10px 14px 12px;
+      width: 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      pointer-events: all;
+    }
+
+    .filter-label {
+      font-family: 'Jost', sans-serif;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      text-align: center;
+    }
+
+    .range-values {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Jost', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--gold-dim);
+    }
+
+    .range-values span::before {
+      content: '';
+    }
+
+    #minValue::before { content: 'Min: '; }
+    #maxValue::before { content: 'Max: '; }
+
+    .slider-wrap {
+      position: relative;
+      height: 36px;
+      display: flex;
+      align-items: center;
+    }
+
+    .slider-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(30, 100, 50, 0.35);
+      pointer-events: none;
+    }
+
+    .slider-range-fill {
+      position: absolute;
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, rgba(74,222,128,0.5), #4ade80);
+      pointer-events: none;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0;
+      right: 0;
+    }
+
+    .slider-wrap input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      position: absolute;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: transparent;
+      outline: none;
+      cursor: pointer;
+      pointer-events: none;
+    }
+
+    .slider-wrap input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      pointer-events: all;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #4ade80;
+      border: 2px solid rgba(10, 14, 10, 0.85);
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+      cursor: grab;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .slider-wrap input[type="range"]:active::-webkit-slider-thumb {
+      cursor: grabbing;
+      transform: scale(1.15);
+      box-shadow: 0 0 14px rgba(74, 222, 128, 0.9);
+    }
+
+    .slider-wrap input[type="range"]::-moz-range-thumb {
+      pointer-events: all;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #4ade80;
+      border: 2px solid rgba(10, 14, 10, 0.85);
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+      cursor: grab;
+    }
+
+    .slider-wrap input[type="range"]::-moz-range-track {
+      background: transparent;
+    }
+
+    /* ── Mobile slider toggle button ── */
+    .slider-toggle-btn {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .slider-toggle-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        bottom: 16px;
+        right: 12px;
+        z-index: 501;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--dark-glass);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--gold-border);
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(74,222,128,0.25);
+      }
+
+      .slider-toggle-btn svg {
+        width: 18px;
+        height: 18px;
+        stroke: #4ade80;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+
+      .plot-filter {
+        bottom: 60px;
+        right: 12px;
+        width: 160px;
+        padding: 8px 10px 10px;
+        gap: 5px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(8px) scale(0.96);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+
+      .plot-filter.slider-open {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0) scale(1);
+      }
+
+      .filter-label {
+        font-size: 8px;
+      }
+
+      .range-values {
+        font-size: 10px;
+      }
+
+      .slider-wrap {
+        height: 30px;
+      }
+
+      .slider-wrap input[type="range"]::-webkit-slider-thumb {
+        width: 16px;
+        height: 16px;
+      }
+
+      .slider-wrap input[type="range"]::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 600px) {
+      .slider-toggle-btn {
+        display: flex !important;
+        position: fixed !important;
+        bottom: 10px !important;
+        right: 10px !important;
+        z-index: 999 !important;
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 50%;
+        background: var(--dark-glass);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--gold-border);
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(74,222,128,0.25);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .slider-toggle-btn svg {
+        width: 15px !important;
+        height: 15px !important;
+        stroke: #4ade80;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+
+      .plot-filter {
+        bottom: 50px !important;
+        right: 10px !important;
+        left: auto !important;
+        width: 150px !important;
+        padding: 7px 10px 9px !important;
+        gap: 4px !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: translateY(8px) scale(0.96) !important;
+        transition: opacity 0.2s ease, transform 0.2s ease !important;
+      }
+
+      .plot-filter.slider-open {
+        opacity: 1 !important;
+        pointer-events: all !important;
+        transform: translateY(0) scale(1) !important;
+      }
+
+      .filter-label {
+        font-size: 7px;
+      }
+
+      .range-values {
+        font-size: 9px;
+      }
+
+      .slider-wrap {
+        height: 26px;
+      }
+
+      .slider-wrap input[type="range"]::-webkit-slider-thumb {
+        width: 14px;
+        height: 14px;
+      }
+
+      .slider-wrap input[type="range"]::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    @media (orientation: landscape) and (min-height: 601px) and (max-width: 1024px) {
+      .slider-toggle-btn {
+        display: flex !important;
+        position: fixed !important;
+        bottom: 10px !important;
+        right: 10px !important;
+        z-index: 999 !important;
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 50%;
+        background: var(--dark-glass);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--gold-border);
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(74,222,128,0.25);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .slider-toggle-btn svg {
+        width: 15px !important;
+        height: 15px !important;
+      }
+
+      .plot-filter {
+        bottom: 50px !important;
+        right: 10px !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: translateY(8px) scale(0.96) !important;
+        transition: opacity 0.2s ease, transform 0.2s ease !important;
+      }
+
+      .plot-filter.slider-open {
+        opacity: 1 !important;
+        pointer-events: all !important;
+        transform: translateY(0) scale(1) !important;
+      }
+    }
   </style>
 </head>
 
@@ -964,6 +1306,23 @@
 
     
   </div><!-- /map-wrapper -->
+  <button class="slider-toggle-btn" id="sliderToggleBtn" aria-label="Toggle plot size filter">
+    <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2.5" style="fill:#4ade80;stroke:none"/><circle cx="15" cy="12" r="2.5" style="fill:#4ade80;stroke:none"/><circle cx="9" cy="18" r="2.5" style="fill:#4ade80;stroke:none"/></svg>
+  </button>
+  <div class="plot-filter">
+    <div class="filter-label">Plot Size (sq.yd)</div>
+    <div class="range-values">
+      <span id="minValue">100</span>
+      <span id="maxValue">550</span>
+    </div>
+    <div class="slider-wrap">
+      <div class="slider-track"></div>
+      <div class="slider-range-fill" id="rangeFill"></div>
+      <input type="range" id="minSlider" min="100" max="550" value="100">
+      <input type="range" id="maxSlider" min="100" max="550" value="550">
+    </div>
+  </div>
+
 
   <!-- MOUSE TOOLTIP -->
   <div class="tooltip" id="tooltip"></div>
@@ -1639,6 +1998,87 @@
     });
   })();
 
+
+    function getPlotSize(plotId) {
+      const d = PLOT_DATA[plotId];
+      if (!d || !d.plotSize) return 0;
+      return parseFloat(d.plotSize) || 0;
+    }
+
+    function updatePlotFilter() {
+      let min = parseFloat(minSlider.value);
+      let max = parseFloat(maxSlider.value);
+
+      if (min > max) {
+        [min, max] = [max, min];
+      }
+
+      minValue.textContent = min;
+      maxValue.textContent = max;
+
+      const sliderMin = parseFloat(minSlider.min);
+      const sliderMax = parseFloat(minSlider.max);
+      const total = sliderMax - sliderMin;
+      const leftPct  = ((Math.min(min, max) - sliderMin) / total) * 100;
+      const rightPct = ((sliderMax - Math.max(min, max)) / total) * 100;
+      const rangeFill = document.getElementById('rangeFill');
+      if (rangeFill) {
+        rangeFill.style.left  = leftPct + '%';
+        rangeFill.style.right = rightPct + '%';
+        rangeFill.style.width = 'auto';
+      }
+
+      document.querySelectorAll(".plot-shape").forEach(plot => {
+        const plotId = plot.dataset.plot;
+        const size = getPlotSize(plotId);
+
+        plot.classList.remove("size-match");
+        plot.classList.remove("size-exit");
+
+        void plot.getBoundingClientRect();
+
+        if (size >= min && size <= max) {
+          plot.classList.add("size-match");
+        } else {
+          plot.classList.add("size-exit");
+        }
+      });
+    }
+
+    /* ── Wire slider events ── */
+    const minSliderEl = document.getElementById('minSlider');
+    const maxSliderEl = document.getElementById('maxSlider');
+    if (minSliderEl) minSliderEl.addEventListener('input', updatePlotFilter);
+    if (maxSliderEl) maxSliderEl.addEventListener('input', updatePlotFilter);
+
+    (function initFill() {
+      const rangeFill = document.getElementById('rangeFill');
+      if (rangeFill) {
+        rangeFill.style.left  = '0%';
+        rangeFill.style.right = '0%';
+        rangeFill.style.width = 'auto';
+      }
+      const minSlider = document.getElementById('minSlider');
+      const maxSlider = document.getElementById('maxSlider');
+      const minValue  = document.getElementById('minValue');
+      const maxValue  = document.getElementById('maxValue');
+      if (minSlider && minValue) minValue.textContent = minSlider.value;
+      if (maxSlider && maxValue) maxValue.textContent = maxSlider.value;
+    })();
+
+    /* ── Slider toggle (mobile only) ── */
+    const sliderToggleBtn = document.getElementById('sliderToggleBtn');
+    const plotFilterEl = document.querySelector('.plot-filter');
+    if (sliderToggleBtn && plotFilterEl) {
+      sliderToggleBtn.addEventListener('click', function() {
+        plotFilterEl.classList.toggle('slider-open');
+      });
+      document.addEventListener('touchstart', function(e) {
+        if (!plotFilterEl.contains(e.target) && !sliderToggleBtn.contains(e.target)) {
+          plotFilterEl.classList.remove('slider-open');
+        }
+      }, { passive: true });
+    }
   </script>
 
 </body>
