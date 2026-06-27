@@ -2803,7 +2803,7 @@
       flex-direction: column;
       align-items: flex-start;
       justify-content: flex-end;
-      background: transparent;
+      background: #0a0e0b;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.7s ease;
@@ -4144,7 +4144,7 @@
 
 
 
-  <img class="option-overlay-img" id="optionOverlayImg" src="overlay.webp" alt="" />
+  <img class="option-overlay-img" id="optionOverlayImg" src="" alt="" />
 
   <div class="svg-overlay" id="svgOverlay">
 
@@ -9015,8 +9015,13 @@
       var _scrubBar = document.getElementById('mobScrubBar');
       if (_scrubBar) _scrubBar.classList.remove('mob-scrub-visible');
 
-      // Show overlay image
-      if (_optionOverlayImg) _optionOverlayImg.classList.add('visible');
+      // Show overlay image (lazy-load src to prevent flash on page load)
+      if (_optionOverlayImg) {
+        if (!_optionOverlayImg.src || _optionOverlayImg.src === window.location.href) {
+          _optionOverlayImg.src = 'overlay.webp';
+        }
+        _optionOverlayImg.classList.add('visible');
+      }
       document.body.classList.add('overlay-img-active');
 
       // Mobile landscape: hide slider + pill bars, shift overlay image up
