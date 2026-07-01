@@ -1,3 +1,6 @@
+let startMarker = null;
+let endMarker = null;
+
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 
@@ -17,14 +20,14 @@ const LOCATION_CONFIGS = {
     zoom: 4,
     projects: [
       {
-        name: "Joganad",
-        coords: [74.9544167, 30.2478333],
-        modelUrl: "model.glb",
-        zoom: 15.9,
+        name: "Leo'z Green City'z Green City",
+        coords: [74.9156232, 30.1636134],
+        // modelUrl: "model.glb",
+        zoom: 14.9,
 
         url: "../index.html?from=map&overlay=overlay.jpg", // 🔥 ADD THIS
 
-        cameraOffset: [450, 260],
+        cameraOffset: [80, -10],
 
         transform: {
           position: [260, -490, -70],
@@ -213,7 +216,7 @@ window.onload = () => {
 
     center: projects[0].coords,
     zoom: projects[0].zoom || 16,
-    bearing: 90,
+    bearing: -80,
     maxZoom: 22
 
 
@@ -292,7 +295,7 @@ function setupProjects() {
     const el = document.createElement('div');
     el.className = 'marker-wrapper';
 
-el.innerHTML = `
+    el.innerHTML = `
   <div class="marker-dot" style="
     width:auto; height:auto;
     padding:6px 12px;
@@ -305,8 +308,8 @@ el.innerHTML = `
     letter-spacing:0.1em; white-space:nowrap;
     text-shadow: 0 0 10px rgba(200,175,120,0.6);
     box-shadow: 0 4px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(200,175,120,0.15);
-  ">JOGANAND</div>
-  <button class="explore-btn">Explore Joganand</button>
+  ">Leo'z Green City</div>
+  <button class="explore-btn">Explore Leo'z Green City</button>
 `;
 
 
@@ -385,7 +388,7 @@ function focusProject(index) {
     center: project.coords,
     zoom: project.zoom || 17,
     pitch: 0,
-    bearing: 90,
+    bearing: -80,
     offset: project.cameraOffset || [0, 0]
   });
 
@@ -675,7 +678,72 @@ function drawRoute(geometry, distance, duration, start, end) {
     }
   });
 
-  // 🔥 Fit full route nicely
+
+
+
+
+
+
+
+  // Remove old markers
+  if (startMarker) startMarker.remove();
+  if (endMarker) endMarker.remove();
+
+  // START MARKER (Landmark)
+
+  const startEl = document.createElement("div");
+
+  startEl.innerHTML = `
+<div style="
+padding:6px 12px;
+border-radius:8px;
+background:rgba(15,13,10,.92);
+border:1px solid rgba(200,175,120,.35);
+color:rgba(235,225,200,.95);
+font-size:12px;
+font-weight:600;
+white-space:nowrap;
+box-shadow:0 8px 25px rgba(0,0,0,.35);
+">
+${window.selectedLandmarkName}
+</div>
+`;
+
+  startMarker = new maplibregl.Marker({
+    element: startEl
+  })
+    .setLngLat(start)
+    .addTo(map);
+
+
+  // END MARKER (PROJECT)
+
+  const endEl = document.createElement("div");
+
+  endEl.innerHTML = `
+<div style="
+padding:6px 12px;
+border-radius:8px;
+background:linear-gradient(
+135deg,
+rgba(30,80,40,.95),
+rgba(15,50,25,.98)
+);
+border:1px solid rgba(200,175,120,.55);
+color:rgba(200,175,120,1);
+font-weight:700;
+white-space:nowrap;
+box-shadow:0 8px 25px rgba(0,0,0,.4);
+">
+Leo'z Green City
+</div>
+`;
+
+  endMarker = new maplibregl.Marker({
+    element: endEl
+  })
+    .setLngLat(end)
+    .addTo(map);  // 🔥 Fit full route nicely
   map.fitBounds([start, end], {
     padding: 100,
     pitch: 0,
@@ -915,12 +983,94 @@ searchBox.addEventListener("input", async () => {
 
 
 
+//NEARBY LANDMARKS
+
+const LANDMARKS = {
+
+  aiims: {
+    name: "AIIMS Bathinda",
+    coords: [74.9450, 30.2110]
+  },
+
+  school: {
+    name: "Silver Oaks School",
+    coords: [74.9380, 30.1800]
+  },
+
+  university: {
+    name: "MRSPTU",
+    coords: [74.9217025, 30.1748526]
+  },
+
+  refinery: {
+    name: "Guru Gobind Singh Refinery",
+    coords: [75.0240, 30.2500]
+  },
+
+  centralUniversity: {
+    name: "Central University of Punjab",
+    coords: [74.9450, 30.2680]
+  },
+
+  greencity: {
+    name: "Green City Square",
+    coords: [74.9120, 30.1600]
+  },
+
+  busstand: {
+    name: "Bathinda Bus Stand",
+    coords: [74.9450, 30.2100]
+  },
+
+  hospital: {
+    name: "Civil Hospital Bathinda",
+    coords: [74.9460, 30.2070]
+  },
+
+  dcoffice: {
+    name: "DC Office Bathinda",
+    coords: [74.9480, 30.2110]
+  },
+
+  airport: {
+    name: "Bathinda Airport",
+    coords: [74.7550, 30.2700]
+  },
+
+  railway: {
+    name: "Bathinda Railway Station",
+    coords: [74.9470, 30.2110]
+  }
+
+};
+
+
+async function routeToLandmark(key) {
+  document.getElementById("clearFilterBtn").style.display = "flex";
+  window.selectedLandmarkName =
+    LANDMARKS[key].name;
+  if (!currentProject) return;
+
+  const landmark = LANDMARKS[key];
+
+  if (!landmark) return;
+
+  const route = await getRoute(
+    landmark.coords,
+    currentProject.coords
+  );
+
+  drawRoute(
+    route.geometry,
+    route.distance,
+    route.duration,
+    landmark.coords,
+    currentProject.coords
+  );
+}
 
 
 
-// ── NEARBY PLACES ─────────────────────────────────────────────
-let nearbyMarkers = [];
-let currentCategory = "hospital";
 
 // 🔥 calculate distance between two lat/lng points in KM
 function getDistanceKm(lat1, lon1, lat2, lon2) {
@@ -944,86 +1094,6 @@ function getDistanceKm(lat1, lon1, lat2, lon2) {
 
 
 
-//   if (!currentProject) return;
-
-//   currentCategory = type;
-
-//   clearNearbyMarkers();
-
-//   const radiusKm =
-//     parseInt(document.getElementById("radiusSlider").value);
-
-//   const service =
-//     new google.maps.places.PlacesService(
-//       document.createElement("div")
-//     );
-
-//   const location =
-//     new google.maps.LatLng(
-//       currentProject.coords[1],
-//       currentProject.coords[0]
-//     );
-// // 🔥 Google Places API expects radius in meters
-//   let request = {
-//     location: location,
-//     radius: radiusKm * 1000
-//   };
-
-//   if (type === "airport") {
-//     request.type = "airport";
-//   }
-//   else if (type === "hospital") {
-//     request.type = "hospital";
-//   }
-//   else if (type === "school") {
-//     request.type = "school";
-//   }
-//   else if (type === "mall") {
-//     request.keyword = "shopping mall";
-//   }
-//   else {
-//     request.keyword = type;
-//   }
-
-//   service.nearbySearch(request, (results, status) => {
-
-//     if (status !== google.maps.places.PlacesServiceStatus.OK) {
-//       alert("No nearby " + type + " found");
-//       return;
-//     }
-
-//     let bounds = new maplibregl.LngLatBounds();
-//     bounds.extend(currentProject.coords);
-
-//     results.forEach(place => {
-
-//       const lat = place.geometry.location.lat();
-//       const lng = place.geometry.location.lng();
-
-//       const marker = new maplibregl.Marker({
-//         color: "#00ffcc"
-//       })
-//         .setLngLat([lng, lat])
-//         .setPopup(
-//           new maplibregl.Popup().setHTML(
-//             `<b>${place.name}</b><br>${place.vicinity}`
-//           )
-//         )
-//         .addTo(map);
-
-//       nearbyMarkers.push(marker);
-
-//       bounds.extend([lng, lat]);
-//     });
-
-//     map.fitBounds(bounds, {
-//       padding: 100,
-//       pitch: 55,
-//       duration: 1500
-//     });
-
-//   });
-// }
 
 
 function clearRoute() {
@@ -1036,11 +1106,24 @@ function clearRoute() {
     map.removeSource('route');
   }
 
-  const info = document.getElementById("route-info");
-
-  if (info) {
-    info.remove();
+  if (startMarker) {
+    startMarker.remove();
+    startMarker = null;
   }
+
+  if (endMarker) {
+    endMarker.remove();
+    endMarker = null;
+  }
+
+  document.getElementById("clearFilterBtn").style.display = "none";
+
+  map.flyTo({
+    center: currentProject.coords,
+    zoom: currentProject.zoom || 14.9,
+    bearing: -80,
+    duration: 1500
+  });
 }
 
 
@@ -1071,7 +1154,7 @@ function clearFilter() {
       center: currentProject.coords,
       zoom: currentProject.zoom || 17,
       pitch: 0,
-      bearing: 90,
+      bearing: -80,
       offset: currentProject.cameraOffset || [0, 0],
       duration: 1500
 
@@ -1225,6 +1308,24 @@ async function searchNearby(type, btn) {
           )
         )
         .addTo(map);
+
+      const endEl = document.createElement("div");
+      endEl.className = "route-marker end-marker";
+      endEl.innerHTML = `
+<div class="marker-card destination">
+  <span class="marker-title">
+    ${window.selectedLandmarkName}
+  </span>
+</div>
+`;
+
+      window.endMarker = new maplibregl.Marker({
+        element: endEl
+      })
+        .setLngLat(start)
+        .addTo(map);
+
+
 
       // Click marker → draw route
       marker.getElement().onclick = async () => {

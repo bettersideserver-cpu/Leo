@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Joganand</title>
+  <title>Leo'z Green City</title>
   <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,26 +26,26 @@
       --bg-0: #0a0907;
       --bg-tint: #0f0d0a;
 
-      --surface-1: rgba(20,18,14,0.72);
-      --surface-2: rgba(15,13,10,0.88);
-      --surface-3: rgba(10,9,7,0.96);
+      --surface-1: rgba(20, 18, 14, 0.72);
+      --surface-2: rgba(15, 13, 10, 0.88);
+      --surface-3: rgba(10, 9, 7, 0.96);
 
-      --ink: rgba(235,225,200,0.95);
-      --ink-mid: rgba(200,175,120,0.80);
-      --ink-dim: rgba(200,175,120,0.55);
-      --ink-faint: rgba(200,175,120,0.35);
-      --ink-trace: rgba(200,175,120,0.12);
+      --ink: rgba(235, 225, 200, 0.95);
+      --ink-mid: rgba(200, 175, 120, 0.80);
+      --ink-dim: rgba(200, 175, 120, 0.55);
+      --ink-faint: rgba(200, 175, 120, 0.35);
+      --ink-trace: rgba(200, 175, 120, 0.12);
 
-      --line: rgba(200,175,120,0.10);
-      --line-hi: rgba(200,175,120,0.20);
+      --line: rgba(200, 175, 120, 0.10);
+      --line-hi: rgba(200, 175, 120, 0.20);
 
-      --gold: rgba(200,175,120,1.0);
-      --gold-deep: rgba(180,150,90,0.90);
-      --gold-bright: rgba(220,195,140,1.0);
-      --gold-soft: rgba(200,175,120,0.09);
-      --gold-tint: rgba(200,175,120,0.14);
-      --line-gold: rgba(200,175,120,0.30);
-      --line-gold-hi: rgba(200,175,120,0.50);
+      --gold: rgba(200, 175, 120, 1.0);
+      --gold-deep: rgba(180, 150, 90, 0.90);
+      --gold-bright: rgba(220, 195, 140, 1.0);
+      --gold-soft: rgba(200, 175, 120, 0.09);
+      --gold-tint: rgba(200, 175, 120, 0.14);
+      --line-gold: rgba(200, 175, 120, 0.30);
+      --line-gold-hi: rgba(200, 175, 120, 0.50);
 
       --forest: #1F7A5C;
       --forest-soft: rgba(31, 122, 92, 0.12);
@@ -57,10 +57,10 @@
       --f-mono: 'JetBrains Mono', monospace;
 
       --blur: blur(22px) saturate(160%);
-      --shadow-xs: 0 2px 6px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.15);
-      --shadow-sm: 0 6px 16px rgba(0,0,0,0.30), 0 2px 4px rgba(0,0,0,0.20);
-      --shadow: 0 14px 36px rgba(0,0,0,0.40), 0 4px 10px rgba(0,0,0,0.25);
-      --shadow-lg: 0 28px 64px rgba(0,0,0,0.55), 0 8px 20px rgba(0,0,0,0.35);
+      --shadow-xs: 0 2px 6px rgba(0, 0, 0, 0.20), 0 1px 2px rgba(0, 0, 0, 0.15);
+      --shadow-sm: 0 6px 16px rgba(0, 0, 0, 0.30), 0 2px 4px rgba(0, 0, 0, 0.20);
+      --shadow: 0 14px 36px rgba(0, 0, 0, 0.40), 0 4px 10px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 28px 64px rgba(0, 0, 0, 0.55), 0 8px 20px rgba(0, 0, 0, 0.35);
 
       --r-xs: 4px;
       --r-sm: 8px;
@@ -90,7 +90,7 @@
       width: 100%;
       height: 100vh;
       background:
-        radial-gradient(ellipse at 30% 20%, rgba(200,175,120,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse at 30% 20%, rgba(200, 175, 120, 0.05) 0%, transparent 55%),
         radial-gradient(ellipse at 70% 80%, rgba(31, 122, 92, 0.04) 0%, transparent 55%),
         var(--bg-0);
     }
@@ -110,7 +110,7 @@
       inset: 0;
       z-index: 901;
       pointer-events: none;
-      background: radial-gradient(ellipse 95% 75% at center, transparent 55%, rgba(0,0,0,0.45) 100%);
+      background: radial-gradient(ellipse 95% 75% at center, transparent 55%, rgba(0, 0, 0, 0.45) 100%);
     }
 
     /* CROSSHAIR */
@@ -311,7 +311,7 @@
 
     #searchBox:focus {
       border-color: var(--line-gold-hi);
-      box-shadow: 0 0 0 3px rgba(200,175,120,0.10), var(--shadow);
+      box-shadow: 0 0 0 3px rgba(200, 175, 120, 0.10), var(--shadow);
       background: var(--surface-3);
     }
 
@@ -341,7 +341,7 @@
       padding: 3px 6px;
       border: 1px solid var(--line-hi);
       border-radius: var(--r-xs);
-      background: rgba(200,175,120,0.03);
+      background: rgba(200, 175, 120, 0.03);
       pointer-events: none;
     }
 
@@ -462,16 +462,16 @@
     }
 
     .filter-btn:hover {
-      background: rgba(200,175,120,0.04);
+      background: rgba(200, 175, 120, 0.04);
       color: var(--ink);
       border-color: var(--line-hi);
     }
 
     .filter-btn.active {
-      background: linear-gradient(180deg, rgba(200,175,120,0.16) 0%, rgba(200,175,120,0.08) 100%);
+      background: linear-gradient(180deg, rgba(200, 175, 120, 0.16) 0%, rgba(200, 175, 120, 0.08) 100%);
       color: var(--gold-deep);
       border-color: var(--line-gold);
-      box-shadow: inset 0 1px 0 rgba(200,175,120,0.2);
+      box-shadow: inset 0 1px 0 rgba(200, 175, 120, 0.2);
     }
 
     #nearbyPanel .sep {
@@ -485,7 +485,7 @@
     .nearby-marker {
       width: 40px;
       height: 40px;
-      background: rgba(15,13,10,0.90);
+      background: rgba(15, 13, 10, 0.90);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -493,7 +493,7 @@
 
       box-shadow:
         0 8px 25px rgba(0, 0, 0, .35),
-        0 0 0 4px rgba(200,175,120,0.35);
+        0 0 0 4px rgba(200, 175, 120, 0.35);
 
       /* transition: .2s; */
     }
@@ -643,7 +643,7 @@
       margin-left: 6px;
       padding: 1px 5px;
       font-size: 8.5px;
-      background: rgba(200,175,120,0.05);
+      background: rgba(200, 175, 120, 0.05);
       border: 1px solid var(--line);
       border-radius: 3px;
       color: var(--ink-mid);
@@ -743,7 +743,7 @@
       height: 5px;
       border-radius: 50%;
       background: var(--gold);
-      box-shadow: 0 0 8px rgba(200,175,120,0.6);
+      box-shadow: 0 0 8px rgba(200, 175, 120, 0.6);
       transform: translate(-50%, -50%);
     }
 
@@ -789,7 +789,7 @@
 
     .scale-track {
       height: 4px;
-      background: rgba(200,175,120,0.05);
+      background: rgba(200, 175, 120, 0.05);
       border-radius: 2px;
       margin-top: 8px;
       overflow: hidden;
@@ -1117,7 +1117,7 @@
       min-width: 30px;
       height: 30px;
       padding: 0 10px;
-      background: linear-gradient(180deg, rgba(200,175,120,0.16), rgba(200,175,120,0.06));
+      background: linear-gradient(180deg, rgba(200, 175, 120, 0.16), rgba(200, 175, 120, 0.06));
       border: 1px solid var(--line-gold);
       border-radius: var(--r-pill);
       font-family: var(--f-mono);
@@ -1172,8 +1172,8 @@
       width: 32px;
       height: 32px;
       border-radius: var(--r-sm);
-      background: linear-gradient(135deg, var(--gold-soft), rgba(200,175,120,0.03));
-      border: 1px solid rgba(200,175,120,0.18);
+      background: linear-gradient(135deg, var(--gold-soft), rgba(200, 175, 120, 0.03));
+      border: 1px solid rgba(200, 175, 120, 0.18);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1238,7 +1238,7 @@
     }
 
     #project-buttons button:hover .picon {
-      background: linear-gradient(135deg, rgba(200,175,120,0.25), rgba(200,175,120,0.05));
+      background: linear-gradient(135deg, rgba(200, 175, 120, 0.25), rgba(200, 175, 120, 0.05));
       border-color: var(--line-gold-hi);
     }
 
@@ -1265,7 +1265,7 @@
       align-items: center;
       gap: 8px;
       border-top: 1px solid var(--line);
-      background: linear-gradient(180deg, transparent, rgba(200,175,120,0.03));
+      background: linear-gradient(180deg, transparent, rgba(200, 175, 120, 0.03));
     }
 
     .ph-footer .ph-f-item {
@@ -1300,20 +1300,20 @@
       background: radial-gradient(circle, var(--gold-bright), var(--gold));
       border-radius: 50%;
       cursor: pointer;
-      border: 2px solid rgba(200,175,120,0.4);
+      border: 2px solid rgba(200, 175, 120, 0.4);
       box-shadow:
-        0 0 0 4px rgba(200,175,120,0.22),
-        0 4px 14px rgba(200,175,120,0.35),
-        inset 0 1px 1px rgba(200,175,120,0.1);
+        0 0 0 4px rgba(200, 175, 120, 0.22),
+        0 4px 14px rgba(200, 175, 120, 0.35),
+        inset 0 1px 1px rgba(200, 175, 120, 0.1);
       transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s;
     }
 
     .marker:hover {
       transform: scale(1.55);
       box-shadow:
-        0 0 0 6px rgba(200,175,120,0.2),
-        0 6px 22px rgba(200,175,120,0.45),
-        inset 0 1px 1px rgba(200,175,120,0.12);
+        0 0 0 6px rgba(200, 175, 120, 0.2),
+        0 6px 22px rgba(200, 175, 120, 0.45),
+        inset 0 1px 1px rgba(200, 175, 120, 0.12);
     }
 
     .maplibregl-ctrl-attrib {
@@ -1468,8 +1468,8 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      border: 1px solid rgba(200,175,120,0.15);
-      background: rgba(200,175,120,0.06);
+      border: 1px solid rgba(200, 175, 120, 0.15);
+      background: rgba(200, 175, 120, 0.06);
       color: #fff;
       font-size: 20px;
       cursor: pointer;
@@ -1481,8 +1481,8 @@
     }
 
     .walkthrough-close:hover {
-      background: rgba(200,175,120,0.15);
-      border-color: rgba(200,175,120,0.5);
+      background: rgba(200, 175, 120, 0.15);
+      border-color: rgba(200, 175, 120, 0.5);
       color: var(--gold);
     }
 
@@ -1493,7 +1493,7 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(200,175,120,0.2);
+      border: 1px solid rgba(200, 175, 120, 0.2);
     }
 
     .walkthrough-video-wrap video {
@@ -1521,13 +1521,13 @@
     .marker-dot {
       width: 16px;
       height: 16px;
-      background: radial-gradient(circle, rgba(220,195,140,1.0), rgba(200,175,120,1.0));
+      background: radial-gradient(circle, rgba(220, 195, 140, 1.0), rgba(200, 175, 120, 1.0));
       border-radius: 50%;
       border: 2px solid white;
     }
 
     /* hide any label/button inside marker wrapper */
-    .marker-wrapper > *:not(.marker-dot) {
+    .marker-wrapper>*:not(.marker-dot) {
       display: none !important;
     }
 
@@ -1551,7 +1551,8 @@
         gap: 6px;
       }
 
-      .wm-brand, .wm-brand-accent {
+      .wm-brand,
+      .wm-brand-accent {
         font-size: 17px !important;
       }
 
@@ -1591,6 +1592,32 @@
         top: -14px;
         font-size: 7px;
       }
+
+
+
+      #cancelRouteBtn {
+        width: 34px;
+        height: 34px;
+
+        border: none;
+        border-radius: 50%;
+
+        background: rgba(180, 60, 60, .15);
+        border: 1px solid rgba(180, 60, 60, .35);
+
+        color: #d9b8b8;
+        font-size: 14px;
+        font-weight: 700;
+
+        cursor: pointer;
+        transition: .25s;
+      }
+
+      #cancelRouteBtn:hover {
+        background: rgba(180, 60, 60, .28);
+        transform: rotate(90deg);
+      }
+
 
       .filter-btn {
         padding: 6px 12px !important;
@@ -1742,15 +1769,15 @@
 
       /* ── MapLibre popup: dark gold theme, smaller ── */
       .maplibregl-popup-content {
-        background: rgba(15,13,10,0.95) !important;
+        background: rgba(15, 13, 10, 0.95) !important;
         backdrop-filter: blur(16px) !important;
         -webkit-backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(200,175,120,0.25) !important;
+        border: 1px solid rgba(200, 175, 120, 0.25) !important;
         border-radius: 10px !important;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.55) !important;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55) !important;
         padding: 9px 12px !important;
         max-width: 200px !important;
-        color: rgba(235,225,200,0.9) !important;
+        color: rgba(235, 225, 200, 0.9) !important;
         font-family: 'Outfit', sans-serif !important;
         font-size: 11px !important;
         line-height: 1.4 !important;
@@ -1759,21 +1786,21 @@
       .maplibregl-popup-content b {
         font-size: 11.5px !important;
         font-weight: 600 !important;
-        color: rgba(200,175,120,1.0) !important;
+        color: rgba(200, 175, 120, 1.0) !important;
         display: block !important;
         margin-bottom: 3px !important;
       }
 
       .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
-        border-top-color: rgba(15,13,10,0.95) !important;
+        border-top-color: rgba(15, 13, 10, 0.95) !important;
       }
 
       .maplibregl-popup-anchor-top .maplibregl-popup-tip {
-        border-bottom-color: rgba(15,13,10,0.95) !important;
+        border-bottom-color: rgba(15, 13, 10, 0.95) !important;
       }
 
       .maplibregl-popup-close-button {
-        color: rgba(200,175,120,0.7) !important;
+        color: rgba(200, 175, 120, 0.7) !important;
         font-size: 14px !important;
         top: 4px !important;
         right: 6px !important;
@@ -1783,7 +1810,7 @@
       }
 
       .maplibregl-popup-close-button:hover {
-        color: rgba(200,175,120,1.0) !important;
+        color: rgba(200, 175, 120, 1.0) !important;
         background: none !important;
       }
     }
@@ -1799,8 +1826,8 @@
         width: 22px !important;
         height: 22px !important;
         box-shadow:
-          0 4px 12px rgba(0,0,0,.35),
-          0 0 0 2px rgba(200,175,120,0.3) !important;
+          0 4px 12px rgba(0, 0, 0, .35),
+          0 0 0 2px rgba(200, 175, 120, 0.3) !important;
       }
 
       .nearby-marker img {
@@ -1821,20 +1848,20 @@
 
       /* ── Roads ON/OFF toggle — fix colour + remove odd vertical line ── */
       #roadToggle {
-        background: rgba(10,9,7,0.92) !important;
-        border: 1px solid rgba(200,175,120,0.28) !important;
-        color: rgba(200,175,120,0.85) !important;
+        background: rgba(10, 9, 7, 0.92) !important;
+        border: 1px solid rgba(200, 175, 120, 0.28) !important;
+        color: rgba(200, 175, 120, 0.85) !important;
         border-radius: 20px !important;
         padding: 7px 13px !important;
         font-size: 9px !important;
         gap: 6px !important;
-        box-shadow: 0 4px 14px rgba(0,0,0,0.4) !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
       }
 
       #roadToggle:hover {
-        background: rgba(20,18,14,0.96) !important;
-        border-color: rgba(200,175,120,0.55) !important;
-        color: rgba(200,175,120,1.0) !important;
+        background: rgba(20, 18, 14, 0.96) !important;
+        border-color: rgba(200, 175, 120, 0.55) !important;
+        color: rgba(200, 175, 120, 1.0) !important;
       }
 
       /* rdot — keep green but correct size */
@@ -1873,6 +1900,120 @@
       }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    .route-marker {
+      pointer-events: none;
+    }
+
+    .marker-card {
+      background: rgba(15, 13, 10, .95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(200, 175, 120, .35);
+      border-radius: 10px;
+      padding: 8px 14px;
+      color: #fff;
+      white-space: nowrap;
+
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, .35),
+        0 0 20px rgba(200, 175, 120, .15);
+    }
+
+    .start-marker .marker-card {
+      border-left: 4px solid #22c55e;
+    }
+
+    .end-marker .marker-card {
+      border-left: 4px solid #eab308;
+    }
+
+    .marker-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(235, 225, 200, .95);
+    }
+
+
+
+
+
+    #nearbyPanel {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+
+      z-index: 999;
+
+      display: flex;
+      flex-wrap: nowrap;
+      /* force one line */
+      overflow-x: auto;
+      /* scroll if needed */
+
+      gap: 6px;
+      padding: 8px;
+
+      max-width: calc(100vw - 180px);
+
+      background: rgba(15, 13, 10, .92);
+      backdrop-filter: blur(18px);
+
+      border: 1px solid rgba(200, 175, 120, .18);
+      border-radius: 999px;
+
+      box-shadow:
+        0 12px 40px rgba(0, 0, 0, .45);
+
+      scrollbar-width: none;
+    }
+
+    #nearbyPanel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .landmark-btn {
+      flex-shrink: 0;
+
+      padding: 8px 14px;
+
+      border-radius: 999px;
+      border: 1px solid rgba(200, 175, 120, .15);
+
+      background:
+        linear-gradient(135deg,
+          rgba(200, 175, 120, .12),
+          rgba(200, 175, 120, .04));
+
+      color: rgba(235, 225, 200, .9);
+
+      font-size: 11px;
+      font-weight: 600;
+
+      cursor: pointer;
+      transition: .25s;
+    }
+
+    .landmark-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .landmark-btn.active {
+      background: rgba(200, 175, 120, .25);
+      border-color: rgba(220, 195, 140, .7);
+    }
   </style>
 </head>
 
@@ -1885,9 +2026,10 @@
 
   <!-- HOME BUTTON -->
   <button id="homeBtn" title="Back to Home">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/>
-      <polyline points="9 21 9 12 15 12 15 21"/>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+      stroke-linejoin="round">
+      <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z" />
+      <polyline points="9 21 9 12 15 12 15 21" />
     </svg>
     Home
   </button>
@@ -1910,8 +2052,8 @@
             </linearGradient>
           </defs>
           <path d="M16 2 L28 10 L28 22 L16 30 L4 22 L4 10 Z" stroke="url(#crestGrad)" stroke-width="1.3" fill="none" />
-          <path d="M16 8 L22 12 L22 20 L16 24 L10 20 L10 12 Z" stroke="rgba(200,175,120,1.0)" stroke-width="0.9" fill="none"
-            opacity="0.7" />
+          <path d="M16 8 L22 12 L22 20 L16 24 L10 20 L10 12 Z" stroke="rgba(200,175,120,1.0)" stroke-width="0.9"
+            fill="none" opacity="0.7" />
           <circle cx="16" cy="16" r="2" fill="rgba(200,175,120,1.0)" />
           <line x1="16" y1="2" x2="16" y2="8" stroke="rgba(200,175,120,1.0)" stroke-width="0.8" opacity="0.45" />
           <line x1="16" y1="24" x2="16" y2="30" stroke="rgba(200,175,120,1.0)" stroke-width="0.8" opacity="0.45" />
@@ -1919,8 +2061,8 @@
       </div>
       <div class="wm-inner">
         <div class="wm-row-top">
-          <span class="wm-brand">Joganad</span>
-          <span class="wm-brand-accent">Township</span>
+          <span class="wm-brand">Leo'z</span>
+          <span class="wm-brand-accent">Green City</span>
           <span class="wm-live"></span>
         </div>
         <span class="wm-sub">By<span class="dot-small"></span>HG Group</span>
@@ -1947,12 +2089,51 @@
 
   <!-- TOP CENTER: Proximity Filters (X now stays inline) -->
   <div id="nearbyPanel">
-    <button class="filter-btn" onclick="searchNearby('hospital', this)">Hospital</button>
-    <button class="filter-btn" onclick="searchNearby('mall', this)">Mall</button>
-    <button class="filter-btn" onclick="searchNearby('school', this)">School</button>
-    <button class="filter-btn" onclick="searchNearby('airport', this)">Airport</button>
+    <button onclick="routeToLandmark('aiims')" class="landmark-btn">AIIMS</button>
+
+    <button onclick="routeToLandmark('school')" class="landmark-btn">
+      Silver Oaks
+    </button>
+
+    <button onclick="routeToLandmark('university')" class="landmark-btn">
+      MRSPTU
+    </button>
+
+    <button onclick="routeToLandmark('refinery')" class="landmark-btn">
+      Refinery
+    </button>
+
+    <button onclick="routeToLandmark('centralUniversity')" class="landmark-btn">
+      Central Univ
+    </button>
+
+    <button onclick="routeToLandmark('greencity')" class="landmark-btn">
+      Green City
+    </button>
+
+    <button onclick="routeToLandmark('busstand')" class="landmark-btn">
+      Bus Stand
+    </button>
+
+    <button onclick="routeToLandmark('hospital')" class="landmark-btn">
+      Civil Hospital
+    </button>
+
+    <button onclick="routeToLandmark('dcoffice')" class="landmark-btn">
+      DC Office
+    </button>
+
+    <button onclick="routeToLandmark('airport')" class="landmark-btn">
+      Airport
+    </button>
+
+    <button onclick="routeToLandmark('railway')" class="landmark-btn">
+      Railway
+    </button>
     <div class="sep"></div>
-    <button id="clearFilterBtn" onclick="clearFilter()">✕</button>
+    <button id="clearFilterBtn" onclick="clearRoute()">
+      ✕
+    </button>
   </div>
 
   <!-- TOP RIGHT: Roads toggle only -->
@@ -2282,10 +2463,10 @@
        Intercepts maplibregl.Map constructor so zoom is forced
        regardless of whether script.js exposes window.map.
     */
-    (function() {
+    (function () {
       var MOBILE_ZOOM = 0;
 
-      var isMobileLandscape = function() {
+      var isMobileLandscape = function () {
         return window.innerHeight < 500 && window.innerWidth > window.innerHeight;
       };
 
@@ -2296,7 +2477,7 @@
           return;
         }
         var OrigMap = maplibregl.Map;
-        maplibregl.Map = function(options) {
+        maplibregl.Map = function (options) {
           if (isMobileLandscape() && options && options.zoom !== undefined) {
             options.zoom = MOBILE_ZOOM;
           }
@@ -2304,7 +2485,7 @@
           // Also store globally as fallback
           window.map = instance;
           // Re-apply after load in case zoom gets reset
-          instance.on('load', function() {
+          instance.on('load', function () {
             if (isMobileLandscape()) {
               instance.jumpTo({ zoom: MOBILE_ZOOM });
             }
@@ -2313,7 +2494,7 @@
         };
         maplibregl.Map.prototype = OrigMap.prototype;
         // Copy static props
-        Object.keys(OrigMap).forEach(function(k) {
+        Object.keys(OrigMap).forEach(function (k) {
           maplibregl.Map[k] = OrigMap[k];
         });
       }
@@ -2321,8 +2502,8 @@
       patchMapLibre();
 
       // Orientation flip fallback
-      window.addEventListener('orientationchange', function() {
-        setTimeout(function() {
+      window.addEventListener('orientationchange', function () {
+        setTimeout(function () {
           if (isMobileLandscape() && window.map && window.map.easeTo) {
             window.map.jumpTo({ zoom: MOBILE_ZOOM });
           }
@@ -2337,10 +2518,10 @@
     /* HOME BUTTON — navigate to index.html with overlay param
        Works regardless of whether map file is at root or in a subfolder.
        Tries ../index.html first (if in subfolder), falls back to index.html */
-    (function() {
+    (function () {
       var btn = document.getElementById('homeBtn');
       if (!btn) return;
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         var path = window.location.pathname;
         // If map file is inside a subfolder (e.g. /map/map.html), go up one level
         var parts = path.split('/');
