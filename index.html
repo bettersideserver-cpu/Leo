@@ -3494,6 +3494,13 @@
 
         @media (max-width: 768px) {
 
+  .explore-corner{
+    padding: 14px 18px 24px 20px;
+    gap: 6px;
+    border-radius: 0 12px 0 0;
+  }
+
+}
       /* ── Show Controls toggle icon (middle-left) ── */
       .ui-toggle-btn {
         display: flex !important;
@@ -3813,8 +3820,7 @@
       .section-display .sd-meta {
         font-size: 8px;
       }
-    }
-
+    
   /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
      MOBILE LANDSCAPE: hide slider when overlay image active
      \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
@@ -4347,12 +4353,12 @@
     pointer-events: none !important;
   }
   /* Explicitly show after intro */
-  body:not(.intro-active):not(.intro-video-playing) #mobMarkerBtns {
+body:not(.intro-active):not(.intro-video-playing):not(.site-select-open) #mobMarkerBtns {
     display: flex !important;
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: all !important;
-  }
+}
 }
 
 /* Always hide on desktop regardless */
@@ -10869,6 +10875,7 @@ if (activeMarker === 'amenities') {
         if (!ss) { playMainVideo(); return; }
         void ss.offsetWidth;
         ss.classList.add('visible');
+        document.getElementById("mobMarkerBtns").style.display = "none";
 
         var p1      = document.getElementById('ss-phase1');
         var lbl1    = document.getElementById('ss-lbl-phase1');
@@ -10883,6 +10890,7 @@ if (activeMarker === 'amenities') {
           ss.classList.remove('visible');
           ss.classList.add('fade-out');
           setTimeout(function() { if (ss.parentNode) ss.parentNode.removeChild(ss); }, 900);
+           document.getElementById("mobMarkerBtns").style.display = "flex";
           playMainVideo();
         }
 
