@@ -22,17 +22,17 @@ const LOCATION_CONFIGS = {
       {
         name: "Leo'z Green City'z Green City",
         coords: [74.9156232, 30.1636134],
-        // modelUrl: "model.glb",
+        modelUrl: "model.glb",
         zoom: 14.9,
 
         url: "../index.html?from=map&overlay=overlay.jpg", // 🔥 ADD THIS
 
-        cameraOffset: [80, -10],
+        // cameraOffset: [80, -10],
 
         transform: {
-          position: [260, -490, -70],
-          rotation: [Math.PI / 2, -Math.PI / 2 + (-5 * Math.PI / 180), 0],
-          scale: [.45, .45, .45],
+          position: [-330, 240, -70],
+          rotation: [Math.PI / 2, -Math.PI / 2 + (-115 * Math.PI / 180), 0],
+          scale: [1.2, 1.2, 1.2],
           maxZoom: 23
         }
       }
@@ -989,7 +989,7 @@ const LANDMARKS = {
 
   aiims: {
     name: "AIIMS Bathinda",
-    coords: [74.9450, 30.2110]
+    coords: [74.926083, 30.1611026]
   },
 
   school: {
@@ -1014,7 +1014,7 @@ const LANDMARKS = {
 
   greencity: {
     name: "Green City Square",
-    coords: [74.9120, 30.1600]
+    coords: [74.9230319, 30.1646249]
   },
 
   busstand: {
@@ -1039,7 +1039,7 @@ const LANDMARKS = {
 
   railway: {
     name: "Bathinda Railway Station",
-    coords: [74.9470, 30.2110]
+    coords: [74.930515, 30.2127918]
   }
 
 };
