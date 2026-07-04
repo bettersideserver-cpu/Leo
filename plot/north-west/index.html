@@ -946,35 +946,24 @@
 
 
 
-    .svg-toggle {
-      position: fixed;
-      top: 20px;
-      left: 70px;
-      /* Change position as needed */
-      z-index: 9999;
-      /* Above everything */
-
-      padding: 10px 18px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-
-      background: rgba(10, 14, 10, .9);
-      color: #4ade80;
-      border: 1px solid rgba(74, 222, 128, .35);
-
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-
-      font-size: 13px;
-      font-weight: 500;
-
-      transition: .3s;
-    }
-
-    .svg-toggle:hover {
-      transform: scale(1.05);
-    }
+   .svg-toggle {
+  position: fixed;
+  bottom: 20px;      /* was: top: 20px */
+  left: 70px;        /* unchanged horizontal offset, clear of .back-btn (which is 38px wide, top-left only) */
+  z-index: 9999;
+  padding: 10px 18px;
+  border: 1px solid rgba(74, 222, 128, .35);
+  border-radius: 30px;
+  cursor: pointer;
+  background: rgba(10, 14, 10, .9);
+  color: #4ade80;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: 13px;
+  font-weight: 500;
+  transition: .3s;
+}
+.svg-toggle:hover { transform: scale(1.05); }
 
     .my-overlay {
       position: fixed;
@@ -2126,7 +2115,7 @@
       }, { passive: true });
     }
   </script>
- <button id="svgToggle" class="svg-toggle">
+<button id="svgToggle" class="svg-toggle">Road ON</button>
     SVG ON
   </button>preserveAspectRatio="xMidYMid slice"
 
@@ -2311,17 +2300,17 @@
 </svg>
   </div>
 
-  <script>const overlay = document.getElementById("myOverlaySvg");
-    const toggleBtn = document.getElementById("svgToggle");
+  <script>
+const overlay = document.getElementById("myOverlaySvg");
+const toggleBtn = document.getElementById("svgToggle");
+let visible = true;
 
-    let visible = true;
-
-    toggleBtn.onclick = () => {
-      visible = !visible;
-
-      overlay.style.display = visible ? "block" : "none";
-      toggleBtn.textContent = visible ? "SVG ON" : "SVG OFF";
-    };</script>
+toggleBtn.onclick = () => {
+  visible = !visible;
+  overlay.style.display = visible ? "block" : "none";
+  toggleBtn.textContent = visible ? "Road ON" : "Road OFF";
+};
+    </script>
 </body>
 
 </html>

@@ -765,34 +765,24 @@
 
 
     .svg-toggle {
-      position: fixed;
-      top: 20px;
-      left: 70px;
-      /* Change position as needed */
-      z-index: 9999;
-      /* Above everything */
+  position: fixed;
+  bottom: 20px;      /* was: top: 20px */
+  left: 70px;        /* unchanged horizontal offset, clear of .back-btn (which is 38px wide, top-left only) */
+  z-index: 9999;
+  padding: 10px 18px;
+  border: 1px solid rgba(74, 222, 128, .35);
+  border-radius: 30px;
+  cursor: pointer;
+  background: rgba(10, 14, 10, .9);
+  color: #4ade80;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: 13px;
+  font-weight: 500;
+  transition: .3s;
+}
+.svg-toggle:hover { transform: scale(1.05); }
 
-      padding: 10px 18px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-
-      background: rgba(10, 14, 10, .9);
-      color: #4ade80;
-      border: 1px solid rgba(74, 222, 128, .35);
-
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-
-      font-size: 13px;
-      font-weight: 500;
-
-      transition: .3s;
-    }
-
-    .svg-toggle:hover {
-      transform: scale(1.05);
-    }
 
     .my-overlay {
       position: fixed;
@@ -1528,7 +1518,7 @@
   <div class="mobile-hint" id="mobileHint">Tap a plot &middot; Pinch to zoom</div>
 
    </script>
- <button id="svgToggle" class="svg-toggle">
+<button id="svgToggle" class="svg-toggle">Road ON</button>
     SVG ON
   </button>preserveAspectRatio="xMidYMid slice"
 
@@ -1646,5 +1636,16 @@
   <path class="st0" d="M458.42,711.74l-67.54-10.88,3.13-19.4c.86-5.32,2.98-9.89,6.37-13.7,3.39-3.81,7.74-6.51,13.06-8.1,5.32-1.59,11.04-1.91,17.17-.95l3.11.5c6.19,1,11.54,3.05,16.07,6.17,4.53,3.12,7.83,7.02,9.92,11.7,2.09,4.68,2.72,9.63,1.92,14.85l-3.19,19.82ZM405.79,688.36l42.44,6.84.81-5.05c.67-4.16-.48-7.63-3.44-10.4-2.96-2.77-7.72-4.68-14.28-5.74l-2.92-.47c-6.52-1.05-11.62-.73-15.29.97-3.67,1.7-5.85,4.69-6.54,8.96l-.79,4.88Z"/>
   <path class="st0" d="M451.42,572.62l-3.68,22.84,16.14,2.6,4.35-26.98,12.52,2.02-6.69,41.5-67.54-10.88,6.7-41.58,12.57,2.03-4.36,27.06,14.24,2.29,3.68-22.84,12.06,1.94Z"/>
 </svg>
+  <script>
+const overlay = document.getElementById("myOverlaySvg");
+const toggleBtn = document.getElementById("svgToggle");
+let visible = true;
+
+toggleBtn.onclick = () => {
+  visible = !visible;
+  overlay.style.display = visible ? "block" : "none";
+  toggleBtn.textContent = visible ? "Road ON" : "Road OFF";
+};
+    </script>
 </body>
 </html>
