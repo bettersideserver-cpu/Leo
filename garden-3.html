@@ -14,25 +14,51 @@
   <link rel="preload" as="video" href="Subpages/garden-3/scrub.mp4" crossorigin>
 
   <style>
-    :root {
-      --gold: rgba(21,67,32,1);
-      --gold-light: rgba(21,67,32,0.70);
-      --gold-bright: rgba(21,67,32,1);
-      --gold-dim: rgba(21,67,32,0.55);
-      --glass-bg: rgba(248,245,238,0.92);
-      --glass-bg-strong: rgba(230,226,218,1);
-      --glass-border: rgba(21,67,32,0.28);
-      --glass-border-hover: rgba(21,67,32,0.55);
-      --glass-border-active: rgba(21,67,32,0.85);
-      --text-primary: rgba(15,26,16,0.96);
-      --text-muted: rgba(21,67,32,0.80);
-    }
+ :root {
+  /* Premium Black & Gold */
 
+  --gold: #D9B679;
+  --gold-light: rgba(217,182,121,0.70);
+  --gold-bright: #D9B679;
+  --gold-dim: rgba(217,182,121,0.55);
+  --gold-deep: rgba(217,182,121,0.90);
+
+  --glass-bg: rgba(9,15,9,0.72);
+  --glass-bg-strong: rgba(15,15,13,0.90);
+
+  --glass-border: rgba(217,182,121,0.28);
+  --glass-border-hover: rgba(217,182,121,0.55);
+  --glass-border-active: rgba(217,182,121,0.85);
+
+  --text-primary: rgba(250,247,240,0.96);
+  --text-muted: rgba(217,182,121,0.80);
+
+  --surface: rgba(9,15,9,0.72);
+}
+    /* ── BOTTOM NAV OVERRIDE — force off-white + green ── */
+    #bottomNav.bottom-nav,
+    .bottom-nav {
+      background: rgba(0, 0, 0, 0.97) !important;
+      border-top: 1px solid rgba(217,182,121,0.18) !important;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.08) !important;
+    }
+ .bottom-nav .nav-item {
+    color: rgba(250,247,240,.75) !important;
+}
+
+.bottom-nav .nav-item:hover {
+    color: #090F09 !important;
+}
+
+.bottom-nav .nav-item.active {
+    color: #D9B679 !important;
+    border-top-color: #D9B679 !important;
+}
     @media (pointer: coarse) { * { -webkit-tap-highlight-color: transparent; } }
 
     #bgVideo {
       position: fixed; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; z-index: 0; background: #FAF7F0;
+      object-fit: cover; z-index: 0; background: #090F09;
     }
 
     #playPauseBtn {
@@ -45,10 +71,10 @@
       cursor: pointer; color: var(--gold-light);
       transition: opacity 0.35s ease, transform 0.2s ease, background 0.2s, border-color 0.2s;
       opacity: 1; pointer-events: auto; -webkit-tap-highlight-color: transparent;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(21,67,32,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(217,182,121,0.1);
     }
     #playPauseBtn:hover { background: rgba(154,180,163,0.88); border-color: var(--glass-border-hover); }
-    #playPauseBtn:active { transform: scale(0.91); background: rgba(21,67,32,0.18); border-color: var(--glass-border-active); }
+    #playPauseBtn:active { transform: scale(0.91); background: rgba(217,182,121,0.18); border-color: var(--glass-border-active); }
     #playPauseBtn svg { width: 22px; height: 22px; flex-shrink: 0; }
 
     @media (max-width: 768px) {
@@ -65,7 +91,7 @@
 
     #iosTapOverlay {
       display: none; position: fixed; inset: 0; z-index: 999998;
-      background: #FAF7F0;
+      background: #090F09;
       flex-direction: column; align-items: center; justify-content: center; gap: 20px;
     }
     #iosTapOverlay.show { display: flex; }
@@ -84,10 +110,10 @@
     #iosTapOverlay button {
       font-family: 'Jost', sans-serif; font-size: 12px; letter-spacing: 0.25em;
       text-transform: uppercase; color: var(--gold-light);
-      background: rgba(21,67,32,0.10); border: 1px solid var(--glass-border-hover);
+      background: rgba(217,182,121,0.10); border: 1px solid var(--glass-border-hover);
       border-radius: 30px; padding: 14px 32px; cursor: pointer; transition: all 0.2s;
     }
-    #iosTapOverlay button:active { background: rgba(21,67,32,0.22); border-color: var(--glass-border-active); }
+    #iosTapOverlay button:active { background: rgba(217,182,121,0.22); border-color: var(--glass-border-active); }
 
     @media (max-width: 768px) {
       #btn360View {
@@ -134,28 +160,28 @@
   <!-- Thin loading bar at top -->
   <div id="loadBar" style="
     position:fixed;top:0;left:0;width:0%;height:2px;z-index:9999;
-    background:linear-gradient(to right,rgba(21,67,32,0.40),rgba(21,67,32,1));
+    background:linear-gradient(to right,rgba(217,182,121,0.40),rgba(217,182,121,1));
     transition:width 0.15s linear;pointer-events:none;
   "></div>
 
   <!-- FULL SCREEN LOADER -->
   <div id="siteLoader" style="
     position:fixed;inset:0;z-index:99999;
-    background:#FAF7F0;
+    background:#090F09;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
     transition:opacity 0.8s ease;
   ">
-    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.35em;color:rgba(21,67,32,0.60);text-transform:uppercase;margin-bottom:4px;">Estate Collection</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:rgba(15,26,16,0.96);letter-spacing:0.08em;">Leo's</div>
-    <div style="width:180px;height:1px;background:rgba(21,67,32,0.15);border-radius:1px;overflow:hidden;margin-top:8px;">
+    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.35em;color:rgba(217,182,121,0.60);text-transform:uppercase;margin-bottom:4px;">Estate Collection</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:rgba(250,247,240,0.96);letter-spacing:0.08em;">Leo's</div>
+    <div style="width:180px;height:1px;background:rgba(217,182,121,0.15);border-radius:1px;overflow:hidden;margin-top:8px;">
       <div id="loaderFill" style="
         height:100%;width:0%;
-        background:linear-gradient(to right,rgba(21,67,32,0.35),rgba(21,67,32,0.95));
+        background:linear-gradient(to right,rgba(217,182,121,0.35),rgba(217,182,121,0.95));
         border-radius:1px;
         transition:width 0.05s linear;
       "></div>
     </div>
-    <div id="loaderPct" style="font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.2em;color:rgba(21,67,32,0.55);margin-top:2px;">0%</div>
+    <div id="loaderPct" style="font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.2em;color:rgba(217,182,121,0.55);margin-top:2px;">0%</div>
   </div>
 
   <!-- iOS tap-to-start overlay -->
@@ -172,20 +198,20 @@
       position:fixed;bottom:80px;right:24px;z-index:900;
       display:flex;align-items:center;gap:8px;
       padding:10px 20px;border-radius:30px;
-      background:rgba(248,245,238,0.76);
+      background:rgba(9,15,9,0.72);
       backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-      border:1px solid rgba(21,67,32,0.38);
-      box-shadow:0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(21,67,32,0.10);
-      color:rgba(21,67,32,0.85);
+      border:1px solid rgba(217,182,121,0.38);
+      box-shadow:0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(217,182,121,0.10);
+      color:rgba(217,182,121,0.85);
       font-family:'Jost',sans-serif;font-size:11px;font-weight:400;
       letter-spacing:0.22em;text-transform:uppercase;text-decoration:none;
       cursor:pointer;transition:background 0.2s, border-color 0.2s, box-shadow 0.2s;
       -webkit-tap-highlight-color:transparent;
     "
-    onmouseenter="this.style.background='rgba(21,67,32,0.18)';this.style.borderColor='rgba(21,67,32,0.70)';this.style.background='rgba(154,180,163,0.88)';"
-    onmouseleave="this.style.background='rgba(248,245,238,0.76)';this.style.borderColor='rgba(21,67,32,0.38)';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.5)';"
-    ontouchstart="this.style.background='rgba(21,67,32,0.22)';this.style.borderColor='rgba(21,67,32,0.85)';"
-    ontouchend="this.style.background='rgba(248,245,238,0.76)';this.style.borderColor='rgba(21,67,32,0.38)';"
+    onmouseenter="this.style.background='rgba(217,182,121,0.18)';this.style.borderColor='rgba(217,182,121,0.70)';this.style.background='rgba(154,180,163,0.88)';"
+    onmouseleave="this.style.background='rgba(9,15,9,0.72)';this.style.borderColor='rgba(217,182,121,0.38)';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.5)';"
+    ontouchstart="this.style.background='rgba(217,182,121,0.22)';this.style.borderColor='rgba(217,182,121,0.85)';"
+    ontouchend="this.style.background='rgba(9,15,9,0.72)';this.style.borderColor='rgba(217,182,121,0.38)';"
   >
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 3C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9"/>
@@ -198,9 +224,9 @@
   <!-- BACK BUTTON -->
   <div class="back-btn" id="backBtn" title="Go Back"
     style="position:fixed;top:16px;left:16px;z-index:900;width:38px;height:38px;border-radius:50%;
-           background:rgba(248,245,238,0.76);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-           border:1px solid rgba(21,67,32,0.28);display:flex;align-items:center;justify-content:center;
-           box-shadow:0 4px 20px rgba(0,0,0,0.5);cursor:pointer;color:rgba(21,67,32,0.85);transition:background .25s,border-color .25s;">
+           background:rgba(9,15,9,0.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+           border:1px solid rgba(217,182,121,0.28);display:flex;align-items:center;justify-content:center;
+           box-shadow:0 4px 20px rgba(0,0,0,0.5);cursor:pointer;color:rgba(217,182,121,0.85);transition:background .25s,border-color .25s;">
     <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="12 16 6 10 12 4" />
     </svg>
@@ -358,14 +384,14 @@
           'width:56px',
           'height:56px',
           'border-radius:50%',
-          'background:rgba(248,245,238,0.88)',
-          'border:1px solid rgba(21,67,32,0.45)',
+          'background:black',
+          'border:1px solid rgba(217,182,121,0.45)',
           'box-shadow:0 4px 24px rgba(0,0,0,0.6)',
           'display:flex',
           'align-items:center',
           'justify-content:center',
           'cursor:pointer',
-          'color:rgba(21,67,32,0.85)',
+          'color:rgba(217,182,121,0.85)',
           'backdrop-filter:blur(20px)',
           '-webkit-backdrop-filter:blur(20px)',
           'padding:0',
@@ -374,12 +400,12 @@
         ].join(';');
         btn.addEventListener('click', () => { window.location.href = 'index.html'; });
         btn.addEventListener('touchstart', function() {
-          this.style.background = 'rgba(21,67,32,0.22)';
-          this.style.borderColor = 'rgba(21,67,32,0.85)';
+          this.style.background = 'rgba(217,182,121,0.22)';
+          this.style.borderColor = 'rgba(217,182,121,0.85)';
         }, {passive:true});
         btn.addEventListener('touchend', function() {
           this.style.background = 'rgba(248,245,238,0.88)';
-          this.style.borderColor = 'rgba(21,67,32,0.45)';
+          this.style.borderColor = 'rgba(217,182,121,0.45)';
         }, {passive:true});
         container.appendChild(btn);
 
