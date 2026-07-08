@@ -4774,6 +4774,22 @@
   .ss-topnav-tabs { display: none; }
   .ss-explore-btn { padding: 9px 16px; font-size: 10px; }
 }
+/* Hide the Map button whenever the Garden or Plot size panel is open */
+#amenitiesBar.visible ~ #mobMarkerBtns,
+#plotBar.visible ~ #mobMarkerBtns {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+/* Hide the Map button whenever the Garden or Plot size panel is open */
+#amenitiesBar.visible ~ #mobMarkerBtns,
+#plotBar.visible ~ #mobMarkerBtns {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
 </style>
 
 <body class="intro-active">
@@ -9649,7 +9665,7 @@
 
       document.addEventListener('pointerdown', function(e) {
         if (!isMobileAny()) return; // desktop: don't fire mobile close logic
-        if (!e.target.closest('#mobMarkerBtns, #mobGardensPills, #mobPlotsPills')) {
+      if (!e.target.closest('#mobMarkerBtns, #mobGardensPills, #mobPlotsPills, #plotBar, #amenitiesBar, #sliderTicks')) {
           closeMobSubPill();
         }
         // If user taps inside filter/search area, reset the auto-hide timer
