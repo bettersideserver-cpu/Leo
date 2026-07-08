@@ -3158,6 +3158,18 @@
       transition: border-color 0.3s, background 0.3s;
       box-shadow: 0 2px 12px rgba(255, 255, 255, 0.3);
     }
+    @media (max-height: 600px) and (orientation: landscape) {
+  .music-btn {
+    top: 8px !important;
+    right: 8px !important;
+    width: 28px !important;
+    height: 28px !important;
+  }
+  .music-btn svg {
+    width: 13px !important;
+    height: 13px !important;
+  }
+}
     .music-btn:hover {
       border-color: rgba(217,182,121,0.9);
       background: rgba(217,182,121,0.15);
