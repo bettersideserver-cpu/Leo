@@ -2697,7 +2697,23 @@
       .desk-hamburger {
         display: none !important;
       }
+      /* Back-to-map button: compact circular control, top-left next to the
+         Play Tour button, always reachable on mobile landscape */
       .back-to-map-btn {
+        display: flex !important;
+        top: 12px !important;
+        left: 60px !important;
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 50% !important;
+        z-index: 620 !important;
+      }
+      .back-to-map-btn svg {
+        width: 16px !important;
+        height: 16px !important;
+      }
+      body.intro-active .back-to-map-btn,
+      body.intro-video-playing .back-to-map-btn {
         display: none !important;
       }
       .ui-toggle-btn::before {
@@ -2838,7 +2854,7 @@
       font-family: 'Jost', sans-serif;
       font-size: 13px;
       font-weight: 600;
-      color: #000000;
+      color: #FAF7F0;
       white-space: nowrap;
       letter-spacing: 0.03em;
       text-align: center;
@@ -11056,14 +11072,28 @@
   // Go to a marker (amenities/plots) either right away (scene already revealed)
   // or automatically once the main video finishes and the scene becomes ready.
   window._goToMarkerAfterReveal = function(key) {
-    if (revealed) {
-      setTimeout(function() {
-        var dt = document.querySelector('.slider-tick[data-marker="' + key + '"]');
-        if (dt) dt.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-      }, 500);
-    } else {
-      window._pendingRailMarker = key;
+    // Fire right away instead of waiting for the whole main video to finish —
+    // the marker click handler itself pauses the video and jumps to the
+    // right frame/overlay, so there's nothing to gain by waiting for 'ended'.
+    if (!revealed) {
+      revealed = true;
+      document.body.classList.remove('intro-active');
+      document.body.classList.add('intro-revealing');
+      setTimeout(function(){ document.body.classList.remove('intro-revealing'); if (typeof startDragHintTimer === 'function') startDragHintTimer(); }, 2600);
+      if (!document.body.classList.contains('marker-selected')) document.body.classList.add('slider-shown');
+      if (typeof slider !== 'undefined' && slider) {
+        slider.value = parseFloat(slider.max);
+        if (typeof refreshSliderVisual === 'function') refreshSliderVisual();
+        targetFloat = parseFloat(slider.max);
+        displayedFloat = targetFloat;
+      }
+      if (typeof svgOverlay !== 'undefined' && svgOverlay) svgOverlay.classList.add('at-endpoint');
+      if (window._syncMobMarkerBtns) window._syncMobMarkerBtns();
     }
+    setTimeout(function() {
+      var dt = document.querySelector('.slider-tick[data-marker="' + key + '"]');
+      if (dt) dt.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+    }, 350);
   };
 
   // ── Show phase hotspots (called when loading ends) ──
