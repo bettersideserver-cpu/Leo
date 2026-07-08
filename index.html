@@ -2689,6 +2689,9 @@
 
       /* Show Controls button: circular icon, left side, vertically centered */
       .ui-toggle-btn {
+          z-index: 999999 !important;
+    pointer-events: auto !important;
+    background: red !important;
         display: flex !important;
         align-items: center;
         justify-content: center;
@@ -3158,18 +3161,6 @@
       transition: border-color 0.3s, background 0.3s;
       box-shadow: 0 2px 12px rgba(255, 255, 255, 0.3);
     }
-    @media (max-height: 600px) and (orientation: landscape) {
-  .music-btn {
-    top: 8px !important;
-    right: 8px !important;
-    width: 28px !important;
-    height: 28px !important;
-  }
-  .music-btn svg {
-    width: 13px !important;
-    height: 13px !important;
-  }
-}
     .music-btn:hover {
       border-color: rgba(217,182,121,0.9);
       background: rgba(217,182,121,0.15);
@@ -3565,6 +3556,9 @@
 
       /* ── Show Controls toggle icon (middle-left) ── */
       .ui-toggle-btn {
+          z-index: 999999 !important;
+    pointer-events: auto !important;
+    
         display: flex !important;
         align-items: center;
         justify-content: center;
@@ -3595,6 +3589,7 @@
         background-repeat: no-repeat;
         background-size: contain;
         background-position: center;
+        
       }
 
       /* ── env-bar: default = slider only at very bottom ── */
@@ -4794,14 +4789,7 @@
   visibility: hidden !important;
   pointer-events: none !important;
 }
-/* Hide the Map button whenever the Garden or Plot size panel is open */
-#amenitiesBar.visible ~ #mobMarkerBtns,
-#plotBar.visible ~ #mobMarkerBtns {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
+
 </style>
 
 <body class="intro-active">
@@ -5033,7 +5021,6 @@
       </div>
       <div class="ss-topnav-right">
         <button type="button" class="ss-explore-btn" id="ssExploreBtn"><span>Explore Project</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-       
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -5077,7 +5064,7 @@
         d="m1251.89 2160.05 25-747.98 5.78-177.49 44.67-230.65 113.33-311.33 43.67-122.34 38.67-121.68 47.33-148.87 21.67-68.63L1623.67 0 1645 6.63l-2 4.97-25.67 206.89L1566 388.24l-56 180.7-53.67 150.86L1389 907.46l-38 104.11-41.33 218.82-5.33 156.16s-7 144.56-6.33 146.55-4.67 157.15-4.67 157.15l-6.67 191.64-9.33 287.79-25.44-9.61Z"/>
 
       <!-- AIIMS (non-interactive) -->
-      <path class="ss-region-hover" id="ss-aiims"
+      <path class="ss-region-hover" id="ss-aiims" style="pointer-events:none;"
         d="m0 1381.08 694.67 317.78 584.37-352.68 3.63-111.61 16.19-83.6L99 645.2c39.26 89.43-21.31 200.67-99 315.64v420.25Z"/>
 
       <!-- ═══ PHASE 1 (clickable) ═══ -->
@@ -9486,6 +9473,7 @@
       if (isMobileLandscape()) uiHideTimer = setTimeout(hideUI, 3000);
     }
     uiToggleBtn.addEventListener('click', function (e) {
+         console.log("Button clicked");
       // Portrait AND landscape handled by capture-phase listener below
       if (isMobileLandscape() || window.innerWidth <= 1024) return;
       e.stopPropagation();
@@ -9564,14 +9552,22 @@
       });
 
       // Override uiToggleBtn for portrait (capture phase)
-      uiToggleBtn.addEventListener('click', function(e) {
-        var isTouchDevice = ('ontouchstart' in window) || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        if (!isMobileAny() && !isTouchDevice) return;
-        e.stopPropagation();
-        e.preventDefault();
-        if (mobControlsOpen) closeMobControls(); else openMobControls();
-      }, true);
+    function toggleControls(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
+    if (mobControlsOpen) {
+        closeMobControls();
+    } else {
+        openMobControls();
+    }
+}
+
+uiToggleBtn.addEventListener("click", toggleControls, true);
+uiToggleBtn.addEventListener("touchend", toggleControls, {
+    capture: true,
+    passive: false
+});
 
       // Marker button logic
       function handleMarkerBtn(markerKey, pillsEl, btn) {
