@@ -40,12 +40,13 @@
     }
 
     .bg-div {
-      position: fixed;
-      inset: 0;
-      background-image: url('background.png');
-      background-size: cover;
-      background-position: center;
-      z-index: 0;
+    position: fixed;
+    inset: 0;
+    background-image: url("background.webp"); /* Low quality image */
+    background-size: cover;
+    background-position: center;
+    transition: background-image .4s ease;
+    z-index: 0;
     }
 
     .back-btn {
@@ -2324,7 +2325,20 @@ toggleBtn.onclick = () => {
   visible = !visible;
   overlay.style.display = visible ? "block" : "none";
   toggleBtn.textContent = visible ? "Road ON" : "Road OFF";
-};</script>
+};
+
+
+// ===== Progressive Background Loading =====
+const bgDiv = document.querySelector(".bg-div");
+
+const hdImage = new Image();
+hdImage.src = "background.png"; // Your HD image
+
+hdImage.onload = () => {
+    bgDiv.style.backgroundImage = `url("${hdImage.src}")`;
+};
+
+</script>
 </body>
 
 </html>
