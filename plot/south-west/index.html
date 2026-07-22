@@ -444,10 +444,12 @@
 
     /* ── Plot Size Filter Slider ── */
     .plot-filter {
-      position: fixed;
-      bottom: 20px;
-      right: 16px;
-      left: auto;
+    position: fixed;
+    left: 16px;
+    right: auto;
+    bottom: 20px;
+
+    width: 200px;
       transform: none;
       z-index: 500;
       background: rgba(10, 14, 10, 0.88);
@@ -764,25 +766,45 @@
   
 
 
-  .svg-toggle {
+.svg-toggle {
   position: fixed;
-  bottom: 20px;      /* was: top: 20px */
-  left: 70px;        /* unchanged horizontal offset, clear of .back-btn (which is 38px wide, top-left only) */
+
+  left: 16px;
+  bottom: 130px;   /* Increase from 88px */
+
+  width: 200px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
   z-index: 9999;
-  padding: 10px 18px;
-  border: 1px solid rgba(74, 222, 128, .35);
-  border-radius: 30px;
-  cursor: pointer;
-  background: rgba(10, 14, 10, .9);
-  color: #4ade80;
+
+  padding: 0 18px;
+
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  border-radius: 12px;
+
+  background: rgba(10, 14, 10, 0.90);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+
+  color: #4ade80;
   font-size: 13px;
   font-weight: 500;
-  transition: .3s;
-}
-.svg-toggle:hover { transform: scale(1.05); }
+  font-family: 'Jost', sans-serif;
 
+  cursor: pointer;
+  transition: all .25s ease;
+}
+
+.svg-toggle:hover {
+  border-color: rgba(74, 222, 128, .7);
+  box-shadow: 0 0 12px rgba(74, 222, 128, .25);
+  transform: translateY(-1px);
+}
     .my-overlay {
       position: fixed;
       inset: 0;
@@ -794,6 +816,18 @@
       width: 100%;
       height: 100%;
     }
+
+    
+    @media (pointer: coarse) {
+  .svg-toggle {
+    width: 120px !important;
+    height: 36px !important;
+    left: 12px !important;
+    bottom: 10px !important;
+    font-size: 12px !important;
+    padding: 0 12px !important;
+  }
+}
   </style>
 </head>
 
@@ -1968,8 +2002,9 @@
 
   <script>const overlay = document.getElementById("myOverlaySvg");
 const toggleBtn = document.getElementById("svgToggle");
-let visible = true;
-
+let visible = false;
+overlay.style.display = "none";
+toggleBtn.textContent = "Road OFF";
 toggleBtn.onclick = () => {
   visible = !visible;
   overlay.style.display = visible ? "block" : "none";

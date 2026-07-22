@@ -4,6 +4,7 @@
   <title>Leo's — Premium Property Visualization</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@200;300;400;500&family=Cinzel:wght@400;500;600&display=swap"
     rel="stylesheet">
@@ -1808,12 +1809,12 @@
 
     /* DESKTOP HAMBURGER BUTTON */
     .desk-hamburger {
-      display: none;
-      position: fixed;
-      top: 20px;
-      left: 24px;
-      width: 44px;
-      height: 44px;
+     display: none;
+  position: fixed;
+  top: 20px;
+  left: 78px;   /* Was 24px */
+  width: 44px;
+  height: 44px;
       z-index: 200;
       background: rgba(9,15,9,0.92);
       border: 1px solid rgba(217,182,121,0.40);
@@ -1851,12 +1852,12 @@
 
     /* BACK TO MASTER PLAN BUTTON — sits right next to the hamburger */
     .back-to-map-btn {
-      display: none;
-      position: fixed;
-      top: 20px;
-      left: 78px;
-      width: 44px;
-      height: 44px;
+        display: none;
+  position: fixed;
+  top: 20px;
+  left: 24px;   /* Was 78px */
+  width: 44px;
+  height: 44px;
       z-index: 200;
       background: rgba(9,15,9,0.92);
       border: 1px solid rgba(217,182,121,0.40);
@@ -2697,9 +2698,9 @@
         justify-content: center;
         left: 10px !important;
         right: auto !important;
-        top: 50% !important;
+   top: 75px !important;   /* adjust as needed */
         bottom: auto !important;
-        transform: translateY(-50%) !important;
+transform: none !important;
         width: 36px !important;
         height: 36px !important;
         padding: 0 !important;
@@ -3325,21 +3326,43 @@
     .explore-ring { display: none; }
 
     /* ── Bottom-left explore button wrapper ── */
-    .explore-corner {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 22px 36px 44px 48px;
-      background: rgba(4,10,5,0.52);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 0 18px 0 0;
-      border-top: 1px solid rgba(217,182,121,0.22);
-      border-right: 1px solid rgba(217,182,121,0.22);
-    }
+.explore-corner {
+    position: absolute;
+    inset: 0;
+
+    z-index: 2;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    text-align: center;
+
+    background: transparent;
+
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+
+    padding: 0;
+    border: none;
+    border-radius: 0;
+}
+
+.explore-corner::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background: rgba(4,10,5,0.20);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  z-index: -1;
+}
 @media (max-width: 1024px) {
   #siteSelectScreen.visible ~ #mobMarkerBtns {
     display: none !important;
@@ -3348,44 +3371,33 @@
     pointer-events: none !important;
   }
 }
-    .explore-tagline {
-      font-family: 'Jost', sans-serif;
-      font-size: 10px;
-      letter-spacing: 0.4em;
-      text-transform: uppercase;
-      color: rgba(250,247,240,0.95);
-      text-align: left;
-      margin-bottom: 6px;
-      display: block;
-      text-shadow: none;
-    }
+   .explore-tagline {
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(250,247,240,0.95);
+    text-align: center;
+    margin-bottom: 10px;
+}
 
-    .explore-btn {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      padding: 0 32px 0 24px;
-      width: auto;
-      height: 56px;
-      border-radius: 4px;
-      border: 1px solid rgba(217,182,121,0.55);
-      background: rgba(9,15,9,0.90);
-      cursor: pointer;
-      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
-                  border-color 0.3s,
-                  box-shadow 0.3s,
-                  background 0.3s;
-      box-shadow:
-        0 0 0 1px rgba(217,182,121,0.08),
-        0 8px 32px rgba(0,0,0,0.50),
-        inset 0 1px 0 rgba(217,182,121,0.15);
-      user-select: none;
-    }
-    .explore-btn:hover {
+   .explore-btn {
+    width: 152px;
+    height: 152px;
+
+    padding: 0;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(9,15,9,0.90);
+    border: 1px solid rgba(217,182,121,0.55);
+
+    cursor: pointer;
+}
+    /* .explore-btn:hover {
       border-color: rgba(217,182,121,0.90);
       background: rgba(9,15,9,0.95);
       box-shadow:
@@ -3394,7 +3406,7 @@
         0 12px 48px rgba(0,0,0,0.60),
         inset 0 1px 0 rgba(217,182,121,0.30);
       transform: translateY(-1px);
-    }
+    } */
     .explore-btn:active {
       transform: translateY(0px) scale(0.98);
     }
@@ -3565,8 +3577,8 @@
         position: fixed !important;
         left: 12px !important;
         bottom: auto !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important;
+      top: 185px !important;   /* adjust as needed */
+transform: none !important;
         width: 36px !important;
         height: 36px !important;
         padding: 0 !important;
@@ -4514,64 +4526,185 @@
 
 /* Left Info Panel */
 .ss-leftpanel {
-  position: absolute; left: 1.5vw; top: 9.5vh;
-  z-index: 20; width: 21vw; min-width: 260px; max-width: 320px;
-  background: rgba(5,8,6,0.72); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(250,247,240,0.08); border-radius: 14px;
-  padding: 26px 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  position: absolute;
+  left: 1.5vw;
+  top: 9vh;
+
+  z-index: 20;
+
+  width: 19vw;
+  min-width: 240px;
+  max-width: 290px;
+
+  background: rgba(5,8,6,0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  border: 1px solid rgba(250,247,240,0.08);
+  border-radius: 12px;
+
+  padding: 22px 20px;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
-.ss-leftpanel.ss-hidden { opacity: 0; pointer-events: none; transform: translateX(-24px); }
+
+.ss-leftpanel.ss-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-20px);
+}
+
 .ss-lp-eyebrow {
-  font-family: 'Jost', sans-serif; font-size: 10px; font-weight: 600;
-  letter-spacing: 0.30em; text-transform: uppercase; color: #D9B679;
-  margin-bottom: 12px;
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: #D9B679;
+
+  margin-bottom: 10px;
 }
+
 .ss-lp-title {
-  font-family: 'Cormorant Garamond', 'Cinzel', serif; font-size: clamp(1.5rem, 2.3vw, 1.9rem);
-  font-weight: 600; letter-spacing: 0.03em; color: #FAF7F0; line-height: 1.22;
-  text-transform: uppercase; margin-bottom: 12px;
+  font-family: 'Cormorant Garamond', 'Cinzel', serif;
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #FAF7F0;
+
+  line-height: 1.2;
+  text-transform: uppercase;
+
+  margin-bottom: 10px;
 }
-.ss-lp-rule { width: 40px; height: 2px; background: #D9B679; margin-bottom: 16px; }
+
+.ss-lp-rule {
+  width: 34px;
+  height: 2px;
+  background: #D9B679;
+  margin-bottom: 14px;
+}
+
 .ss-lp-desc {
-  font-family: 'Jost', sans-serif; font-size: 12.5px; font-weight: 300;
-  line-height: 1.65; color: rgba(250,247,240,0.62); margin-bottom: 22px;
+  font-family: 'Jost', sans-serif;
+  font-size: 11.5px;
+  font-weight: 300;
+
+  line-height: 1.6;
+  color: rgba(250,247,240,0.62);
+
+  margin-bottom: 18px;
 }
-.ss-lp-features { list-style: none; display: flex; flex-direction: column; gap: 16px; margin-bottom: 22px; }
+
+.ss-lp-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin-bottom: 18px;
+}
+
 .ss-lp-features li {
-  display: flex; align-items: center; gap: 13px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
 }
+
 .ss-lp-icon {
-  width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0;
-  background: rgba(217,182,121,0.14); border: 1px solid rgba(217,182,121,0.30);
-  display: flex; align-items: center; justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  flex-shrink: 0;
+
+  background: rgba(217,182,121,0.14);
+  border: 1px solid rgba(217,182,121,0.30);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.ss-lp-icon svg { width: 17px; height: 17px; stroke: #D9B679; }
-.ss-lp-text { display: flex; flex-direction: column; gap: 1px; }
+
+.ss-lp-icon svg {
+  width: 15px;
+  height: 15px;
+  stroke: #D9B679;
+}
+
+.ss-lp-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
 .ss-lp-text-title {
-  font-family: 'Jost', sans-serif; font-size: 12.5px; font-weight: 500;
-  color: rgba(250,247,240,0.92); letter-spacing: 0.01em;
+  font-family: 'Jost', sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+
+  color: rgba(250,247,240,0.92);
+  letter-spacing: 0.01em;
 }
+
 .ss-lp-text-sub {
-  font-family: 'Jost', sans-serif; font-size: 10.5px; font-weight: 300;
+  font-family: 'Jost', sans-serif;
+  font-size: 9.5px;
+  font-weight: 300;
+
   color: rgba(250,247,240,0.45);
 }
+
 .ss-lp-btn {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; font-family: 'Jost', sans-serif; font-size: 10.5px; font-weight: 600;
-  letter-spacing: 0.14em; text-transform: uppercase; color: #D9B679;
-  background: transparent; border: 1px solid rgba(217,182,121,0.55);
-  border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.22s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  width: 100%;
+
+  font-family: 'Jost', sans-serif;
+  font-size: 9.5px;
+  font-weight: 600;
+
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #D9B679;
+
+  background: transparent;
+  border: 1px solid rgba(217,182,121,0.55);
+  border-radius: 7px;
+
+  padding: 10px;
+
+  cursor: pointer;
+  transition: all 0.22s ease;
 }
-.ss-lp-btn:hover { background: rgba(217,182,121,0.12); border-color: #D9B679; }
-.ss-lp-btn svg { width: 12px; height: 12px; }
+
+.ss-lp-btn:hover {
+  background: rgba(217,182,121,0.12);
+  border-color: #D9B679;
+}
+
+.ss-lp-btn svg {
+  width: 11px;
+  height: 11px;
+}
 
 /* Compass (site-select screen only) */
 
-
+/* Hide rail on site select screen, show after entering Phase 2 */
+body:not(.plot-hover-mode):not(.video-paused) #ssIconRail {
+  display: none;
+}
+body.plot-hover-mode #ssIconRail,
+body.video-paused #ssIconRail {
+  display: flex;
+}
 /* Right vertical icon rail */
 .ss-iconrail {
-  position: absolute; right: 2.2vw; top: 13.5vh;
+  position: fixed; right: 2.2vw; top: 13.5vh;
   z-index: 20; display: flex; flex-direction: column; gap: 6px;
 }
 .ss-rail-btn {
@@ -4613,48 +4746,125 @@
 }
 
 /* Bottom stats bar */
+/* Bottom stats bar */
 .ss-statsbar {
-  position: absolute; left: 1.5vw; right: 1.5vw; bottom: 2.2vh;
-  z-index: 20; display: flex; align-items: stretch; justify-content: space-between;
+  position: absolute;
+  left: 1.5vw;
+  right: 1.5vw;
+  bottom: 2vh;
+
+  z-index: 20;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+
   background: linear-gradient(180deg, rgba(9,14,10,0.88) 0%, rgba(4,7,5,0.94) 100%);
-  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(217,182,121,0.16); border-radius: 14px;
-  padding: 18px 16px; box-shadow: 0 18px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(217,182,121,0.16);
+  border-radius: 13px;
+
+  padding: 16px 14px;
+
+  box-shadow: 0 18px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
 }
+
 .ss-stat {
-  display: flex; align-items: center; gap: 14px;
-  padding: 0 26px; border-right: 1px solid rgba(250,247,240,0.09);
-  flex: 1 1 0; min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 22px;
+
+  border-right: 1px solid rgba(250,247,240,0.09);
+
+  flex: 1 1 0;
+  min-width: 0;
+
   transition: transform 0.22s ease;
 }
-.ss-stat:hover { transform: translateY(-2px); }
-.ss-stat:first-child { padding-left: 10px; }
-.ss-stat:last-child { border-right: none; padding-right: 10px; }
+
+.ss-stat:hover {
+  transform: translateY(-2px);
+}
+
+.ss-stat:first-child {
+  padding-left: 8px;
+}
+
+.ss-stat:last-child {
+  border-right: none;
+  padding-right: 8px;
+}
+
 .ss-stat-icon {
-  width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+
+  flex-shrink: 0;
+
   background: linear-gradient(135deg, rgba(217,182,121,0.24), rgba(217,182,121,0.08));
   border: 1px solid rgba(217,182,121,0.35);
-  display: flex; align-items: center; justify-content: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   box-shadow: 0 4px 14px rgba(217,182,121,0.14);
 }
-.ss-stat-icon svg { width: 18px; height: 18px; stroke: #D9B679; }
-.ss-stat-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+
+.ss-stat-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke: #D9B679;
+}
+
+.ss-stat-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
 .ss-stat-label {
-  font-family: 'Jost', sans-serif; font-size: 9.5px; font-weight: 500;
-  letter-spacing: 0.12em; text-transform: uppercase; color: rgba(250,247,240,0.52);
-  white-space: nowrap;
-}
-.ss-stat-num {
-  font-family: 'Cinzel', serif; font-size: 18px; font-weight: 600; color: #FAF7F0;
-  line-height: 1.15; white-space: nowrap;
-}
-.ss-stat-num-sm { font-size: 14.5px; }
-.ss-stat-sub {
-  font-family: 'Jost', sans-serif; font-size: 9px; font-weight: 400;
-  letter-spacing: 0.08em; text-transform: uppercase; color: rgba(250,247,240,0.40);
+  font-family: 'Jost', sans-serif;
+  font-size: 8.8px;
+  font-weight: 500;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(250,247,240,0.52);
+
   white-space: nowrap;
 }
 
+.ss-stat-num {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #FAF7F0;
+
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.ss-stat-num-sm {
+  font-size: 13px;
+}
+
+.ss-stat-sub {
+  font-family: 'Jost', sans-serif;
+  font-size: 8.5px;
+  font-weight: 400;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(250,247,240,0.40);
+
+  white-space: nowrap;
+}
 /* Overview map mini panel */
 .ss-overview {
   position: absolute; right: 2.2vw; bottom: 12.5vh; z-index: 20;
@@ -4789,7 +4999,148 @@
   visibility: hidden !important;
   pointer-events: none !important;
 }
+/* ── PAUSE MARKER BUTTONS (Essentials / Plots / Garden) ── */
+.pause-marker-btns {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  flex-direction: column;
+  gap: 12px;
+  z-index: 45;
+}
+body.video-paused .pause-marker-btns {
+  display: flex;
+}
+body.plot-hover-mode .pause-marker-btns {
+  display: flex !important;
+}
 
+
+/* ===== Mobile: Compact Left Menu Buttons ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+
+
+  .pause-marker-btn {
+    width: 40px !important;
+    min-height: 40px !important;
+    padding: 2px !important;
+    gap: 3px !important;
+
+    border-radius: 10px !important;
+  }
+
+  .pause-marker-btn svg {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  .pause-marker-btn span {
+    font-size: 7px !important;
+    letter-spacing: 0.08em !important;
+    line-height: 1.1 !important;
+  }
+
+}
+
+
+
+.pause-marker-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 16px;
+  background: rgba(9,15,9,0.90);
+  border: 1px solid rgba(217,182,121,0.35);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.pause-marker-btn:hover {
+  border-color: rgba(217,182,121,0.85);
+  background: rgba(217,182,121,0.14);
+}
+.pause-marker-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: rgba(217,182,121,0.90);
+}
+.pause-marker-btn span {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgba(217,182,121,0.90);
+  text-transform: uppercase;
+}
+/* ── Plot hover: gold highlight + pointer ── */
+svg path[id^="plot-"],
+svg path[id^="garden"] {
+  cursor: pointer;
+  transition: fill 0.15s ease, stroke 0.15s ease;
+}
+svg path[id^="plot-"]:hover {
+  fill: rgba(217,182,121,0.55) !important;
+  stroke: #d9b679 !important;
+  stroke-width: 2 !important;
+}
+svg path[id^="garden"]:hover {
+  fill: rgba(140,210,140,0.50) !important;
+  stroke: #ffffff !important;
+  stroke-width: 2 !important;
+}
+
+/* ── Tooltip that follows the cursor ── */
+#plotHoverTip {
+  position: fixed;
+  display: none;
+  padding: 6px 12px;
+  background: rgba(9,15,9,0.92);
+  border: 1px solid rgba(217,182,121,0.55);
+  border-radius: 8px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #d9b679;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+}
+@media (min-width: 1025px) {
+  body.overlay-img-active.plot-hover-mode svg.zone-svg[data-zone-svg^="plot-"] {
+ 
+    pointer-events: none;
+  }
+  body.overlay-img-active.plot-hover-mode .svg-overlay {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: none;
+  }
+  body.plot-hover-mode svg.zone-svg[data-zone-svg^="plot-"] path {
+    pointer-events: all;
+    fill: transparent !important;
+    stroke: transparent !important;
+    cursor: pointer;
+  }
+  body.overlay-img-active.plot-hover-mode svg.zone-svg[data-zone-svg^="plot-"] path:hover {
+    fill: rgba(217,182,121,0.55) !important;
+    stroke: #d9b679 !important;
+    stroke-width: 2 !important;
+  }
+}
+body.overlay-img-active .svg-overlay {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: none;
+  }
+
+  
 </style>
 
 <body class="intro-active">
@@ -5027,7 +5378,7 @@
     </div>
 
     <!-- NEW UI: Left info panel -->
-    <div class="ss-leftpanel" id="ssLeftPanel">
+    <!-- <div class="ss-leftpanel" id="ssLeftPanel">
       <div class="ss-lp-eyebrow">Master Plan</div>
       <h2 class="ss-lp-title">Select Phase<br>to Explore</h2>
       <div class="ss-lp-rule"></div>
@@ -5037,17 +5388,17 @@
         <li><span class="ss-lp-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M12 8v6M9 11h6"/></svg></span><span class="ss-lp-text"><span class="ss-lp-text-title">Near AIIMS</span><span class="ss-lp-text-sub">Minutes away</span></span></li>
         <li><span class="ss-lp-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg></span><span class="ss-lp-text"><span class="ss-lp-text-title">Smartly Planned</span><span class="ss-lp-text-sub">For a better tomorrow</span></span></li>
       </ul>
-    </div>
+    </div> -->
 
     <!-- Compass -->
    
 
     <!-- NEW UI: Right vertical icon rail -->
-    <div class="ss-iconrail" id="ssIconRail">
+    <!-- <div class="ss-iconrail" id="ssIconRail">
       <button type="button" class="ss-rail-btn" data-marker="nearby-essentials"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9.5" r="4.5"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg><span>Essentials</span></button>
       <button type="button" class="ss-rail-btn" data-marker="plots"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg><span>Plots</span></button>
       <button type="button" class="ss-rail-btn" data-marker="amenities"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg><span>Garden</span></button>
-    </div>
+    </div> -->
 
     <!-- Interactive SVG map overlay -->
     <svg class="ss-svg" xmlns="http://www.w3.org/2000/svg"
@@ -5055,21 +5406,21 @@
 
       <!-- Road (non-interactive) -->
       <path class="ss-region-hover" id="ss-road"
-        d="m1251.89 2160.05 25-747.98 5.78-177.49 44.67-230.65 113.33-311.33 43.67-122.34 38.67-121.68 47.33-148.87 21.67-68.63L1623.67 0 1645 6.63l-2 4.97-25.67 206.89L1566 388.24l-56 180.7-53.67 150.86L1389 907.46l-38 104.11-41.33 218.82-5.33 156.16s-7 144.56-6.33 146.55-4.67 157.15-4.67 157.15l-6.67 191.64-9.33 287.79-25.44-9.61Z"/>
+        d="m851.42 2160 63.55-540.06 24.56-214.38 27.94-98.06 68.28-249.61 96.33-219.22 97.89-224.23 72.84-165.83 59.5-144.33 51-127 33.33-86.34L1482.14 0h39l-73.5 184.61-43.5 110.5-51.5 128.83-48.33 110.67-66.84 153.5-62.33 142-57 131.17-47.67 109.16-45.83 170.34-26 95.83-20.33 75.33-22.67 187.17-23.17 199.5-18 151.5L890.31 2160z"/>
 
       <!-- Road marching dashes overlay -->
       <path class="ss-road-march-glow"
-        d="m1251.89 2160.05 25-747.98 5.78-177.49 44.67-230.65 113.33-311.33 43.67-122.34 38.67-121.68 47.33-148.87 21.67-68.63L1623.67 0 1645 6.63l-2 4.97-25.67 206.89L1566 388.24l-56 180.7-53.67 150.86L1389 907.46l-38 104.11-41.33 218.82-5.33 156.16s-7 144.56-6.33 146.55-4.67 157.15-4.67 157.15l-6.67 191.64-9.33 287.79-25.44-9.61Z"/>
+        d="m851.42 2160 63.55-540.06 24.56-214.38 27.94-98.06 68.28-249.61 96.33-219.22 97.89-224.23 72.84-165.83 59.5-144.33 51-127 33.33-86.34L1482.14 0h39l-73.5 184.61-43.5 110.5-51.5 128.83-48.33 110.67-66.84 153.5-62.33 142-57 131.17-47.67 109.16-45.83 170.34-26 95.83-20.33 75.33-22.67 187.17-23.17 199.5-18 151.5L890.31 2160z"/>
       <path class="ss-road-march"
-        d="m1251.89 2160.05 25-747.98 5.78-177.49 44.67-230.65 113.33-311.33 43.67-122.34 38.67-121.68 47.33-148.87 21.67-68.63L1623.67 0 1645 6.63l-2 4.97-25.67 206.89L1566 388.24l-56 180.7-53.67 150.86L1389 907.46l-38 104.11-41.33 218.82-5.33 156.16s-7 144.56-6.33 146.55-4.67 157.15-4.67 157.15l-6.67 191.64-9.33 287.79-25.44-9.61Z"/>
+        d="m851.42 2160 63.55-540.06 24.56-214.38 27.94-98.06 68.28-249.61 96.33-219.22 97.89-224.23 72.84-165.83 59.5-144.33 51-127 33.33-86.34L1482.14 0h39l-73.5 184.61-43.5 110.5-51.5 128.83-48.33 110.67-66.84 153.5-62.33 142-57 131.17-47.67 109.16-45.83 170.34-26 95.83-20.33 75.33-22.67 187.17-23.17 199.5-18 151.5L890.31 2160z"/>
 
       <!-- AIIMS (non-interactive) -->
       <path class="ss-region-hover" id="ss-aiims" style="pointer-events:none;"
-        d="m0 1381.08 694.67 317.78 584.37-352.68 3.63-111.61 16.19-83.6L99 645.2c39.26 89.43-21.31 200.67-99 315.64v420.25Z"/>
+        d="m0 749.94 967.47 557.56-27.94 98.06-24.45 213.42L0 2080.67z"/>
 
       <!-- ═══ PHASE 1 (clickable) ═══ -->
       <path class="ss-phase phase-1" id="ss-phase1"
-        d="m1854.83 1222.34 232.84 92.42-41.5 103.97c-59.77-.39-122.19-.35-185.92-.2l-8.58 40.53-3.59 4.23-80.52-5.58 5.44-37.69-72.78-5.08 1.45-11.94-172.75-8.27-7.84 31.33-67.41-15.17 5.41-23.87-154.65-3.39 1.03-30.1c39.19-37.88 74.27-84.12 106.54-136.1l25.33-53.37 268.17-581.21-4.28-2.6 6.22-11.16 3.84.72 45.64-90.65 8.08 1.99 9.42-24.87 2.16.59 2.92-7.46-4.33-1.24-.25-7.38 4.33-7.96-1.17-2.24 8.09-15.09-6.67-3.06 6-11.61 6.83 1.66L1806 369.5l131.83 52.56 16.34-32.99-9.29-3.06 8.16-16.33 7.58 3.06 9.71-20.97 51.34 19.23-18.67 33.82 44.33 19.56L1994 542.74l111 40.78c-18.25 32.27-42.38 59.34-72 81.56l-91.22 200.7-9.45 23.42 19.78 8.51-5.78 13.04-4.11-1.1-2.66 6.3 3.88 1.44-32.22 79.46-20.55-7.63-24.56 9.28-32.19 77.69 24 9.2-18.5 45.84 12 17.41-14.42 33.82 7.92 40.78 9.91-.92Z"/>
+        d="M2325.12,457.88c-15.5,28.67-78.95,84.32-135.91,136.33l-182.17,317.25-19.03,36.67s29.75,11.61,29.5,12.61-12,24.25-12,24.25l-6.25-3.17-5.08,10.5,5.75,3.17-67.42,125.66-36.41,15.42-32.25-19.25-65.45,121.11,34.67,18.17-36.58,70.33,18.27,29.17-30.58,51.5,9.39,36.25-2,29.66,163.22,77.06-122.82,239.18-54.89-5.32-18.69,59.22c.61,1.12-8.97,6.74-9.75,5.92-.23-.24-117.67-21.17-117.67-21.17l14.03-55.47-107.49-21.37,2.34-16.75-243.57-36.93-14.36-1.12-15.75,46.48-98.73-31.89,11.98-36.45-229.24-28.76,5.17-44.54c38.21-28.44,96.41-93.53,169.68-182.78l324.66-582,15.28-32.72,190.11-340.7,22.5-40.26-7.25-3.65,12-20,7.59,3.08,76.15-134.67,19.6-28.97,12,5.06,12.27-30.23,4.45,2.56,6.05-12.28-5.33-2.78,3.95-6.66,1-18.45,2.19-5.33,12.69-26.61-8.22-4,10.75-21.27,10.42,4.75,38.67-68.5,201.34,104.77,24.84-43.67-12.73-7.22,14.06-26.39,13.55,6.95,29-48.67,77.34,36.83-35.67,57.84,68.17,38.83-110.5,198.33,169.16,85.09Z"/>
 
       <!-- Phase 1 hover label (toggled by JS) — REDESIGNED -->
       <g class="ss-label-group" id="ss-lbl-phase1">
@@ -5112,49 +5463,76 @@
 
       <!-- ═══ PHASE 2 (always-visible floating tooltip) ═══ -->
       <path class="ss-phase phase-2" id="ss-phase2"
-        d="m2474.5 1082.96-15.42 120.9s-1.16 2.81-1.25 3.14c-.08.34-1.25 6.22-1.25 6.8s-1.91 10.77-1.91 10.77l-1.59 21.96s-.16 5.39-.16 6.14 1.25 6.96 1.25 6.96l-1.75 4.06.16 4.57-.5 5.38 1.17 6.55-2.5 6.22 2.5 4.14-1.58 2.9-3.34 6.63 1.67 6.22-.17 8.21-2.16 5.97 2.91 6.05s-2.25 4.8-2.5 4.97-2.08 7.54-2.08 7.54l.33 9.95-.5 13.93-2.25 3.65v8.13l-1.91 4.48v3.48s-.84 9.11-.84 9.53-1.33 7.96-1.33 7.96l-1.5 19.89-2.89 15.98c-95.81-12.38-233.37-16.27-388.94-17.27s41.5-103.98 41.5-103.98l-232.84-92.42-9.91.92-7.92-40.78 14.42-33.82-12-17.41 18.5-45.84-24-9.2 32.19-77.69 24.56-9.28 20.55 7.63 32.22-79.46-3.88-1.44 2.66-6.3 4.11 1.1 5.78-13.04-19.78-8.51 9.45-23.42 69.89 28.29-3.67 11.94 185.11 70.07 23.56-60.24 27.44 4.2 157.11 61.01.89-1.44s.56-1.21.67-2.43c.11-1.21.78-2.98 1.22-4.54.44-1.54 4.78-8.29 5.67-10.83s1.66-6.3 2.11-8.61c.44-2.33-.22-6.63 0-8.4s2.33-5.41 2.89-6.08c.55-.67 4.66-3.53 4.66-3.53l17.23 5.41-11.89 33.26-4.34 10.28-3.55 14.03-19.24 51.16 6.59 2.98 7.62 2.7 9.58 2.94s12.96 5.34 13.17 5.39c.21.04 14.79 5.93 14.79 5.93l2.71 1.44 5.29 3.19 7.17 2.7 1.29 2.9z"/>
+        d="M2812.53,1338.46l-53.25,198.48s-4.95-.52-4.61.25c.33.78-.23,2.17-.39,3-.17.84-.95,4.23-.95,4.62s-2.94,5.22-3.55,7.72c-.61,2.5-.17,1.55.28,3.39.45,1.83-.06,2.33,0,3.5.05,1.16-.39,1.72-.84,3.22-.44,1.5-.83,1.78-1.44,2.94-.61,1.17-1.11,2.28-1.45,4-.33,1.73-1.39,4.73-1.76,5.5-.38.78-.13,6.89-.01,9.23.11,2.33-.5,1.44-1.39,3.55-.89,2.11-.67,4.45-.67,4.45,0,0-.22,2.33-.5,5.5-.28,3.16-1.61,4.27-2,5.61-.39,1.33-1.28,6.55-1.28,6.55,0,0-.89,2.39-.78,4.28.12,1.89-.5,2.94-.55,4.67-.06,1.72-.95,4.27-1.28,5.22-.33.94-2.39,3.44-2.39,4.78s.17,2.66.17,4.22-1.33,4-2.06,5.83c-.72,1.84-.83,4.84-1.11,6.72-.28,1.89-.89,7.45-1.16,8.06-.28.61-1.06,2.33-1.06,2.33,0,0-1.22,3.17-1.72,4.78s-.95,4.67-.95,4.67c0,0-.33,3.11.11,4.89.45,1.77-.38,4.22-.44,5.05-.06.84-2.39,3.67-4.06,6.22-1.66,2.56-3.16,4.28-3.66,5.5-.5,1.23,2.96,6.53,2.96,6.53,0,0-.55,1.38-1,3.04-.46,1.67-.8,2.25-.88,2.71-.08.46-.04,2-.04,2.92s1.25,3.96,1.25,3.96c0,0-.63,5.54-.92,7.62-.29,2.09-2.75,6.67-3.58,8.38-.83,1.71-1.25,5.87-1.25,5.87,0,0-.29,1.59-.46,2.29-.17.71-1.17,3.17-2.04,5.34-.88,2.16-1.58,3.83-1.63,4.46-.04.62-1.16,3.95-1.29,5.04-.12,1.08-.5,3.83-.5,5.08s-.41,5.75-.41,6.04-2.84,9.42-2.84,9.42c0,0-.75,1.62-.91,2.75-.17,1.12-.13,1.25-.42,2.54-.29,1.29-.5,1.67-1,3.13-.5,1.45-1.54,3.12-1.54,3.12,0,0-.5,2.5-.5,3.33s-.75,3.84-.75,3.96c0,.13-3.5,7.5-3.5,7.5,0,0-.75,1.88-.84,2.46-.08.58-.33,1.96-.33,3.17s-.67,2.87-.96,4.33c-.29,1.46.25,1.5.21,2.17-.04.66-1.33,3.25-1.92,5.08-.58,1.83-.95,2.92-.95,2.92,0,0-2.75,1.87-2.92,2.25-.17.37-.79,5.62-.79,5.62,0,0-.21,2.67-.42,4.5-.21,1.84-.46,1.84-.58,3.09-.13,1.25-3.46,4.33-3.46,4.33,0,0-.17,1.96-.08,4.83.08,2.88.41,2.13.5,2.67.08.54-2.34,4.92-2.46,5.67-.13.75-.42,2.45-.38,3.58.04,1.12-.37,2.08-.5,2.67-.12.58-1.41,3.16-1.5,3.41-.08.25-.79,2.67-1,4.04-.21,1.38-.96,3.55-1,3.75-.04.21-.75,4-.75,4,0,0-.66,3.05-1.04,5-.37,1.96-.5,2.55-.5,3.09s-1.46,4.04-1.46,4.04c0,0-1.41,3.04-1.46,4.17-.04,1.12-.87,2.87-1.2,4.7-.34,1.84-1.09,4.17-1.17,4.92-.08.75-1.71,2.96-2.42,4.17-.71,1.21-4.08,1.83-4.25,1.87-.16.04-5.46.96-5.46.96,0,0-4.66-.58-5.33-.79-.67-.21-2.54-.83-3.58-1.04-1.04-.21-2.84.08-3.13.08s-6.54-.04-6.54-.04c0,0-3.37-.83-4.21-.92-.83-.08-7.91-.96-8.54-1.04-.62-.08-3.62-.42-3.62-.42l-2.71-.54s-5.34-1.79-5.92-2.04-2.92-.67-2.92-.67l-4.54-1.45-3.75-.92s-2.75-.63-2.91-.67c-.17-.04-4.05-.33-4.3-.56-.25-.22-1.83.06-2.04-.02-.21-.08-1.16.08-2.54,0-1.37-.08-2.79-.17-2.79-.17,0,0-3.21-.79-3.5-.91-.29-.13-4.71-.88-4.71-.88l-4.42-.25s-2.87-.62-3.12-.71c-.25-.08-4.13-1.79-4.13-1.79,0,0-2.83-.25-3.08-.25s-4.96-.87-4.96-.87c0,0-3.08-1-3.41-1.17-.34-.17-3.59-.46-4-.46s-4.25-.29-4.38-.29c-.12,0-4.33-1.33-4.87-1.67-.55-.33-3.25-.08-3.25-.08l-4.63.29s-4.33-1.71-4.58-1.75-4.13-1.83-4.13-1.83l-6.79-1.84-4.58,2.13s-7.92-2.58-8.5-2.88c-.59-.29-3.25-2.37-3.25-2.37l-5.79-1-3.92-.71s-6.29-.42-6.58-.54c-.3-.13-4.88,0-4.88,0,0,0-4.37-.92-4.58-.83-.21.08-4.63,0-4.63,0l-9.65-2.38h-6l-6-1.33h-5.11l-5.56-1.78-3.77-2.67-7.56-1.55-16.44-4.67-347.12-38.67-22.88,29.12-96.67-43-114.67-11.12h0s122.82-239.19,122.82-239.19l-163.22-77.06,2-29.66-9.39-36.25,30.58-51.5-18.27-29.17,36.58-70.33-34.67-18.17,65.45-121.11,32.25,19.25,36.41-15.42,67.42-125.66-5.75-3.17,5.08-10.5,6.25,3.17s11.75-23.25,12-24.25-29.5-12.61-29.5-12.61l19.03-36.67,104.84,52.83-12.17,20.25s4.58,1.75,5.33,1.92c.75.17,3.25,1.42,3.25,1.42l5.17,3s2.92,2.08,3.17,2.25c.25.16,5.94,1.77,5.94,1.77,0,0,2.5.42,3,.67s6.42,5.25,6.42,5.25l12.58,5s13.92,10,14.25,10.25c.33.25,10.33,4.5,11.67,5.08,1.33.59,5.66,2.92,5.91,3.09.25.16,9.59,3.66,11,4.16,1.42.5,13.75,7.84,13.75,7.84l4.34,2.41s9.08,3.75,9.75,3.92c.66.17,5.08,2.67,5.08,2.67,0,0,7.75,3.66,8.42,4.16.66.5,4.66,2.67,5.16,2.84.5.16,3.5,2.41,3.5,2.41l9,4.67,8.59,3.17,5.75,2s5.66,3.58,5.91,4c.25.41,3.84,3,4.5,3.5.67.5,4.17,2.83,5.17,3.58s5.75,1.08,7.58,2.17c1.84,1.08,4.25,2.83,6,3.75,1.75.91,3.5,1.33,4.75,2.08s6.75,3.42,7.09,3.58c.33.17,6.16,2.84,6.16,2.84,0,0,5.17,2.33,6.42,3.33s10.42,6.5,10.83,6.75c.42.25,8.09,1.75,8.09,1.75l23.41,13.08,2.75,1.5,4.59,2.92s4.5,2.17,5,2.33c.5.17,5.16,1.92,5.16,1.92l6.09,3.33s3-3.16,3.5-3.58,3.25-3.5,3.91-6.75c.67-3.25,2.34-6.25,3.75-9.17,1.42-2.91,1.92-2.08,3.5-4.91,1.59-2.84.84-1.5,1.67-4.5.83-3,1.25-4.59,1.58-6,.34-1.42,3-6,3-6,0,0,2-2,3-3.34,1-1.33,2.09-3.58,2.67-4.5.58-.91,4.58-9.16,4.83-10,.25-.83,1.42-3,2.5-5.5,1.09-2.5,1.75-3.66,2-4.66s5.84-10.17,5.84-10.17c0,0,1.33-5.5,1.5-6.75.16-1.25,1.25-3.08,1.41-3.67.17-.58,2.84-2.58,3.17-3.08.33-.5,3.5-3.33,3.5-3.33l8.75-2.09,6.33,2.92,6,1.33,13.5,3.75s3.59,1.09,4.09,1.09,4.66.5,6.5,1.16c1.83.67,4.58,3,4.58,3,0,0,3.67,2.34,6.08,4.34,2.42,2,3.34,2.41,5,3.41,1.67,1,7,1.42,7.34,1.59.33.16,9.58,5.5,9.58,5.5l6.67,2.25s5.41,3.16,6.5,3.66c1.08.5,6.33,3.42,7.16,3.84.84.41,10.59,7.33,10.59,7.33l14.16,5.93s8.92,6.07,9.67,6.65c.75.59,5.83,1.42,7.33,2.17s5.84,4.58,6.84,5.83,3.58,2,3.58,2c0,0,12.33,3.25,12.67,3.34.33.08,10.08,4.91,10.08,4.91,0,0,5.75,2.5,6.5,3.09.75.58,5.33,2.91,5.67,3.16.33.25,7,4.42,8,5.09,1,.66,7.66,3.58,7.66,3.58l22.17,11.83,4.58,1.09s3.67,1.58,3.92,1.66c.25.09,5,3.59,5,3.59l4.83,2.83,4.84,2.33,5.91,2.09,6.67,3.08s4.25,3.75,4.5,4,5.58,2.08,5.58,2.08c0,0,5.25,3.5,8.09,4.42,2.83.92,6.08,1.92,6.91,2.25.84.33,1-.17,2.42-1.08,1.42-.92,2.42-.75,3.08-2,.67-1.25,2.5-3.17,3.17-5.34.67-2.16,3.5-9.16,4.17-10.75.66-1.58.91-2.25,1.75-4.58.83-2.33,3.5-9,4.66-11.42,1.17-2.41,2.75-4.41,3.59-6.08.83-1.67,2.16-3,2.5-4.42.33-1.41,3-6.66,3.66-7.91.67-1.25,1.59-2.75,1.59-2.75,0,0,1-2.5,1.91-5.17.92-2.67,1.92-3.17,2.92-4.42s3.67-1.66,4.08-1.83c.42-.17,2.92-3.17,3.25-3.5.34-.33,3.09.67,3.09.67,0,0,6.25,1.83,6.58,1.91.33.09,3.75,0,4,0s3.83,3,3.83,3l4.42,1.5s3.67,1.59,4.08,1.59-.41,1.16-.58,2.16c-.17,1-5,9.17-5.25,9.59-.25.41-4.25,9.75-4.25,10s-4.67,8.41-5.33,10.5c-.67,2.08-1.59,5.41-1.67,5.66-.08.25-3.67,5.67-3.67,5.67l-5.33,11.75-1.83,2.67s-3.25,5.5-3.84,6.08c-.58.58-1.66,2.5-1.91,3.17-.25.66-2.17,4.83-2.5,5.58-.34.75-2,5.17-2.34,6-.33.83-1.41,4.42-1.66,5.08-.25.67-2.17,2.17-3,2.5-.84.34-4.96,13.98-4.96,13.98l-4.17,3-1.75,4.5-.5,1.54-1.17,3.33s-1.58,2.75-1.91,3.33c-.34.59-2.09,3.25-2.38,4.25-.29,1-.96,3.3-1.08,3.84-.13.54-1.25,2.87-1.67,3.54-.41.67-3.25,2.25-3.54,2.54-.29.29-5.25,10.67-5.25,10.67,0,0-.33,1.54-.33,2s-.42,2.21-.54,2.37c-.13.17-1.46,2-1.46,2l-1.29,2.75-.96,2.54s-1.46,5.34-1.71,5.92-3.04,3.58-3.25,3.75c-.21.17-7.38,12.96-7.38,12.96l1.63.71,3.29,2.96,2.38,1.33,2.7,1.58s1.5.63,2,.84c.5.2,3.71.41,3.71.41,0,0,3.96,3.25,4.13,3.46.16.21,1.71,1.13,1.71,1.13,0,0,5.37,2.91,5.62,3.04.25.12,2.92.08,2.92.08,0,0,2.54,1,2.83,1.17.29.16,2.21,2.33,2.33,2.58.13.25,3.21.79,3.21.79,0,0,2.96,1.59,3.13,1.59.16,0,2.87,2.41,2.87,2.41l6.54,4.04,4.38,1.84s3.33,1.58,3.75,1.75c.42.16,3.83.66,4.83.96,1,.29,4.25,2.2,4.84,2.62.58.42,2.95,2.96,4,3.38,1.04.41,2.66,1.16,4.83,2.2,2.17,1.05,4.54,2.05,4.54,2.05,0,0,3.25,1.41,4.5,2.16s2.5.46,3.83.92c1.34.46,3,1.46,3.38,1.62.37.17,2.92,1.84,3.75,2.71.83.88,2.75,2.25,3.37,2.88.63.62,1.46,3.91,1.46,3.91l14.38,7.63Z"/>
 
 
       <!-- AIIMS hover label — REDESIGNED -->
-      <g class="ss-label-group" id="ss-lbl-aiims">
-        <!-- glow halo -->
-        <rect x="196" y="1116" width="288" height="98" rx="16" ry="16"
-              fill="rgba(250,247,240,0.06)"/>
-        <!-- main panel -->
-        <rect x="1000" y="1190" width="240" height="90" rx="14" ry="14"
-              fill="rgba(4,10,5,0.93)" stroke="rgba(250,247,240,0.45)" stroke-width="2"/>
-        <!-- left white accent -->
-        <rect x="1000" y="1208" width="5" height="54" rx="2.5" ry="2.5"
-              fill="rgba(250,247,240,0.75)"/>
-        <!-- label -->
-        <text x="1105" y="1243" text-anchor="middle"
-              font-family="Cinzel,serif" font-size="36" font-weight="500"
-              fill="#FAF7F0" letter-spacing="6">AIIMS</text>
-        <!-- sub label -->
-        
-      </g>
+<g class="ss-label-group" id="ss-lbl-aiims">
+
+    <!-- glow halo -->
+    <rect x="476" y="1186" width="288" height="98" rx="16" ry="16"
+          fill="rgba(250,247,240,0.06)"/>
+
+    <!-- main panel -->
+    <rect x="500" y="1190" width="240" height="90" rx="14" ry="14"
+          fill="rgba(4,10,5,0.93)"
+          stroke="rgba(250,247,240,0.45)"
+          stroke-width="2"/>
+
+    <!-- left white accent -->
+    <rect x="500" y="1208" width="5" height="54" rx="2.5" ry="2.5"
+          fill="rgba(250,247,240,0.75)"/>
+
+    <!-- label -->
+    <text x="620" y="1243"
+          text-anchor="middle"
+          font-family="Cinzel,serif"
+          font-size="36"
+          font-weight="500"
+          fill="#FAF7F0"
+          letter-spacing="6">
+        AIIMS
+    </text>
+
+</g>>
 
       <!-- Road hover label — REDESIGNED -->
       <g class="ss-label-group"
    id="ss-lbl-road"
-   transform="rotate(-73 1518 1030)">
-        
-        <!-- glow halo -->
-        <rect x="1450" y="815" width="264" height="88" rx="16" ry="16"
-              fill="rgba(250,247,240,0.06)"/>
-        <!-- main panel -->
-        <rect x="1454" y="819" width="475" height="80" rx="14" ry="14"
-              fill="rgba(4,10,5,0.93)" stroke="rgba(250,247,240,0.45)" stroke-width="2"/>
-        <!-- left white accent -->
-        <rect x="1454" y="836" width="5" height="46" rx="2.5" ry="2.5"
-              fill="rgba(250,247,240,0.75)"/>
-        <!-- label -->
-        <text x="1700" y="865" text-anchor="middle"
-              font-family="Cinzel,serif" font-size="30" font-weight="500"
-              fill="#FAF7F0" letter-spacing="5">Dabwali Rd, Bathinda</text>
-        <!-- sub label -->
-       
-      </g>
+   transform="translate(-200,0) rotate(-73 1518 1030)">
+
+    <!-- glow halo -->
+    <rect x="1450" y="815"
+          width="485" height="88"
+          rx="16" ry="16"
+          fill="rgba(250,247,240,0.06)"/>
+
+    <!-- main panel -->
+    <rect x="1454" y="780"
+          width="475" height="80"
+          rx="14" ry="14"
+          fill="rgba(4,10,5,0.93)"
+          stroke="rgba(250,247,240,0.45)"
+          stroke-width="2"/>
+
+    <!-- left white accent -->
+    <rect x="1454" y="780"
+          width="5" height="46"
+          rx="2.5" ry="2.5"
+          fill="rgba(250,247,240,0.75)"/>
+
+    <!-- label -->
+    <text x="1692" y="825"
+          text-anchor="middle"
+          font-family="Cinzel,serif"
+          font-size="30"
+          font-weight="500"
+          fill="#FAF7F0"
+          letter-spacing="5">
+        Dabwali Rd, Bathinda
+    </text>
+
+</g>
 
 
       <!-- Phase 2 always-visible floating badge — REDESIGNED -->
@@ -5193,11 +5571,7 @@
     </div>
 
     <!-- NEW UI: Overview map mini panel -->
-    <div class="ss-overview" id="ssOverview">
-      <div class="ss-overview-label">Overview Map</div>
-      <img class="ss-overview-img" src="masterplan-placeholder.webp" alt="Overview" />
-    </div>
-
+ 
     <!-- Bottom hint -->
   
   </div>
@@ -8216,7 +8590,27 @@
       <span class="mob-marker-label">Map</span>
     </button>
   </div>
-
+<!-- PAUSE MARKER BUTTONS: Essentials / Plots / Garden (show when video paused) -->
+  <div class="pause-marker-btns" id="pauseMarkerBtns">
+    <button class="pause-marker-btn" data-marker="nearby-essentials">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="9.5" r="4.5"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/>
+      </svg>
+      <span>Essentials</span>
+    </button>
+    <button class="pause-marker-btn" data-marker="plots">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/>
+      </svg>
+      <span>Plots</span>
+    </button>
+    <button class="pause-marker-btn" data-marker="amenities">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/>
+      </svg>
+      <span>Garden</span>
+    </button>
+  </div>
   <!-- MOBILE PORTRAIT: Sub-pill bars floating above slider -->
   <div class="mob-sub-pill-bar" id="mobGardensPills">
     <div class="mob-pill" data-amenity="garden">Garden</div>
@@ -9230,6 +9624,12 @@
         };
     const ZONE_LINK_OPEN_NEW_TAB = false;
 
+    // ┌─────────────────────────────────────────────────────────────┐
+    // │ CHANGE THIS: the ONE page every plot opens when clicked.     │
+    // │ Set it to your real plot page, e.g. 'plot/index.html'.       │
+    // └─────────────────────────────────────────────────────────────┘
+    const SINGLE_PLOT_PAGE = 'plot/index.html';
+
     // Display labels for section name display (rename freely)
     const SECTION_META = {
       // Amenities
@@ -9670,7 +10070,25 @@ uiToggleBtn.addEventListener("touchend", toggleControls, {
           backToMapBtn.addEventListener('touchend', function(e) { e.preventDefault(); openMasterPlan(e); }, {passive:false});
         }
       })();
-
+// Pause marker buttons — Essentials / Plots / Garden
+      (function() {
+        var pauseBtns = document.querySelectorAll('#pauseMarkerBtns .pause-marker-btn');
+        pauseBtns.forEach(function(btn) {
+          function handle(e) {
+            e.stopPropagation();
+            var key = btn.dataset.marker;
+            if (key === 'nearby-essentials') {
+              window.location.href = 'map/index.html'; // TODO: replace with real URL
+              return;
+            }
+            document.body.classList.remove('plot-hover-mode');
+            var tick = document.querySelector('.slider-tick[data-marker="' + key + '"]');
+            if (tick) tick.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+          }
+          btn.addEventListener('click', handle);
+          btn.addEventListener('touchend', function(e) { e.preventDefault(); handle(e); }, {passive:false});
+        });
+      })();
       document.addEventListener('pointerdown', function(e) {
         if (!isMobileAny()) return; // desktop: don't fire mobile close logic
       if (!e.target.closest('#mobMarkerBtns, #mobGardensPills, #mobPlotsPills, #plotBar, #amenitiesBar, #sliderTicks')) {
@@ -10044,29 +10462,46 @@ uiToggleBtn.addEventListener("touchend", toggleControls, {
     // NOTE: startBgVideo() is called by setupIntro() after intro video ends
 
     // Bar visibility: show bottom bars when slider near end
-    function checkBarVisibility() {
-      const sliderPct = parseFloat(slider.value) / parseFloat(slider.max);
-      const nearEnd = sliderPct > 0.97;
-      if (nearEnd) {
+   function checkBarVisibility() {
+    const sliderPct = parseFloat(slider.value) / parseFloat(slider.max);
+    const nearEnd = sliderPct > 0.97;
+
+    if (nearEnd) {
+
         if (activeMarker === 'amenities') {
-          amenitiesBar.classList.add('visible');
-          plotBar.classList.remove('visible');
+            amenitiesBar.classList.add('visible');
+            plotBar.classList.remove('visible');
         } else if (activeMarker === 'plots') {
-          plotBar.classList.add('visible');
-          amenitiesBar.classList.remove('visible');
+            plotBar.classList.add('visible');
+            amenitiesBar.classList.remove('visible');
         }
-      } else {
+
+    } else {
+
+        // Don't reset while the overlay is active
+        if (document.body.classList.contains('overlay-img-active')) {
+            return;
+        }
+
         amenitiesBar.classList.remove('visible');
         plotBar.classList.remove('visible');
-        activeSubPill = null; activeSubPillType = null;
-        activePlotNumber = null; activeDirection = null;
-        document.querySelectorAll('.plot-pill').forEach(p => p.classList.remove('active'));
-        if (sectionDisplayEl) sectionDisplayEl.classList.add('drag-hint-hide');
+
+        activeSubPill = null;
+        activeSubPillType = null;
+        activePlotNumber = null;
+        activeDirection = null;
+
+        document.querySelectorAll('.plot-pill')
+            .forEach(p => p.classList.remove('active'));
+
+        if (sectionDisplayEl)
+            sectionDisplayEl.classList.add('drag-hint-hide');
+
         unpinTooltip();
         checkAndShowSvg();
         updateSectionDisplay();
-      }
     }
+}
 
     function hideAllSvgs() {
       svgOverlay.classList.remove('direction-mode');
@@ -10594,7 +11029,14 @@ uiToggleBtn.addEventListener("touchend", toggleControls, {
         if (!svgOverlay.classList.contains('at-endpoint')) return;
         const key = svg.dataset.zoneSvg;
         let url = null;
-        if (activeCategoryKey && activeCategoryKey === key && activeCategoryLink) {
+        // Direct plot/garden click (Phase 2 hover mode): resolve by the clicked shape itself
+        if (e.target.id && e.target.id.indexOf('plot-') === 0) {
+          url = SINGLE_PLOT_PAGE;  // every plot opens the same page
+        } else if (e.target.getAttribute('data-garden-name')) {
+          var _gk = (e.target.getAttribute('data-garden-name') || '').toLowerCase().replace(/\s+/g, '-');
+          url = SECTION_LINKS[_gk] || null;
+        }
+        if (!url && activeCategoryKey && activeCategoryKey === key && activeCategoryLink) {
           url = activeCategoryLink;
         } else if (activeSubPillType === 'plotsearch' && activePlotNumber) {
           url = PLOT_LINKS['plot-' + activePlotNumber] || null;
@@ -10616,7 +11058,7 @@ uiToggleBtn.addEventListener("touchend", toggleControls, {
           var gName = (e.target.getAttribute('data-garden-name') || '').toLowerCase();
           var gKey = gName.replace(/\s+/g, '-');
           url = SECTION_LINKS[gKey] || null;
-        } else {
+        } else if (!url) {
           url = SECTION_LINKS[key];
         }
         if (!url) return;
@@ -10647,15 +11089,11 @@ uiToggleBtn.addEventListener("touchend", toggleControls, {
         } catch (err2) { /* ignore */ }
 
 
-        // Pop-out animation on the clicked shape, then navigate immediately
-        const clickedShape = e.target;
-        clickedShape.classList.add('popping');
-        setTimeout(function() {
-          svgOverlay.classList.remove('visible');
-          svgOverlay.classList.remove('at-endpoint');
-          if (ZONE_LINK_OPEN_NEW_TAB) { window.open(url, '_blank', 'noopener'); }
-          else { window.location.href = url; }
-        }, 480);
+        // Navigate immediately (no pop-out animation)
+        svgOverlay.classList.remove('visible');
+        svgOverlay.classList.remove('at-endpoint');
+        if (ZONE_LINK_OPEN_NEW_TAB) { window.open(url, '_blank', 'noopener'); }
+        else { window.location.href = url; }
       });
     });
 
@@ -10814,12 +11252,17 @@ uiToggleBtn.addEventListener("touchend", toggleControls, {
     // ---- VIDEO PLAY / PAUSE BUTTON ----
     const vidPlayBtn = document.getElementById('vidPlayBtn');
     // Sync button state with video
-    function syncPlayBtn() {
-      if (vidPlayBtn) vidPlayBtn.classList.toggle('paused', bgVideo.paused);
-    }
-    bgVideo.addEventListener('play',  syncPlayBtn);
-    bgVideo.addEventListener('pause', syncPlayBtn);
-    bgVideo.addEventListener('ended', syncPlayBtn);
+function syncPlayBtn() {
+  if (vidPlayBtn) vidPlayBtn.classList.toggle('paused', bgVideo.paused);
+  if (bgVideo.paused && !document.body.classList.contains('overlay-img-active')) {
+    document.body.classList.add('video-paused');
+  } else {
+    document.body.classList.remove('video-paused');
+  }
+}
+bgVideo.addEventListener('play',  syncPlayBtn);
+bgVideo.addEventListener('pause', syncPlayBtn);
+bgVideo.addEventListener('ended', syncPlayBtn);
     if (vidPlayBtn) {
       vidPlayBtn.addEventListener('click', function(e) {
         e.stopPropagation();
@@ -11302,24 +11745,77 @@ uiToggleBtn.addEventListener("touchend", toggleControls, {
           playMainVideo();
         }
 
+        // Phase 2 → open selection map with overlay.webp instead of playing video
+        function openSelectionMap() {
+          ss.classList.remove('visible');
+          ss.classList.add('fade-out');
+          document.body.classList.remove('intro-video-playing');
+
+          // Kill intro video if present
+          var introVid = document.getElementById('introVideo');
+          if (introVid) {
+            introVid.pause();
+            introVid.removeAttribute('src');
+            introVid.load();
+            if (introVid.parentNode) introVid.parentNode.removeChild(introVid);
+          }
+
+          // Reveal the main UI (does NOT auto-play the video)
+          doReveal();
+
+          // Wait until bgVideo is loaded, then jump to last frame + show overlay.webp
+          (function waitReady() {
+            if (typeof ready !== 'undefined' && ready && bgVideo.duration) {
+              bgVideo.classList.add('ready');
+              animateSliderTo(1.0);        // seek to end frame, pinned (iOS-safe)
+              showOptionOverlay();  
+                 document.body.classList.add('plot-hover-mode');       // shows overlay.webp + pauses video
+              document.body.classList.add('video-paused');
+              if (window._syncMobMarkerBtns) window._syncMobMarkerBtns();
+              updateSectionDisplay();
+            } else {
+              setTimeout(waitReady, 100);
+            }
+          })();
+          // Delegated Map click — survives button rebuilds
+
+        }
         // Reopen the Master Plan screen later (used by the "Map" button in the main scene)
-        window._openMasterPlan = function() {
+     window._openMasterPlan = function() {
+      
+          // Close the Phase-2 overlay before showing Master Plan
+          document.body.classList.remove('plot-hover-mode');
+          document.body.classList.remove('overlay-img-active');
+          document.body.classList.remove('video-paused');
+          var _oi = document.getElementById('optionOverlayImg');
+          if (_oi) _oi.classList.remove('visible');
+          if (typeof hideOptionOverlay === 'function') hideOptionOverlay();
+
           ss.classList.remove('fade-out');
           void ss.offsetWidth;
           ss.classList.add('visible');
         };
 
+        // Delegated Map click — survives button rebuilds
+           document.addEventListener('click', function(e) {
+          var t = e.target.closest ? e.target.closest('#mobMapBtn, .slider-tick[data-marker="map"], #backToMapBtn') : null;
+          if (t) {
+            e.stopPropagation();
+            if (window._openMasterPlan) window._openMasterPlan();
+          }
+        }, true);
         // Phase 1 — hover only, NOT clickable
    if (lbl1) {
     lbl1.classList.add('show');
 }
 
         // Phase 2 path — hover label + click starts video
+       // Phase 2 path — hover label + click opens selection map (no video)
         if (p2) {
           p2.addEventListener('mouseenter', function() { });
           p2.addEventListener('mouseleave', function() { });
-          p2.addEventListener('click', enterExperience);
-          p2.addEventListener('touchstart', function(e) { e.preventDefault(); enterExperience(); }, {passive:false});
+          p2.addEventListener('click', openSelectionMap);
+          p2.addEventListener('touchstart', function(e) { e.preventDefault(); openSelectionMap(); }, {passive:false});
         }
         // Phase 2 floating badge — also clickable
         if (p2badge) {
@@ -11699,6 +12195,25 @@ if (lblR) {
   (function() {
     var tip = document.getElementById('plotHoverTip');
     var tipText = document.getElementById('plotHoverTipText');
+    // Inline highlight helpers (guarantee the SVG lights up on hover,
+    // independent of any CSS media-query conditions)
+    function _hlOn(el, isGarden) {
+      if (isGarden) {
+        el.style.setProperty('fill',   'rgba(140,210,140,0.55)', 'important');
+        el.style.setProperty('stroke', '#ffffff', 'important');
+      } else {
+        el.style.setProperty('fill',   'rgba(217,182,121,0.60)', 'important');
+        el.style.setProperty('stroke', '#d9b679', 'important');
+      }
+      el.style.setProperty('stroke-width', '3', 'important');
+      el.style.transition = 'fill 0.15s ease, stroke 0.15s ease';
+    }
+    function _hlOff(el) {
+      el.style.removeProperty('fill');
+      el.style.removeProperty('stroke');
+      el.style.removeProperty('stroke-width');
+    }
+
     document.addEventListener('mouseover', function(e) {
       // Don't override pinned tooltip from search
       if (_pinnedPlotNum) return;
@@ -11709,6 +12224,7 @@ if (lblR) {
       if (gardenName) {
         tipText.textContent = gardenName;
         tip.classList.add('visible');
+        _hlOn(el, true);
         return;
       }
       // Plot tooltip
@@ -11717,10 +12233,14 @@ if (lblR) {
       var num = id.replace('plot-', '');
       tipText.textContent = 'Plot ' + num;
       tip.classList.add('visible');
+      _hlOn(el, false);
     });
     document.addEventListener('mouseout', function(e) {
       if (_pinnedPlotNum) return;
-      if (e.target.classList.contains('st0')) tip.classList.remove('visible');
+      if (e.target.classList.contains('st0')) {
+        tip.classList.remove('visible');
+        _hlOff(e.target);
+      }
     });
     document.addEventListener('mousemove', function(e) {
       if (_pinnedPlotNum) return;
@@ -12106,6 +12626,101 @@ if (bgMusic) bgMusic.volume = 0.2;
       if (sliderWrap) { sliderWrap.style.opacity = ''; sliderWrap.style.visibility = ''; sliderWrap.style.pointerEvents = ''; }
     }
   }, {passive: true});
+})();
+// ── Plot hover tooltip: shows plot name near cursor ──
+      (function() {
+        var tip = document.createElement('div');
+        tip.id = 'plotHoverTip';
+        document.body.appendChild(tip);
+
+        function isPlotShape(el) {
+          if (!el || !el.id || !el.tagName) return false;
+          var t = el.tagName.toLowerCase();
+          if (t !== 'path' && t !== 'polygon' && t !== 'rect') return false;
+          return el.id.indexOf('plot-') === 0 || el.id.indexOf('garden') === 0;
+        }
+
+        function nameFor(el) {
+          var id = el.id;
+          if (id.indexOf('plot-') === 0) return 'Plot ' + id.slice(5);
+          if (id.indexOf('garden') === 0) return 'Garden';
+          return id;
+        }
+
+        document.addEventListener('mousemove', function(e) {
+          var el = e.target;
+          if (isPlotShape(el)) {
+            tip.textContent = nameFor(el);
+            tip.style.display = 'block';
+            tip.style.left = (e.clientX + 16) + 'px';
+            tip.style.top  = (e.clientY - 34) + 'px';
+          } else {
+            tip.style.display = 'none';
+          }
+        });
+      })();
+      // ── Click a hovered plot → go to its page ──
+// Delegated Map click — survives button rebuilds
+        document.addEventListener('click', function(e) {
+          var t = e.target.closest ? e.target.closest('#mobMapBtn, .slider-tick[data-marker="map"], #backToMapBtn') : null;
+          if (t) {
+    
+            e.stopPropagation();
+            if (window._openMasterPlan) window._openMasterPlan();
+          }
+        }, true);
+
+        // ── Global Master Plan opener (bulletproof) ──
+      window._openMasterPlan = function() {
+        document.body.classList.remove('plot-hover-mode');
+        document.body.classList.remove('overlay-img-active');
+        document.body.classList.remove('video-paused');
+        var _oi = document.getElementById('optionOverlayImg');
+        if (_oi) _oi.classList.remove('visible');
+
+        var ss = document.getElementById('siteSelectScreen') ||
+                 document.querySelector('.site-select-screen');
+        if (ss) {
+          ss.classList.remove('fade-out');
+          void ss.offsetWidth;
+          ss.classList.add('visible');
+        }
+      };
+      
+</script>
+<script>
+(function () {
+  function goPhase2(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+
+    var ss = document.getElementById('siteSelectScreen');
+    if (ss) { ss.classList.remove('visible'); ss.classList.add('fade-out'); }
+
+    document.body.classList.remove('intro-active', 'intro-video-playing');
+
+    function reveal() {
+      if (typeof ready !== 'undefined' && ready && bgVideo.duration) {
+        bgVideo.classList.add('ready');
+        if (typeof animateSliderTo === 'function') animateSliderTo(1.0);
+        if (typeof showOptionOverlay === 'function') showOptionOverlay();
+        document.body.classList.add('plot-hover-mode', 'video-paused');
+        if (window._syncMobMarkerBtns) window._syncMobMarkerBtns();
+        if (typeof updateSectionDisplay === 'function') updateSectionDisplay();
+      } else {
+        setTimeout(reveal, 100);
+      }
+    }
+    reveal();
+  }
+
+  ['ss-phase2', 'ss-p2-floatbadge'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('click', goPhase2);
+      el.addEventListener('tlick', goPhase2);
+      el.addEventListener('touchstart', goPhase2, { passive: false });
+    }
+  });
 })();
 </script>
 </body>
