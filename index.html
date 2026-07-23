@@ -2062,7 +2062,7 @@
       pointer-events: none !important;
     }
     .svg-overlay.size-group-blue-mode .zone-svg .st0 {
-      fill: rgba(0, 63, 92, 0.55) !important;
+      fill: rgba(0, 63, 92, 1) !important;
       stroke: #003f5c !important;
       stroke-width: 2 !important;
       pointer-events: all !important;
@@ -2152,7 +2152,7 @@
       pointer-events: none !important;
     }
     .svg-overlay.size-group-teal-mode .zone-svg .st0 {
-      fill: rgba(71, 111, 149, 0.55) !important;
+      fill: rgba(71, 111, 149, 1) !important;
       stroke: #476f95 !important;
       stroke-width: 2 !important;
       pointer-events: all !important;
@@ -9460,6 +9460,7 @@ body.overlay-img-active .svg-overlay {
         'plot-1481': 'plot/north-west/index.html',
         'plot-1499': 'plot/north-west/index.html',
         'plot-1500': 'plot/north-west/index.html',
+          'plot-1506': 'plot/north-west/index.html',
         'plot-1507': 'plot/north-west/index.html',
         'plot-1508': 'plot/north-west/index.html',
         'plot-1509': 'plot/north-west/index.html',
@@ -10057,18 +10058,7 @@ uiToggleBtn.addEventListener("touchend", toggleControls, {
           e.stopPropagation();
           if (window._openMasterPlan) window._openMasterPlan();
         }
-        var mapTick = document.querySelector('.slider-tick[data-marker="map"]');
-        if (mapTick) mapTick.addEventListener('click', openMasterPlan);
-        var mobMapBtn = document.getElementById('mobMapBtn');
-        if (mobMapBtn) {
-          mobMapBtn.addEventListener('click', openMasterPlan);
-          mobMapBtn.addEventListener('touchend', function(e) { e.preventDefault(); openMasterPlan(e); }, {passive:false});
-        }
-        var backToMapBtn = document.getElementById('backToMapBtn');
-        if (backToMapBtn) {
-          backToMapBtn.addEventListener('click', openMasterPlan);
-          backToMapBtn.addEventListener('touchend', function(e) { e.preventDefault(); openMasterPlan(e); }, {passive:false});
-        }
+
       })();
 // Pause marker buttons — Essentials / Plots / Garden
       (function() {
@@ -11781,20 +11771,51 @@ bgVideo.addEventListener('ended', syncPlayBtn);
 
         }
         // Reopen the Master Plan screen later (used by the "Map" button in the main scene)
-     window._openMasterPlan = function() {
-      
-          // Close the Phase-2 overlay before showing Master Plan
-          document.body.classList.remove('plot-hover-mode');
-          document.body.classList.remove('overlay-img-active');
-          document.body.classList.remove('video-paused');
-          var _oi = document.getElementById('optionOverlayImg');
-          if (_oi) _oi.classList.remove('visible');
-          if (typeof hideOptionOverlay === 'function') hideOptionOverlay();
+  window._openMasterPlan = function () {
 
-          ss.classList.remove('fade-out');
-          void ss.offsetWidth;
-          ss.classList.add('visible');
-        };
+    document.body.classList.remove('plot-hover-mode');
+    document.body.classList.remove('overlay-img-active');
+    document.body.classList.remove('video-paused');
+
+    var oi = document.getElementById('optionOverlayImg');
+    if (oi) oi.classList.remove('visible');
+
+    if (typeof hideOptionOverlay === 'function')
+        hideOptionOverlay();
+
+    // Restore Master Plan SVG
+    if (p1) {
+        p1.style.display = '';
+        p1.style.opacity = '';
+        p1.style.visibility = '';
+    }
+
+    if (p2) {
+        p2.style.display = '';
+        p2.style.opacity = '';
+        p2.style.visibility = '';
+    }
+
+    if (aiims) {
+        aiims.style.display = '';
+        aiims.style.opacity = '';
+        aiims.style.visibility = '';
+    }
+
+    if (road) {
+        road.style.display = '';
+        road.style.opacity = '';
+        road.style.visibility = '';
+    }
+
+    if (lbl1) lbl1.classList.add('show');
+    if (lblA) lblA.classList.add('show');
+    if (lblR) lblR.classList.add('show');
+
+    ss.classList.remove('fade-out');
+    void ss.offsetWidth;
+    ss.classList.add('visible');
+};
 
         // Delegated Map click — survives button rebuilds
            document.addEventListener('click', function(e) {

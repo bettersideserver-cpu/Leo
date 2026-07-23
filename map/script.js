@@ -25,7 +25,7 @@ const LOCATION_CONFIGS = {
         modelUrl: "model.glb",
         zoom: 14.9,
 
-        url: "../index.html?from=map&overlay=overlay.webp", // 🔥 ADD THIS
+        url: "../index.html", // 🔥 ADD THIS
 
         // cameraOffset: [80, -10],
 
